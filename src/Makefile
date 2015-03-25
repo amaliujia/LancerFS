@@ -43,7 +43,8 @@ FUSE_CFLAGS := -D_FILE_OFFSET_BITS=64 \
 					     -I/usr/local/include/fuse \
 					     -I/usr/include/fuse \
 						 -Icloud-lib \
-						 -Idedup-lib
+						 -Idedup-lib \
+						-I./cloudfs
 
 FUSE_LIBS := -lfuse
 

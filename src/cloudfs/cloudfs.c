@@ -14,9 +14,11 @@
 #include <sys/xattr.h>
 #include <time.h>
 #include <unistd.h>
+
 #include "cloudapi.h"
 #include "cloudfs.h"
 #include "dedup.h"
+#include "wrapper.h"
 
 #define UNUSED __attribute__((unused))
 
@@ -86,9 +88,9 @@ struct fuse_operations cloudfs_operations = {
     // --- http://fuse.sourceforge.net/doxygen/structfuse__operations.html
     //
     //
-    .getattr        = NULL,
-    .mkdir          = NULL,
-    .readdir        = NULL,
+    .getattr        = getattr,
+    .mkdir          = mkdir,
+    .readdir        = readdir,
     .destroy        = cloudfs_destroy
 };
 
