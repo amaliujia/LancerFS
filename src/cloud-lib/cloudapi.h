@@ -3,6 +3,9 @@
 
 #include "libs3.h"
 
+#ifdef __cplusplus 
+extern "C"{
+#endif
 // Call back functions for read/write objects and list buckets
 typedef int(* put_filler_t) (char *buffer, int bufferLength);
 
@@ -40,5 +43,9 @@ S3Status cloud_get_object(const char *bucketName, const char *key,
                           get_filler_t filler);
 
 S3Status cloud_delete_object(const char *bucketName, const char *key);
+
+#ifdef __CPLUSPLUSL
+}
+#endif
 
 #endif

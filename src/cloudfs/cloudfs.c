@@ -18,84 +18,48 @@
 #include "cloudapi.h"
 #include "cloudfs.h"
 #include "dedup.h"
-#include "wrapper.h"
+
 
 #define UNUSED __attribute__((unused))
 
 static struct cloudfs_state state_;
 
-static int UNUSED cloudfs_error(char *error_str)
+void cloudfs_get_fullpath(const char *path, char *fullpath){
+
+}
+
+int cloudfs_error(char *error_str)
 {
-    int retval = -errno;
-
-    // TODO:
-    //
-    // You may want to add your own logging/debugging functions for printing
-    // error messages. For example:
-    //
-    // debug_msg("ERROR happened. %s\n", error_str, strerror(errno));
-    //
-    
-    fprintf(stderr, "CloudFS Error: %s\n", error_str);
-
-    /* FUSE always returns -errno to caller (yes, it is negative errno!) */
-    return retval;
+	int retval = -errno;
+	fprintf(stderr, "CloudFS Error: %s\n", error_str);
+	return retval;
 }
 
-/*
- * Initializes the FUSE file system (cloudfs) by checking if the mount points
- * are valid, and if all is well, it mounts the file system ready for usage.
- *
- */
-void *cloudfs_init(struct fuse_conn_info *conn UNUSED)
+void *cloudfs_init(struct fuse_conn_info *conn)
 {
-  cloud_init(state_.hostname);
-  return NULL;
+	cloud_init(state_.hostname);
+	return NULL;
 }
 
-void cloudfs_destroy(void *data UNUSED) {
-  cloud_destroy();
+void cloudfs_destroy(void *data) {
+	cloud_destroy();
 }
 
-int cloudfs_getattr(const char *path UNUSED, struct stat *statbuf UNUSED)
+int cloudfs_getattr(const char *path, struct stat *statbuf)
 {
-  int retval = 0;
-
-  // 
-  // TODO:
-  //
-  // Implement this function to do whatever it is supposed to do!
-  //
-
-  return retval;
+	int retval = 0;
+	return retval;
 }
 
-/*
- * Functions supported by cloudfs 
- */
 static 
-struct fuse_operations cloudfs_operations = {
-    .init           = cloudfs_init,
-    //
-    // TODO
-    //
-    // This is where you add the VFS functions that your implementation of
-    // MelangsFS will support, i.e. replace 'NULL' with 'melange_operation'
-    // --- melange_getattr() and melange_init() show you what to do ...
-    //
-    // Different operations take different types of parameters. This list can
-    // be found at the following URL:
-    // --- http://fuse.sourceforge.net/doxygen/structfuse__operations.html
-    //
-    //
-    .getattr        = getattr,
-    .mkdir          = mkdir,
-    .readdir        = readdir,
-    .destroy        = cloudfs_destroy
-};
+struct fuse_operations cloudfs_operations; 
 
 int cloudfs_start(struct cloudfs_state *state,
-                  const char* fuse_runtime_name) {
+    const char* fuse_runtime_name) {
+
+  cloudfs_operations.init           = cloudfs_init;
+  cloudfs_operations.getattr        = cloudfs_getattr;
+  cloudfs_operations.destroy        = cloudfs_destroy;
 
   int argc = 0;
   char* argv[10];
@@ -103,12 +67,15 @@ int cloudfs_start(struct cloudfs_state *state,
   strcpy(argv[argc++], fuse_runtime_name);
   argv[argc] = (char *) malloc(1024 * sizeof(char));
   strcpy(argv[argc++], state->fuse_path);
-  argv[argc++] = "-s"; // set the fuse mode to single thread
-  //argv[argc++] = "-f"; // run fuse in foreground 
+	
 
-  state_  = *state;
+	argv[argc++] = "-s"; // set the fuse mode to single thread
+	//argv[argc++] = "-f"; // run fuse in foreground 
 
-  int fuse_stat = fuse_main(argc, argv, &cloudfs_operations, NULL);
-    
-  return fuse_stat;
+	state_  = *state;
+
+	int fuse_stat = fuse_main(argc, argv, &cloudfs_operations, NULL);
+
+	return fuse_stat;
 }
+
