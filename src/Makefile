@@ -28,7 +28,7 @@ endif
 # Acquire configuration information for libraries that libs3 depends upon
 
 ifndef CURL_LIBS
-    CURL_LIBS := $(shell curl-config --libs)
+	CURL_LIBS := $(shell curl-config --libs)
 endif
 
 ifndef LIBXML2_LIBS
@@ -41,7 +41,9 @@ endif
 FUSE_CFLAGS := -D_FILE_OFFSET_BITS=64 \
 					 		 -DFUSE_USE_VERSION=26 \
 					     -I/usr/local/include/fuse \
-					     -I/usr/include/fuse
+					     -I/usr/include/fuse \
+						 	-Icloud-lib \
+						 	-Idedup-lib
 
 FUSE_LIBS := -lfuse
 
@@ -64,10 +66,19 @@ CFLAGS += -Wall  -Wshadow -Wextra -Iinclude \
 					$(FUSE_CFLAGS) \
           -D__STRICT_ANSI__ \
           -D_ISOC99_SOURCE \
-          -D_POSIX_C_SOURCE=200112L
+          -D_POSIX_C_SOURCE=200112L 
 
-LDFLAGS = $(CURL_LIBS) $(LIBXML2_LIBS) $(FUSE_LIBS) -lpthread
-LIBRARY = ./lib/libs3.a 
+ifndef CC
+    ifdef DEBUG
+        CC := -g
+    else
+        CC := -O3
+    endif
+endif
+
+
+LDFLAGS = $(CURL_LIBS) $(LIBXML2_LIBS) $(FUSE_LIBS) -lpthread -lcrypto -lssl -lcurl
+LIBRARY = ./lib/libs3.a -lcurl -lxml2
 ifdef DEBUG
 	LIBRARY += ./lib/libdedup-dbg.a
 else
@@ -94,6 +105,22 @@ $(BUILD)/obj/%.o: cloudfs/%.cpp
 $(BUILD)/obj/%.o: cloudfs/%.c
 	$(QUIET_ECHO) $@: Compiling object
 	@ mkdir -p $(dir $(BUILD)/dep/$<)
+	@ g++ $(CFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
+        -o $(BUILD)/dep/$(<:%.c=%.d) -c $<
+	@ mkdir -p $(dir $@)
+	$(VERBOSE_SHOW) g++ $(CFLAGS) -o $@ -c $<
+
+$(BUILD)/obj/%.o: cloud-lib/%.c
+	$(QUIET_ECHO) $@: Compiling object
+	@ mkdir -p $(dir $(BUILD)/dep/$<)
+	@ gcc $(CFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
+        -o $(BUILD)/dep/$(<:%.c=%.d) -c $<
+	@ mkdir -p $(dir $@)
+	$(VERBOSE_SHOW) gcc $(CFLAGS) -o $@ -c $<
+
+$(BUILD)/obj/%.o: dedup-lib/%.c
+	$(QUIET_ECHO) $@: Compiling object
+	@ mkdir -p $(dir $(BUILD)/dep/$<)
 	@ gcc $(CFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
         -o $(BUILD)/dep/$(<:%.c=%.d) -c $<
 	@ mkdir -p $(dir $@)
@@ -106,18 +133,17 @@ $(BUILD)/obj/%.o: cloudfs/%.c
 cloudfs: $(BUILD)/bin/cloudfs
 
 CLOUDFS_OBJS = $(BUILD)/obj/cloudfs.o \
-			$(BUILD)/obj/cloudapi.o \
-				 $(BUILD)/obj/main.o \
-				 	$(BUILD)/obj/deduplication_layer.o \
-						$(BUILD)/obj/cache_object_item.o \
-				 			$(BUILD)/obj/caching_layer.o \
-								$(BUILD)/obj/cache_cloud_controller.o \
+			   $(BUILD)/obj/cloudapi.o \
+			   $(BUILD)/obj/main.o \
+				 $(BUILD)/obj/Lancerfs.o \
+				$(BUILD)/obj/wrapper.o 
+					
 #You can append other objects
 
 $(BUILD)/bin/cloudfs: $(CLOUDFS_OBJS)
 	$(QUIET_ECHO) $@: Building executable
 	@ mkdir -p $(dir $@)
-	$(VERBOSE_SHOW) g++ -o $@ $^ $(LDFLAGS) $(LIBRARY) -lssl
+	$(VERBOSE_SHOW) g++ -o $@ $^ $(LDFLAGS) $(LIBRARY) 
 
 # --------------------------------------------------------------------------
 # Example targets
@@ -141,7 +167,8 @@ CLOUDFS_OBJS = $(BUILD)/obj/rabin-example.o
 $(BUILD)/bin/rabin-example: $(CLOUDFS_OBJS)
 	$(QUIET_ECHO) $@: Building executable
 	@ mkdir -p $(dir $@)
-	$(VERBOSE_SHOW) gcc -o $@ $^ $(LDFLAGS) $(LIBRARY) -lssl
+	$(VERBOSE_SHOW) gcc -o $@ $^ $(LDFLAGS) $(LIBRARY) 
+
 # --------------------------------------------------------------------------
 # Clean target
 

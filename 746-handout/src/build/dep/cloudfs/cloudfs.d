@@ -1,11 +1,19 @@
 build/obj/cloudfs.o: cloudfs/cloudfs.c /usr/include/stdc-predef.h \
- /usr/include/ctype.h /usr/include/features.h \
- /usr/include/i386-linux-gnu/sys/cdefs.h \
+ cloud-lib/cloudapi.h include/libs3.h \
+ /usr/lib/gcc/i686-linux-gnu/4.8/include/stdint.h /usr/include/stdint.h \
+ /usr/include/features.h /usr/include/i386-linux-gnu/sys/cdefs.h \
  /usr/include/i386-linux-gnu/bits/wordsize.h \
  /usr/include/i386-linux-gnu/gnu/stubs.h \
  /usr/include/i386-linux-gnu/gnu/stubs-32.h \
+ /usr/include/i386-linux-gnu/bits/wchar.h \
+ /usr/include/i386-linux-gnu/sys/select.h \
  /usr/include/i386-linux-gnu/bits/types.h \
- /usr/include/i386-linux-gnu/bits/typesizes.h /usr/include/endian.h \
+ /usr/include/i386-linux-gnu/bits/typesizes.h \
+ /usr/include/i386-linux-gnu/bits/select.h \
+ /usr/include/i386-linux-gnu/bits/sigset.h /usr/include/time.h \
+ /usr/include/i386-linux-gnu/bits/time.h \
+ /usr/include/i386-linux-gnu/bits/select2.h cloudfs/cloudfs.h \
+ cloudfs/include.h /usr/include/ctype.h /usr/include/endian.h \
  /usr/include/i386-linux-gnu/bits/endian.h /usr/include/dirent.h \
  /usr/include/i386-linux-gnu/bits/dirent.h /usr/include/errno.h \
  /usr/include/i386-linux-gnu/bits/errno.h /usr/include/linux/errno.h \
@@ -15,12 +23,9 @@ build/obj/cloudfs.o: cloudfs/cloudfs.c /usr/include/stdc-predef.h \
  /usr/include/i386-linux-gnu/bits/fcntl-linux.h \
  /usr/include/i386-linux-gnu/bits/fcntl2.h /usr/include/fuse/fuse.h \
  /usr/include/fuse/fuse_common.h /usr/include/fuse/fuse_opt.h \
- /usr/lib/gcc/i686-linux-gnu/4.8/include/stdint.h /usr/include/stdint.h \
- /usr/include/i386-linux-gnu/bits/wchar.h \
- /usr/include/i386-linux-gnu/sys/types.h /usr/include/time.h \
+ /usr/include/i386-linux-gnu/sys/types.h \
  /usr/lib/gcc/i686-linux-gnu/4.8/include/stddef.h \
- /usr/include/i386-linux-gnu/bits/pthreadtypes.h \
- /usr/include/i386-linux-gnu/bits/time.h /usr/include/utime.h \
+ /usr/include/i386-linux-gnu/bits/pthreadtypes.h /usr/include/utime.h \
  /usr/include/i386-linux-gnu/sys/stat.h \
  /usr/include/i386-linux-gnu/bits/stat.h \
  /usr/include/i386-linux-gnu/sys/statvfs.h \
@@ -48,9 +53,4 @@ build/obj/cloudfs.o: cloudfs/cloudfs.c /usr/include/stdc-predef.h \
  /usr/include/i386-linux-gnu/bits/posix_opt.h \
  /usr/include/i386-linux-gnu/bits/environments.h \
  /usr/include/i386-linux-gnu/bits/confname.h \
- /usr/include/i386-linux-gnu/bits/unistd.h cloud-lib/cloudapi.h \
- include/libs3.h /usr/include/i386-linux-gnu/sys/select.h \
- /usr/include/i386-linux-gnu/bits/select.h \
- /usr/include/i386-linux-gnu/bits/sigset.h \
- /usr/include/i386-linux-gnu/bits/select2.h cloudfs/cloudfs.h \
- cloudfs/include.h include/dedup.h
+ /usr/include/i386-linux-gnu/bits/unistd.h include/dedup.h

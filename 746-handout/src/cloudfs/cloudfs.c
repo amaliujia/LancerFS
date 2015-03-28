@@ -1,19 +1,3 @@
-#include <ctype.h>
-#include <dirent.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <fuse.h>
-#include <getopt.h>
-#include <limits.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <strings.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/xattr.h>
-#include <time.h>
-#include <unistd.h>
 #include "cloudapi.h"
 #include "cloudfs.h"
 #include "dedup.h"
@@ -28,8 +12,7 @@ void cloudfs_get_fullpath(const char *path, char *fullpath){
 	sprintf(fullpath, "%s%s", _state.ssd_path, path);	
 }
 
-
-static int UNUSED cloudfs_error(char *error_str)
+static int cloudfs_error(char *error_str)
 {
     int retval = -errno;
     fprintf(stderr, "CloudFS Error: %s\n", error_str);
@@ -62,7 +45,6 @@ void cloudfs_destroy(void *data UNUSED) {
   cloud_destroy();
 }
 
-
 /*struct stat {
     dev_t     st_dev;      ID of device containing file 
     ino_t     st_ino;      inode number 
@@ -79,7 +61,6 @@ void cloudfs_destroy(void *data UNUSED) {
     time_t    st_ctime;    time of last status change 
 };
 */
-
 
 int cloudfs_getattr(const char *path UNUSED, struct stat *statbuf UNUSED)
 {
@@ -110,6 +91,132 @@ int cloudfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 	struct dirent *dirent = NULL;
 	DIR *dirp = NULL;	
 
+  char debugMsg[MAX_MSG_LEN];
+  sprintf(debugMsg, "cfs_readdir(fullpath %s, buf=0x%08x, filler=0x%08x,	\
+	offset=%d, fileInfo=0x%08x\n", path, (unsigned int)buf, filler, offset, 
+	(unsigned int)fileInfo);
+  cloudfs_debug(debugMsg);
+
+
+	dirp = (DIR *)(uintptr_t)fileInfo->fh;	
+	dirent = readdir(dirp);		
+	if(dirent == NULL){
+			return -errno;
+	}
+	
+	do{
+	  sprintf(debugMsg, "filler with name %s\n", dirent->d_name); 
+  	cloudfs_debug(debugMsg);
+		if(filler(buf, dirent->d_name, NULL, 0) != 0){
+				return -ENOMEM;
+		}	
+	}while((dirent = readdir(dirp)) != NULL);	
+	
+	return ret;
+}
+
+int cloudfs_open(const char *path, struct fuse_file_info *fi){
+	int ret = 0;
+	int fd;
+	char fullpath[MAX_PATH_LEN];
+
+	cloudfs_get_fullpath(path, fullpath);
+
+	char debugMsg[MAX_MSG_LEN];
+	sprintf(debugMsg, "cfs_open(fullpath %s, fi = 0x%08x)\n", 
+					fullpath, fi->flags);
+	cloudfs_debug(debugMsg);
+								
+	fd = open(fullpath, fi->flags);
+	if(fd < 0){
+			char errMsg[MAX_MSG_LEN];
+			sprintf(errMsg, "cannot open file %s\n", fullpath);	
+			ret = cloudfs_error(errMsg);
+	}	
+	fi->fh = fd;
+	return ret;		
+}
+
+int cloudfs_read(const char *path, char *buf, size_t size, off_t offset, 
+																					struct fuse_file_info *fileInfo)
+{
+	int ret = 0;
+
+  char fullpath[MAX_PATH_LEN];
+  cloudfs_get_fullpath(path, fullpath);
+
+	char debugMsg[MAX_MSG_LEN];
+	sprintf(debugMsg, "cfs_read(fullpath %s, buf = 0x%08x, size = %d, \ 
+					offset = %d, fi = 0x%08x)\n", fullpath, (int)buf, size,
+					offset, (int)fileInfo);
+	cloudfs_debug(debugMsg);
+
+	ret = pread(fileInfo->fh, buf, size, offset);	
+	if(ret < 0){
+      char errMsg[MAX_MSG_LEN];
+      sprintf(errMsg, "cannot read file %s\n", fullpath); 
+      ret = cloudfs_error(errMsg);
+	}
+	return ret;
+}
+
+int cloudfs_rmdir(const char *path){
+  int ret = 0;
+
+  char fullpath[MAX_PATH_LEN];
+  cloudfs_get_fullpath(path, fullpath);
+
+  ret = rmdir(fullpath);
+
+  if(ret < 0){
+      char errMsg[MAX_MSG_LEN];
+      sprintf(errMsg, "cannot remove path %s\n", fullpath);
+      ret = cloudfs_error(errMsg); 
+	}
+	return ret;	
+}
+
+int cloudfs_write(const char *path, const char *buf, size_t size, off_t offset, 
+																			struct fuse_file_info *fileInfo)
+{
+	int ret = 0;
+  char fullpath[MAX_PATH_LEN];
+  cloudfs_get_fullpath(path, fullpath);
+
+  char debugMsg[MAX_MSG_LEN];
+  sprintf(debugMsg, "cfs_write(fullpath %s, buf = 0x%08x, size = %zu, \ 
+          offset = %d, fi = 0x%08x)\n", fullpath, (unsigned int)buf, size,
+          offset, (unsigned int)fileInfo);
+  cloudfs_debug(debugMsg);
+
+	ret = pwrite(fileInfo->fh, buf, size, offset);
+	if(ret < 0){
+      char errMsg[MAX_MSG_LEN];
+      sprintf(errMsg, "cannot write file %s with offset %zu size %d at buf 0x%08x\n", 
+							fullpath, offset, size, buf);
+      ret = cloudfs_error(errMsg);
+	}
+	return ret;	
+}
+
+int cloudfs_chmod(const char *path, mode_t mode){
+	int ret = 0;
+  char fullpath[MAX_PATH_LEN];
+  cloudfs_get_fullpath(path, fullpath);	
+
+  char debugMsg[MAX_MSG_LEN];
+  sprintf(debugMsg, "cfs_chmod(fullpath %s, mode = 0x%08x)\n",
+          fullpath, mode);
+  cloudfs_debug(debugMsg);
+
+	ret = chmod(fullpath, mode);
+	if(ret < 0){
+      char errMsg[MAX_MSG_LEN];
+      sprintf(errMsg, "cannot chmod file %s by mode 0x%08x\n",
+              fullpath, mode);
+      ret = cloudfs_error(errMsg);
+	}
+	
 	return ret;
 }
 
@@ -122,8 +229,13 @@ struct fuse_operations cloudfs_operations = {
     // --- http://fuse.sourceforge.net/doxygen/structfuse__operations.html
     .getattr        = cloudfs_getattr,
     .mkdir          = cloudfs_mkdir,
-    .readdir        = NULL,
-    .destroy        = cloudfs_destroy
+    .readdir        = cloudfs_readdir,
+    .open						= cloudfs_open,
+		.destroy        = cloudfs_destroy,
+		.rmdir					= cloudfs_rmdir,
+		.write					= cloudfs_write,
+		.read						= cloudfs_read,
+		.chmod					= cloudfs_chmod
 };
 
 int cloudfs_start(struct cloudfs_state *state,
