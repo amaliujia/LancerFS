@@ -310,6 +310,8 @@ int cloudfs_unlink(const char *path){
 int cloudfs_release(const char *path, struct fuse_file_info *fileInfo){
 	int ret = 0;
 
+
+	return ret;
 } 
 
 /*
@@ -331,8 +333,9 @@ struct fuse_operations cloudfs_operations = {
 		.opendir				= cloudfs_opendir,
 		.getxattr				= cloudfs_getxattr,
 		.setxattr				= cloudfs_setxattr,
-		.unlink					= cloudfs_unlink,
-		.release				= cloudfs_release
+		.unlink					= cloudfs_unlink
+		//TODO: release, utimens, mknod
+		//.release				= cloudfs_release
 };
 
 int cloudfs_start(struct cloudfs_state *state,
