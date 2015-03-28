@@ -166,6 +166,10 @@ int cloudfs_rmdir(const char *path){
   char fullpath[MAX_PATH_LEN];
   cloudfs_get_fullpath(path, fullpath);
 
+  char debugMsg[MAX_MSG_LEN];
+  sprintf(debugMsg, "cfs_rmdir(fullpath %s)\n", fullpath);
+  cloudfs_debug(debugMsg);
+	
   ret = rmdir(fullpath);
 
   if(ret < 0){
@@ -220,6 +224,94 @@ int cloudfs_chmod(const char *path, mode_t mode){
 	return ret;
 }
 
+int cloudfs_opendir(const char *path, struct fuse_file_info *fileInfo){
+	int ret = 0;
+	char fullpath[MAX_PATH_LEN];
+  cloudfs_get_fullpath(path, fullpath);
+
+	char debugMsg[MAX_MSG_LEN];
+  sprintf(debugMsg, "cfs_opendir(fullpath %s, fileInfo=0x%08x)\n",
+          fullpath, fileInfo);
+  cloudfs_debug(debugMsg);
+
+	DIR *dirp = NULL;
+	dirp = opendir(fullpath);	
+	
+	if(dirp == NULL){
+      char errMsg[MAX_MSG_LEN];
+      sprintf(errMsg, "cannot open dir %s\n", fullpath);
+      ret = cloudfs_error(errMsg);
+	}
+	fileInfo->fh = (intptr_t)dirp;	
+	
+	return ret;
+
+}
+
+
+int cloudfs_getxattr(const char *path, const char *name, char *value, size_t size){
+	int ret = 0;
+  char fullpath[MAX_PATH_LEN];
+  cloudfs_get_fullpath(path, fullpath);
+
+  char debugMsg[MAX_MSG_LEN];
+  sprintf(debugMsg, "cfs_getxattr(fullpath %s, name=%s, value=%s, size=%zu)\n",
+          fullpath, name, value, size);
+  cloudfs_debug(debugMsg);	
+
+	ret = getxattr(fullpath, name, value, size);
+	if(ret < 0){
+      char errMsg[MAX_MSG_LEN];
+      sprintf(errMsg, "cannot getxattr of %s\n", fullpath);
+      ret = cloudfs_error(errMsg);
+	}	
+	return ret;
+}
+
+int cloudfs_setxattr(const char *path, const char *name, const char *value, 
+																										size_t size, int flags)
+{
+	int ret = 0;
+  char fullpath[MAX_PATH_LEN];
+  cloudfs_get_fullpath(path, fullpath);
+
+  char debugMsg[MAX_MSG_LEN];
+  sprintf(debugMsg, "cfs_setxattr(fullpath %s, name=%s, value=%s, size=%zu, \ 
+					flag=%d)\n", fullpath, name, value, size, flags);
+  cloudfs_debug(debugMsg);
+
+	ret = setxattr(fullpath, name, value, size, flags);
+	if(ret < 0){
+      char errMsg[MAX_MSG_LEN];
+      sprintf(errMsg, "cannot setxattr of %s\n", fullpath);
+      ret = cloudfs_error(errMsg);
+	}
+	return ret;
+} 
+
+int cloudfs_unlink(const char *path){
+	int ret = 0;
+  char fullpath[MAX_PATH_LEN];
+  cloudfs_get_fullpath(path, fullpath);
+
+  char debugMsg[MAX_MSG_LEN];
+  sprintf(debugMsg, "cfs_unlink(path=%s)\n", fullpath);
+  cloudfs_debug(debugMsg);
+
+	ret = unlink(fullpath);
+	if(ret < 0){
+      char errMsg[MAX_MSG_LEN];
+      sprintf(errMsg, "cannot unlink %s\n", fullpath);
+      ret = cloudfs_error(errMsg);
+	}
+	return ret;
+}
+
+int cloudfs_release(const char *path, struct fuse_file_info *fileInfo){
+	int ret = 0;
+
+} 
+
 /*
  * Functions supported by cloudfs 
  */
@@ -235,7 +327,12 @@ struct fuse_operations cloudfs_operations = {
 		.rmdir					= cloudfs_rmdir,
 		.write					= cloudfs_write,
 		.read						= cloudfs_read,
-		.chmod					= cloudfs_chmod
+		.chmod					= cloudfs_chmod,
+		.opendir				= cloudfs_opendir,
+		.getxattr				= cloudfs_getxattr,
+		.setxattr				= cloudfs_setxattr,
+		.unlink					= cloudfs_unlink,
+		.release				= cloudfs_release
 };
 
 int cloudfs_start(struct cloudfs_state *state,
