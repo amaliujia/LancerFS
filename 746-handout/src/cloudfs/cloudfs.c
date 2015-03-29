@@ -5,6 +5,8 @@
 #define UNUSED __attribute__((unused))
 #define DEBUG
 
+static char *logpath = "/home/student/LancerFS/746-handout/src/log/trace.log";
+static FILE *logfd = NULL;
 
 static struct cloudfs_state _state;
 
@@ -15,8 +17,8 @@ void cloudfs_get_fullpath(const char *path, char *fullpath){
 static int cloudfs_error(char *error_str)
 {
     int retval = -errno;
-    fprintf(stderr, "CloudFS Error: %s\n", error_str);
-
+    fprintf(logfd, "CloudFS Error: %s\n", error_str);
+	
     /* FUSE always returns -errno to caller (yes, it is negative errno!) */
     return retval;
 }
@@ -24,10 +26,24 @@ static int cloudfs_error(char *error_str)
 static int cloudfs_debug(char *err){
 	int ret = 0;
 	#ifdef DEBUG
-	fprintf(stderr, "CloudFS Debug: %s\n", err);
+	fprintf(logfd, "CloudFS Debug: %s\n", err);
 	ret = -errno;	
 	#endif
 	return ret;
+}
+
+void cloudfs_log_init(){
+	logfd = fopen(logpath, "w+");
+	if(logfd == NULL){
+		// shutdown
+		fprintf(logfd, "CloudFS Error: connot find log file\n");
+		exit(1);	
+	}
+}
+
+void print_cloudfs_state(){
+	fprintf(logfd, "Fuse path: %s\n", _state.fuse_path);
+	fprintf(logfd, "SSD path: %s\n", _state.ssd_path);
 }
 
 /*
@@ -35,32 +51,17 @@ static int cloudfs_debug(char *err){
  * are valid, and if all is well, it mounts the file system ready for usage.
  *
  */
-void *cloudfs_init(struct fuse_conn_info *conn UNUSED)
+void *cloudfs_init(struct fuse_conn_info *conn)
 {
   cloud_init(_state.hostname);
+	cloudfs_log_init();
+	print_cloudfs_state();	
   return NULL;
 }
 
 void cloudfs_destroy(void *data UNUSED) {
   cloud_destroy();
 }
-
-/*struct stat {
-    dev_t     st_dev;      ID of device containing file 
-    ino_t     st_ino;      inode number 
-    mode_t    st_mode;     protection 
-    nlink_t   st_nlink;    number of hard links 
-    uid_t     st_uid;      user ID of owner 
-    gid_t     st_gid;      group ID of owner 
-    dev_t     st_rdev;     device ID (if special file) 
-    off_t     st_size;     total size, in bytes 
-    blksize_t st_blksize;  blocksize for file system I/O 
-    blkcnt_t  st_blocks;   number of 512B blocks allocated 
-    time_t    st_atime;    time of last access 
-    time_t    st_mtime;    time of last modification 
-    time_t    st_ctime;    time of last status change 
-};
-*/
 
 int cloudfs_getattr(const char *path UNUSED, struct stat *statbuf UNUSED)
 {
@@ -351,7 +352,8 @@ int cloudfs_start(struct cloudfs_state *state,
   //argv[argc++] = "-f"; // run fuse in foreground 
 
   _state  = *state;
-
+	struct fuse_conn_info conn;
+	cloudfs_init(&conn);	
   int fuse_stat = fuse_main(argc, argv, &cloudfs_operations, NULL);
     
   return fuse_stat;
