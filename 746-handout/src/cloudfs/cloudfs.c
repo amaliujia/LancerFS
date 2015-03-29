@@ -249,13 +249,6 @@ int cloudfs_write(const char *path, const char *buf, size_t size, off_t offset,
 							buf 0x%08x\n", fullpath, offset, size, buf);
       ret = cloudfs_error(errMsg);
 		}
-		struct stat buf;
-		ret = cloudfs_getattr(path, &buf);
-		if(ret < 0){
-    	fprintf(logfd, "LancerFS error: cannot read file stat in write\n");  
-		}else if(buf.st_size >= _state.threshold){//to big, flush to Cloud
-			
-		}	
 		goto done; // regular finish	
 	}else{//Cloud file
 
@@ -371,8 +364,20 @@ int cloudfs_unlink(const char *path){
 
 int cloudfs_release(const char *path, struct fuse_file_info *fileInfo){
 	int ret = 0;
+  char fullpath[MAX_PATH_LEN];
+  cloudfs_get_fullpath(path, fullpath);	
 
-
+	//assume it is a local file
+	struct stat buf;
+	lstat(fullpath, &buf); 
+	if(buf.st_size < _state.threshold){//small file, keep in SSD
+		ret = close(fileInfo->fh);		
+		goto done;	
+	}
+	//TODO: what's next?
+		
+		
+done:	
 	return ret;
 } 
 
@@ -395,9 +400,9 @@ struct fuse_operations cloudfs_operations = {
 		.opendir				= cloudfs_opendir,
 		.getxattr				= cloudfs_getxattr,
 		.setxattr				= cloudfs_setxattr,
-		.unlink					= cloudfs_unlink
-		//TODO: release, utimens, mknod
-		//.release				= cloudfs_release
+		.unlink					= cloudfs_unlink,
+		.release				= cloudfs_release
+		//TODO: utimens, mknod
 };
 
 int cloudfs_start(struct cloudfs_state *state,
