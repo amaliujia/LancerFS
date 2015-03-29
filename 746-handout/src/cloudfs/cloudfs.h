@@ -20,5 +20,10 @@ void cloudfs_get_fullpath(const char *path, char *fullpath);
 
 
 //Tool function
+int get_proxy(const char *path);
+void print_cloudfs_state();
+void cloudfs_log_init();
+void cloudfs_log_init();
+
 
 #endif
