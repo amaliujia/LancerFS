@@ -65,7 +65,7 @@ void print_cloudfs_state(){
 	fprintf(logfd, "Fuse path: %s\n", _state.fuse_path);
 	fprintf(logfd, "SSD path: %s\n", _state.ssd_path);
 }
-
+	
 int get_proxy(const char *fullpath){
   int proxy = 0;
   int r = lgetxattr(fullpath, "user.proxy", &proxy, sizeof(int));
@@ -83,7 +83,11 @@ int get_dirty(const char *fullpath){
 }
 
 int set_dirty(const char *fullpath, int dirty){
-	return lsetxattr(fullpath, "user.dirty", &dirty, sizeof(int)); 
+	return lsetxattr(fullpath, "user.dirty", &dirty, sizeof(int), 0); 
+}
+
+int set_slave(const char *fullpath, int slave){
+	return lsetxattr(fullpath, "user.path", &slave, sizeof(int), 0);
 }
 
 /*
@@ -200,7 +204,7 @@ int cloudfs_open(const char *path, struct fuse_file_info *fileInfo){
 			cloud_filename(cloudpath);
 				
 			char slavepath[MAX_PATH_LEN+3];
- 			memset(slavepath, 0, MAX_PATH_LEN);
+ 			memset(slavepath, 0, MAX_PATH_LEN + 3);
   	  strcpy(slavepath, fullpath);
 			cloud_slave_filename(slavepath);	
     	fprintf(logfd, "LancerFS log: create slave file %s by cloud file %s\n",
@@ -425,7 +429,7 @@ int cloudfs_release(const char *path, struct fuse_file_info *fileInfo){
   char fullpath[MAX_PATH_LEN];
   cloudfs_get_fullpath(path, fullpath);	
 
-	if(!getproxy(fullpath)){
+	if(!get_proxy(fullpath)){
 		//this is a local file
 		struct stat buf;
 		lstat(fullpath, &buf); 
@@ -449,10 +453,22 @@ int cloudfs_release(const char *path, struct fuse_file_info *fileInfo){
 		//create a proxy file with same path
 		cloudfs_generate_proxy(fullpath, &stat_buf);
 	}else{// a proxy file	
+			struct stat buf;							
+      char slavepath[MAX_PATH_LEN+3];
+      memset(slavepath, 0, MAX_PATH_LEN + 3);
+      strcpy(slavepath, fullpath);
+      cloud_slave_filename(slavepath);
+		
 		if(get_dirty(fullpath)){//dirty file, flush to Cloud
-						
+			cloud_push_shadow(fullpath, slavepath, &buf);		
 		}
-	
+		
+		//delete slave file	
+		fclose(fileInfo->fh);
+		unlink(slavepath);	
+		//set proxy file attribute?
+		set_dirty(fullpath, 0);
+		set_slave(fullpath, 0); 
 	}	
 done:	
 	return ret;
