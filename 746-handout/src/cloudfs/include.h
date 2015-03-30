@@ -23,5 +23,6 @@
 #include <time.h>
 #include <unistd.h>
 
+static FILE *logfd = NULL;
 
 #endif

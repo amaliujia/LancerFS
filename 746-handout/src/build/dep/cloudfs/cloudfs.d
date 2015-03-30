@@ -53,4 +53,5 @@ build/obj/cloudfs.o: cloudfs/cloudfs.c /usr/include/stdc-predef.h \
  /usr/include/i386-linux-gnu/bits/posix_opt.h \
  /usr/include/i386-linux-gnu/bits/environments.h \
  /usr/include/i386-linux-gnu/bits/confname.h \
- /usr/include/i386-linux-gnu/bits/unistd.h include/dedup.h
+ /usr/include/i386-linux-gnu/bits/unistd.h include/dedup.h \
+ cloudfs/cloudService.h

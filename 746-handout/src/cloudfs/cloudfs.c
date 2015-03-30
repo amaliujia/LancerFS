@@ -1,21 +1,33 @@
 #include "cloudapi.h"
 #include "cloudfs.h"
 #include "dedup.h"
+#include "cloudService.h"
 
 //#define UNUSED __attribute__((unused))
 #define DEBUG
-
 static char *logpath = "/home/student/LancerFS/746-handout/src/log/trace.log";
-static FILE *logfd = NULL;
 
 static struct cloudfs_state _state;
 
 /*************
 	Tool Box
 **************/
+
 void cloudfs_get_fullpath(const char *path, char *fullpath){ 
 	sprintf(fullpath, "%s%s", _state.ssd_path, path);	
 }
+
+void cloudfs_generate_proxy(const char *fullpath, struct stat *buf){
+	int fd = creat(fullpath, O_RDWR | O_CREAT);
+	if(fd < 0){
+			fprintf(logfd, "LancerFS Error: fail to create proxy file %s\n", 
+							fullpath);	
+	}
+	int proxy = 1;
+	lsetxattr(fullpath, "user.proxy", &proxy, sizeof(int), 0);
+	lsetxattr(fullpath, "user.st_size", &(buf->st_size), sizeof(off_t), 0);	
+	lsetxattr(fullpath, "user.st_mode", &(buf->st_mode), sizeof(mode_t), 0);
+} 
 
 static int cloudfs_error(char *error_str)
 {
@@ -56,7 +68,7 @@ void print_cloudfs_state(){
 
 int get_proxy(const char *path){
   int proxy = 0;
-  int r = lgetxattr(path, "Lancer.proxy", &proxy, sizeof(int));
+  int r = lgetxattr(path, "user.proxy", &proxy, sizeof(int));
 	return proxy;
 }
 
@@ -147,25 +159,38 @@ int cloudfs_open(const char *path, struct fuse_file_info *fileInfo){
 					fullpath, fileInfo->flags);
 	cloudfs_debug(debugMsg);
 								
-	fd = open(fullpath, fileInfo->flags);
+	fd = open(fullpath, fileInfo->flags, O_CREAT);
 	if(fd < 0){
 			char errMsg[MAX_MSG_LEN];
+			sprintf(errMsg, "cfs_open(fullpath %s)\n", fullpath);
+			ret = cloudfs_error(errMsg);
 			// open file with fullpath fail, goto error handle part	
 			goto error;
 	}
 
-	//if has proxy flag, or if it is a new file
-	int proxy = 0;
-	int r = lgetxattr(fullpath, "Lancer.proxy", &proxy, sizeof(int));	
+	//if has proxy flag, otherwise it is a new file
+	int proxy = -1;
+	int r = lgetxattr(fullpath, "user.proxy", &proxy, sizeof(int));	
 	if(r < 0){// this is a new file, set proxy as 0
 		proxy = 0;
-		lsetxattr(fullpath, "Lancer.proxy", &proxy, sizeof(int), 0);	
+		lsetxattr(fullpath, "user.proxy", &proxy, sizeof(int), 0);	
 		fprintf(logfd, "LancerFS log: create and set proxy to file %s\n", 
 						fullpath);	
 	}else if(proxy == 0){//Small file that stored in SSD
 			fprintf(logfd, "LancerFS log: open non proxy file %s\n", fullpath);
 	}else if(proxy == 1){// File opened is in cloud, only proxy file here
 			//sprintf(logfd, "LancerFS log: open non proxy file %s\n", fullpath);
+		  char cloudpath[MAX_PATH_LEN];
+  		memset(cloudpath, 0, MAX_PATH_LEN);
+  		strcpy(cloudpath, fullpath);	
+			cloud_filename(cloudpath);
+				
+			char slavepath[MAX_PATH_LEN];
+ 			memset(slavepath, 0, MAX_PATH_LEN);
+  	  strcpy(slavepath, fullpath);
+				
+
+			cloud_get_file(slavepath, cloudpath, &fd);		
 	}else{
 		// unknow proxy flag
 		fprintf(logfd, "LancerFS error: wrong proxy flag %d\n", proxy);	
@@ -372,11 +397,24 @@ int cloudfs_release(const char *path, struct fuse_file_info *fileInfo){
 	lstat(fullpath, &buf); 
 	if(buf.st_size < _state.threshold){//small file, keep in SSD
 		ret = close(fileInfo->fh);		
-		goto done;	
+		goto done; 	
 	}
-	//TODO: what's next?
-		
-		
+	//push this file to cloud
+	char cloudpath[MAX_PATH_LEN];
+	memset(cloudpath, 0, MAX_PATH_LEN);
+	strcpy(cloudpath, fullpath);	
+	cloud_filename(cloudpath);	
+	struct stat stat_buf;
+	cloud_push_file(cloudpath, &stat_buf);
+
+	//delete current from SSD
+	//assume only file can only be opened once
+	cloudfs_unlink(path);			
+	
+	//now file should be deleted
+	//create a proxy file with same path
+	cloudfs_generate_proxy(fullpath, &stat_buf);
+	
 done:	
 	return ret;
 } 
@@ -418,7 +456,7 @@ int cloudfs_start(struct cloudfs_state *state,
 
   _state  = *state;
 	cloudfs_log_init();
-	
+	cloud_create_bucket("bkt");	
 	int fuse_stat = fuse_main(argc, argv, &cloudfs_operations, NULL);
 
 	cloufds_log_close();    

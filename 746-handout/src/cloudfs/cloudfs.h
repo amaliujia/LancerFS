@@ -24,6 +24,6 @@ int get_proxy(const char *path);
 void print_cloudfs_state();
 void cloudfs_log_init();
 void cloudfs_log_init();
-
+void cloudfs_delete_file(const char *fullpath);
 
 #endif
