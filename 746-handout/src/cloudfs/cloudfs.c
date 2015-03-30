@@ -185,12 +185,17 @@ int cloudfs_open(const char *path, struct fuse_file_info *fileInfo){
   		strcpy(cloudpath, fullpath);	
 			cloud_filename(cloudpath);
 				
-			char slavepath[MAX_PATH_LEN];
+			char slavepath[MAX_PATH_LEN+3];
  			memset(slavepath, 0, MAX_PATH_LEN);
   	  strcpy(slavepath, fullpath);
-				
-
-			cloud_get_file(slavepath, cloudpath, &fd);		
+			cloud_slave_filename(slavepath);	
+    	fprintf(logfd, "LancerFS log: create slave file %s by cloud file %s\n",
+            slavepath, cloudpath);
+			cloud_get_file(slavepath, cloudpath, &fd);
+			int slave = 1;
+			int dirty = 0;
+			lsetxattr(slavepath, "user.slave", &slave, sizeof(int), 0);	
+			lsetxattr(slavepath, "user.dirty", &dirty, sizeof(int), 0);	
 	}else{
 		// unknow proxy flag
 		fprintf(logfd, "LancerFS error: wrong proxy flag %d\n", proxy);	
@@ -262,11 +267,9 @@ int cloudfs_write(const char *path, const char *buf, size_t size, off_t offset,
           offset, (unsigned int)fileInfo);
   cloudfs_debug(debugMsg);
 	
-	if(!get_proxy(fullpath)){//local file, write data
-		fprintf(logfd, "LancerFS log: cloudfs_write(path=%s, buf=%d, size=%d,  \
-						offset=%d, fileInfo=%d\n", fullpath, buf, size, offset, fileInfo);
-		//lseek(fileInfo->fh, offset, SEEK_SET);
-		//ret = write(fileInfo->fh, buf, size);
+	//if(!get_proxy(fullpath)){//local file, write data
+		fprintf(logfd, "LancerFS log: cloudfs_write(path=%s, size=%zu,  \
+						\n", fullpath, size);
 	  ret = pwrite(fileInfo->fh, buf, size, offset);	
 		if(ret < 0){
       char errMsg[MAX_MSG_LEN];
@@ -274,10 +277,9 @@ int cloudfs_write(const char *path, const char *buf, size_t size, off_t offset,
 							buf 0x%08x\n", fullpath, offset, size, buf);
       ret = cloudfs_error(errMsg);
 		}
-		goto done; // regular finish	
-	}else{//Cloud file
-
-	}
+		
+		int slave = 0;
+		ret = getxattr(fullpath
 
 done:	
 	return ret;	
