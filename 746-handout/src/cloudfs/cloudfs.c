@@ -66,10 +66,24 @@ void print_cloudfs_state(){
 	fprintf(logfd, "SSD path: %s\n", _state.ssd_path);
 }
 
-int get_proxy(const char *path){
+int get_proxy(const char *fullpath){
   int proxy = 0;
-  int r = lgetxattr(path, "user.proxy", &proxy, sizeof(int));
+  int r = lgetxattr(fullpath, "user.proxy", &proxy, sizeof(int));
 	return proxy;
+}
+
+int set_proxy(const char *fullpath, int proxy){
+	return lsetxattr(fullpath, "user.proxy", &proxy, sizeof(int), 0);
+}
+
+int get_dirty(const char *fullpath){
+	int dirty = 0;
+	int r = lgetxattr(fullpath, "user.dirty", &dirty, sizeof(int));
+	return dirty;
+}
+
+int set_dirty(const char *fullpath, int dirty){
+	return lsetxattr(fullpath, "user.dirty", &dirty, sizeof(int)); 
 }
 
 /*
@@ -191,11 +205,12 @@ int cloudfs_open(const char *path, struct fuse_file_info *fileInfo){
 			cloud_slave_filename(slavepath);	
     	fprintf(logfd, "LancerFS log: create slave file %s by cloud file %s\n",
             slavepath, cloudpath);
-			cloud_get_file(slavepath, cloudpath, &fd);
+			cloud_get_shadow(slavepath, cloudpath, &fd);
 			int slave = 1;
 			int dirty = 0;
-			lsetxattr(slavepath, "user.slave", &slave, sizeof(int), 0);	
-			lsetxattr(slavepath, "user.dirty", &dirty, sizeof(int), 0);	
+					
+			lsetxattr(fullpath, "user.slave", &slave, sizeof(int), 0);	
+			lsetxattr(fullpath, "user.dirty", &dirty, sizeof(int), 0);	
 	}else{
 		// unknow proxy flag
 		fprintf(logfd, "LancerFS error: wrong proxy flag %d\n", proxy);	
@@ -267,22 +282,38 @@ int cloudfs_write(const char *path, const char *buf, size_t size, off_t offset,
           offset, (unsigned int)fileInfo);
   cloudfs_debug(debugMsg);
 	
-	//if(!get_proxy(fullpath)){//local file, write data
-		fprintf(logfd, "LancerFS log: cloudfs_write(path=%s, size=%zu,  \
+	fprintf(logfd, "LancerFS log: cloudfs_write(path=%s, size=%zu,  \
 						\n", fullpath, size);
-	  ret = pwrite(fileInfo->fh, buf, size, offset);	
-		if(ret < 0){
-      char errMsg[MAX_MSG_LEN];
-      sprintf(errMsg, "cannot write file %s with offset %zu size %d at  \
+	ret = pwrite(fileInfo->fh, buf, size, offset);	
+	if(ret < 0){
+     char errMsg[MAX_MSG_LEN];
+     sprintf(errMsg, "cannot write file %s with offset %zu size %d at  \
 							buf 0x%08x\n", fullpath, offset, size, buf);
-      ret = cloudfs_error(errMsg);
-		}
+     ret = cloudfs_error(errMsg);
+	}
 		
-		int slave = 0;
-		ret = getxattr(fullpath
+	int slave = -1;
+	ret = lgetxattr(fullpath, "user.slave", &slave, sizeof(int));
+	if(ret > 0){// set slave attribute before
+			if(slave == 0){
+				fprintf(logfd, "Lancer error: wrong slave id for proxy file %s\n",
+								fullpath);
+				goto error;
+			}
+			int dirty = 1;
+			ret = lsetxattr(fullpath, "user.dirty", &dirty, sizeof(int), 0);
+			if(ret < 0){
+				fprintf(logfd, "Lancer eror: set dirty bit on %s failt\n",
+								fullpath);
+				goto error;	
+			}	
+	}
 
 done:	
-	return ret;	
+	return ret;
+error:
+	fprintf(logfd, "Unknown error in cloudfs_write\n");
+	goto done;	
 }
 
 int cloudfs_chmod(const char *path, mode_t mode){
@@ -394,29 +425,35 @@ int cloudfs_release(const char *path, struct fuse_file_info *fileInfo){
   char fullpath[MAX_PATH_LEN];
   cloudfs_get_fullpath(path, fullpath);	
 
-	//assume it is a local file
-	struct stat buf;
-	lstat(fullpath, &buf); 
-	if(buf.st_size < _state.threshold){//small file, keep in SSD
-		ret = close(fileInfo->fh);		
-		goto done; 	
-	}
-	//push this file to cloud
-	char cloudpath[MAX_PATH_LEN];
-	memset(cloudpath, 0, MAX_PATH_LEN);
-	strcpy(cloudpath, fullpath);	
-	cloud_filename(cloudpath);	
-	struct stat stat_buf;
-	cloud_push_file(cloudpath, &stat_buf);
+	if(!getproxy(fullpath)){
+		//this is a local file
+		struct stat buf;
+		lstat(fullpath, &buf); 
+		if(buf.st_size < _state.threshold){//small file, keep in SSD
+			ret = close(fileInfo->fh);		
+			goto done; 	
+		}
+		//push this file to cloud
+		char cloudpath[MAX_PATH_LEN];
+		memset(cloudpath, 0, MAX_PATH_LEN);
+		strcpy(cloudpath, fullpath);	
+		cloud_filename(cloudpath);	
+		struct stat stat_buf;
+		cloud_push_file(cloudpath, &stat_buf);
 
-	//delete current from SSD
-	//assume only file can only be opened once
-	cloudfs_unlink(path);			
+		//delete current from SSD
+		//assume only file can only be opened once
+		cloudfs_unlink(path);			
 	
-	//now file should be deleted
-	//create a proxy file with same path
-	cloudfs_generate_proxy(fullpath, &stat_buf);
+		//now file should be deleted
+		//create a proxy file with same path
+		cloudfs_generate_proxy(fullpath, &stat_buf);
+	}else{// a proxy file	
+		if(get_dirty(fullpath)){//dirty file, flush to Cloud
+						
+		}
 	
+	}	
 done:	
 	return ret;
 } 
