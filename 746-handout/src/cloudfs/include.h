@@ -3,7 +3,7 @@
 
 #define MAX_PATH_LEN 4096
 #define MAX_HOSTNAME_LEN 1024
-#define MAX_MSG_LEN 128
+#define MAX_MSG_LEN 4096 
 
 //c
 #include <ctype.h>

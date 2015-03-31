@@ -1,94 +1,1493 @@
 Fuse path: /home/student/mnt/fuse/
 SSD path: /home/student/mnt/ssd/
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test), lstat=-1
 LancerFS log: cfs_mkdir(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/c), lstat=-1
 LancerFS log: cfs_mkdir(path=/home/student/mnt/ssd/small_test/c)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/e)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/e), lstat=-1
 LancerFS log: cfs_mkdir(path=/home/student/mnt/ssd/small_test/c/e)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/e)
 Lancer log: cfs_utimens(path=/home/student/mnt/ssd/small_test/c/e)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/e)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/d)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/d), lstat=-1
 LancerFS log: cfs_mkdir(path=/home/student/mnt/ssd/small_test/c/d)
-LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/c/d/7)
-LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/c/d/7
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/d)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/d/7)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/d/7), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/c/d/7, mode=0x000081a4)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/d/7)
 LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/c/d/7)
 LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/c/d/7
 
 LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/c/d/7, size=7,  						
-LancerFS Error: cannot write file /home/student/mnt/ssd/small_test/c/d/7 with offset 0 size 0 at  							buf 0x00000007
-
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/d/7)
 Lancer log: cfs_utimens(path=/home/student/mnt/ssd/small_test/c/d/7)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/d/7)
 LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/c/d/7)
-LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/c/d/8)
-LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/c/d/8
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/d/8)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/d/8), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/c/d/8, mode=0x000081a4)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/d/8)
 LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/c/d/8)
 LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/c/d/8
 
 LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/c/d/8, size=8,  						
-LancerFS Error: cannot write file /home/student/mnt/ssd/small_test/c/d/8 with offset 0 size 0 at  							buf 0x00000008
-
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/d/8)
 Lancer log: cfs_utimens(path=/home/student/mnt/ssd/small_test/c/d/8)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/d/8)
 LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/c/d/8)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/d)
 Lancer log: cfs_utimens(path=/home/student/mnt/ssd/small_test/c/d)
-LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/c/5)
-LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/c/5
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/d)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/5)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/5), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/c/5, mode=0x000081a4)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/5)
 LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/c/5)
 LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/c/5
 
 LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/c/5, size=5,  						
-LancerFS Error: cannot write file /home/student/mnt/ssd/small_test/c/5 with offset 0 size 0 at  							buf 0x00000005
-
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/5)
 Lancer log: cfs_utimens(path=/home/student/mnt/ssd/small_test/c/5)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/5)
 LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/c/5)
-LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/c/6)
-LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/c/6
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/6)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/6), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/c/6, mode=0x000081a4)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/6)
 LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/c/6)
 LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/c/6
 
 LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/c/6, size=6,  						
-LancerFS Error: cannot write file /home/student/mnt/ssd/small_test/c/6 with offset 0 size 0 at  							buf 0x00000006
-
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/6)
 Lancer log: cfs_utimens(path=/home/student/mnt/ssd/small_test/c/6)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/6)
 LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/c/6)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c)
 Lancer log: cfs_utimens(path=/home/student/mnt/ssd/small_test/c)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a), lstat=-1
 LancerFS log: cfs_mkdir(path=/home/student/mnt/ssd/small_test/a)
-LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/a/3)
-LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/a/3
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/3)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/3), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/a/3, mode=0x000081a4)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/3)
 LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/a/3)
 LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/a/3
 
 LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/a/3, size=3,  						
-LancerFS Error: cannot write file /home/student/mnt/ssd/small_test/a/3 with offset 0 size 0 at  							buf 0x00000003
-
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/3)
 Lancer log: cfs_utimens(path=/home/student/mnt/ssd/small_test/a/3)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/3)
 LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/a/3)
-LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/a/2)
-LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/a/2
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/2)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/2), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/a/2, mode=0x000081a4)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/2)
 LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/a/2)
 LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/a/2
 
 LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/a/2, size=2,  						
-LancerFS Error: cannot write file /home/student/mnt/ssd/small_test/a/2 with offset 0 size 0 at  							buf 0x00000002
-
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/2)
 Lancer log: cfs_utimens(path=/home/student/mnt/ssd/small_test/a/2)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/2)
 LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/a/2)
-LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/a/1)
-LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/a/1
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/1)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/1), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/a/1, mode=0x000081a4)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/1)
 LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/a/1)
 LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/a/1
 
 LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/a/1, size=1,  						
-LancerFS Error: cannot write file /home/student/mnt/ssd/small_test/a/1 with offset 0 size 0 at  							buf 0x00000001
-
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/1)
 Lancer log: cfs_utimens(path=/home/student/mnt/ssd/small_test/a/1)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/1)
 LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/a/1)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a)
 Lancer log: cfs_utimens(path=/home/student/mnt/ssd/small_test/a)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b), lstat=-1
 LancerFS log: cfs_mkdir(path=/home/student/mnt/ssd/small_test/b)
-LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/b/4)
-LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/b/4
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/4)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/4), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/b/4, mode=0x000081a4)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/4)
 LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/b/4)
 LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/b/4
 
 LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/b/4, size=4,  						
-LancerFS Error: cannot write file /home/student/mnt/ssd/small_test/b/4 with offset 0 size 0 at  							buf 0x00000004
-
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/4)
 Lancer log: cfs_utimens(path=/home/student/mnt/ssd/small_test/b/4)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/4)
 LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/b/4)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b)
 Lancer log: cfs_utimens(path=/home/student/mnt/ssd/small_test/b)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
 Lancer log: cfs_utimens(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/lost+found)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/.swp, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/.swpx, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/.swp, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/.swp
+
+LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/.swp, size=4096,  						
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/.swp, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/.swpx, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/.swp, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/.swp
+
+LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/.swp, size=4096,  						
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_setxattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/.swp
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/.swpx, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swx), lstat=-1
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/.swp
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swo)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swo), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swo)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swo), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swo)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swo), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swo)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swo), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swo)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swo), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/.swo, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swo)
+LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/.swo)
+LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/.swo
+
+LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/.swo, size=4096,  						
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swo)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_setxattr(path=/home/student/mnt/ssd/small_test/.swo)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/.swp
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/.swpx, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swx), lstat=-1
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/.swp
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swo)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swn)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swn), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swn)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swn), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swn)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swn), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swn)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swn), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swn)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swn), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/.swn, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swn)
+LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/.swn)
+LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/.swn
+
+LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/.swn, size=4096,  						
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swn)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_setxattr(path=/home/student/mnt/ssd/small_test/.swn)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swn)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+Lancer error: cfs_access, mknod(path=/home/student/mnt/ssd/small_test/.swn) faile
+Lancer error: cfs_access, mknod(path=/home/student/mnt/ssd/small_test/.swo) faile
+Lancer error: cfs_access, mknod(path=/home/student/mnt/ssd/small_test/.swp) faile
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/a/.swp, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swpx), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swpx), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/a/.swpx, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/a/.swpx)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/a/.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/a/.swp, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/a/.swp
+
+LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/a/.swp, size=4096,  						
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/a/.swp, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swpx), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swpx), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/a/.swpx, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/a/.swpx)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/a/.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/a/.swp, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/a/.swp
+
+LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/a/.swp, size=4096,  						
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_setxattr(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/a/.swp
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swpx), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swpx), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/a/.swpx, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swpx)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/a/.swpx)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/a/.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swx), lstat=-1
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/a/.swp
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swo)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swo), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swo)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swo), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swo)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swo), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swo)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swo), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swo)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swo), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/a/.swo, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swo)
+LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/a/.swo)
+LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/a/.swo
+
+LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/a/.swo, size=4096,  						
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/a/.swo)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_setxattr(path=/home/student/mnt/ssd/small_test/a/.swo)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/a/.swp
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swpx), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swpx), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/a/.swpx, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swpx)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/a/.swpx)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/a/.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swx), lstat=-1
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/a/.swp
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swo)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swn)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swn), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swn)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swn), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swn)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swn), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swn)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swn), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swn)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swn), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/a/.swn, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swn)
+LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/a/.swn)
+LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/a/.swn
+
+LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/a/.swn, size=4096,  						
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/a/.swn)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_setxattr(path=/home/student/mnt/ssd/small_test/a/.swn)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/2)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/3)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/1)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swn)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp)
+Lancer error: cfs_access, mknod(path=/home/student/mnt/ssd/small_test/a/1) faile
+Lancer error: cfs_access, mknod(path=/home/student/mnt/ssd/small_test/a/2) faile
+Lancer error: cfs_access, mknod(path=/home/student/mnt/ssd/small_test/a/3) faile
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a)
+Lancer error: cfs_access, mknod(path=/home/student/mnt/ssd/small_test/a/.swn) faile
+Lancer error: cfs_access, mknod(path=/home/student/mnt/ssd/small_test/a/.swo) faile
+Lancer error: cfs_access, mknod(path=/home/student/mnt/ssd/small_test/a/.swp) faile
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/1)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/a/1)
+LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/a/1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.1.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.1.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.1.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.1.swp), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/a/.1.swp, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.1.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.1.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.1.swpx), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.1.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.1.swpx), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/a/.1.swpx, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.1.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/a/.1.swpx)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/a/.1.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/a/.1.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/a/.1.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.1.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.1.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.1.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.1.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.1.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.1.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.1.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.1.swp), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/a/.1.swp, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.1.swp)
+LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/a/.1.swp)
+LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/a/.1.swp
+
+LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/a/.1.swp, size=4096,  						
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/a/.1.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/a/.1.swp)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/a/1)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/a/1)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/a/1
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/a/1)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/1)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/a/1)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/1)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/1)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/.netrwhist)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/.netrwhist), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/.netrwhist)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/.netrwhist), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/.netrwhist)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/.netrwhist), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/.swp
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/.swpx, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swx), lstat=-1
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/.swp
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swo)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swn)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swm)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swm), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swm)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swm), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swm)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swm), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swm)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swm), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/.swm, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swm)
+LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/.swm)
+LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/.swm
+
+LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/.swm, size=4096,  						
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swm)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/.swm)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/.swp
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/.swpx, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swx), lstat=-1
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/.swp
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swm)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swm), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swm)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swm), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swm)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swm), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swm)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swm), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swm)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swm), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/.swm, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swm)
+LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/.swm)
+LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/.swm
+
+LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/.swm, size=4096,  						
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swm)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_setxattr(path=/home/student/mnt/ssd/small_test/.swm)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/.swp
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/.swpx, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swx), lstat=-1
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/.swp
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swm)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swl)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swl), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swl)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swl), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swl)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swl), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swl)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swl), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swl)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swl), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/.swl, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swl)
+LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/.swl)
+LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/.swl
+
+LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/.swl, size=4096,  						
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swl)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_setxattr(path=/home/student/mnt/ssd/small_test/.swl)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/.swp
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/.swpx, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swx), lstat=-1
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/.swp
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swl)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/.swk, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk)
+LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/.swk)
+LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/.swk
+
+LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/.swk, size=4096,  						
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swk)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_setxattr(path=/home/student/mnt/ssd/small_test/.swk)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+Lancer error: cfs_access, mknod(path=/home/student/mnt/ssd/small_test/.swk) faile
+Lancer error: cfs_access, mknod(path=/home/student/mnt/ssd/small_test/.swl) faile
+Lancer error: cfs_access, mknod(path=/home/student/mnt/ssd/small_test/.swm) faile
+Lancer error: cfs_access, mknod(path=/home/student/mnt/ssd/small_test/.swn) faile
+Lancer error: cfs_access, mknod(path=/home/student/mnt/ssd/small_test/.swo) faile
+Lancer error: cfs_access, mknod(path=/home/student/mnt/ssd/small_test/.swp) faile
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/.swk)
+LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/.swk
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk.swp), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/.swk.swp, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk.swx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk.swx), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk.swx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk.swx), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/.swk.swx, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk.swx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swk.swx)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/.swk.swx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swk.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/.swk.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk.swp), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/.swk.swp, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk.swp)
+LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/.swk.swp)
+LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/.swk.swp
+
+LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/.swk.swp, size=4096,  						
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swk.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/.swk.swp)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swk)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/.swk)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/.swk
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/.swk)
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/.swk)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swk)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/.netrwhist)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/.netrwhist), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/.netrwhist)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/.netrwhist), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/.netrwhist)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/.netrwhist), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/.swp
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/.swpx, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swx), lstat=-1
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/.swp
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swo)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swn)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swm)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swl)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swj)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swj), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swj)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swj), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swj)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swj), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swj)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swj), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/.swj, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swj)
+LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/.swj)
+LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/.swj
+
+LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/.swj, size=4096,  						
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swj)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/.swj)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/.swp
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/.swpx, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swx), lstat=-1
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/.swp
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swj)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swj), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swj)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swj), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swj)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swj), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swj)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swj), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swj)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swj), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/.swj, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swj)
+LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/.swj)
+LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/.swj
+
+LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/.swj, size=4096,  						
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swj)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_setxattr(path=/home/student/mnt/ssd/small_test/.swj)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/.swp
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/.swpx, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swx), lstat=-1
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/.swp
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swj)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swi)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swi), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swi)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swi), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swi)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swi), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swi)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swi), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swi)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swi), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/.swi, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swi)
+LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/.swi)
+LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/.swi
+
+LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/.swi, size=4096,  						
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swi)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_setxattr(path=/home/student/mnt/ssd/small_test/.swi)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/.swp
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/.swpx, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swx), lstat=-1
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/.swp
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swi)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swh)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swh), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swh)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swh), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swh)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swh), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swh)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swh), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swh)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swh), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/.swh, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swh)
+LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/.swh)
+LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/.swh
+
+LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/.swh, size=4096,  						
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swh)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_setxattr(path=/home/student/mnt/ssd/small_test/.swh)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swh)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+Lancer error: cfs_access, mknod(path=/home/student/mnt/ssd/small_test/.swh) faile
+Lancer error: cfs_access, mknod(path=/home/student/mnt/ssd/small_test/.swi) faile
+Lancer error: cfs_access, mknod(path=/home/student/mnt/ssd/small_test/.swj) faile
+Lancer error: cfs_access, mknod(path=/home/student/mnt/ssd/small_test/.swk) faile
+Lancer error: cfs_access, mknod(path=/home/student/mnt/ssd/small_test/.swl) faile
+Lancer error: cfs_access, mknod(path=/home/student/mnt/ssd/small_test/.swm) faile
+Lancer error: cfs_access, mknod(path=/home/student/mnt/ssd/small_test/.swn) faile
+Lancer error: cfs_access, mknod(path=/home/student/mnt/ssd/small_test/.swo) faile
+Lancer error: cfs_access, mknod(path=/home/student/mnt/ssd/small_test/.swp) faile
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/b/.swp, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swpx), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swpx), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/b/.swpx, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/b/.swpx)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/b/.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/b/.swp, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/b/.swp
+
+LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/b/.swp, size=4096,  						
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/b/.swp, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swpx), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swpx), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/b/.swpx, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/b/.swpx)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/b/.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/b/.swp, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/b/.swp
+
+LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/b/.swp, size=4096,  						
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_setxattr(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/b/.swp
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swpx), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swpx), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/b/.swpx, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swpx)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/b/.swpx)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/b/.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swx), lstat=-1
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/b/.swp
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swo)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swo), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swo)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swo), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swo)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swo), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swo)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swo), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swo)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swo), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/b/.swo, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swo)
+LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/b/.swo)
+LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/b/.swo
+
+LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/b/.swo, size=4096,  						
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/b/.swo)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_setxattr(path=/home/student/mnt/ssd/small_test/b/.swo)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/b/.swp
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swpx), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swpx), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/b/.swpx, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swpx)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/b/.swpx)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/b/.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swx), lstat=-1
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/b/.swp
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swo)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swn)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swn), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swn)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swn), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swn)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swn), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swn)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swn), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swn)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swn), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/b/.swn, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swn)
+LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/b/.swn)
+LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/b/.swn
+
+LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/b/.swn, size=4096,  						
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/b/.swn)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_setxattr(path=/home/student/mnt/ssd/small_test/b/.swn)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/4)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swn)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp)
+Lancer error: cfs_access, mknod(path=/home/student/mnt/ssd/small_test/b/4) faile
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b)
+Lancer error: cfs_access, mknod(path=/home/student/mnt/ssd/small_test/b/.swn) faile
+Lancer error: cfs_access, mknod(path=/home/student/mnt/ssd/small_test/b/.swo) faile
+Lancer error: cfs_access, mknod(path=/home/student/mnt/ssd/small_test/b/.swp) faile
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/4)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/b/4)
+LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/b/4
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.4.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.4.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.4.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.4.swp), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/b/.4.swp, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.4.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.4.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.4.swpx), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.4.swpx)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.4.swpx), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/b/.4.swpx, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.4.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/b/.4.swpx)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/b/.4.swpx)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/b/.4.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/b/.4.swp)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.4.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.4.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.4.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.4.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.4.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.4.swp), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.4.swp)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.4.swp), lstat=-1
+Lancer log: cfs_create(path=/home/student/mnt/ssd/small_test/b/.4.swp, mode=0x00008180)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.4.swp)
+LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/b/.4.swp)
+LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/b/.4.swp
+
+LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/b/.4.swp, size=4096,  						
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/b/.4.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_unlink(path=/home/student/mnt/ssd/small_test/b/.4.swp)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/b/4)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/b/4)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/b/4
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/b/4)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/4)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/b/4)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/4)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/.netrwhist)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/.netrwhist), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/.netrwhist)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/.netrwhist), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/.netrwhist)
+LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/.netrwhist), lstat=-1
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/lost+found)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swo)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/.swo)
+LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/.swo
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/.swo)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swo)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swh)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/.swh)
+LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/.swh
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/.swh)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swh)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swm)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/.swm)
+LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/.swm
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/.swm)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swm)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swk)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/.swk)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/.swk
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/.swk)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swk)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swo)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/a/.swo)
+LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/a/.swo
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/a/.swo)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/a/.swo)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/2)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/a/2)
+LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/a/2
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/a/2)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/a/2)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/3)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/a/3)
+LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/a/3
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/a/3)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/a/3)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swn)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/a/.swn)
+LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/a/.swn
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/a/.swn)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/a/.swn)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/1)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/a/1)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/a/1
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/a/1)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/a/1)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/a/.swp
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/a/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swo)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/b/.swo)
+LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/b/.swo
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/b/.swo)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/b/.swo)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/4)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/b/4)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/b/4
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/b/4)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/b/4)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swn)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/b/.swn)
+LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/b/.swn
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/b/.swn)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/b/.swn)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/b/.swp
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/b/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swl)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/.swl)
+LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/.swl
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/.swl)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swl)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swn)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/.swn)
+LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/.swn
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/.swn)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swn)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swi)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/.swi)
+LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/.swi
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/.swi)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swi)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: open non proxy file /home/student/mnt/ssd/small_test/.swp
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swp)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/.swj)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/.swj)
+LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/.swj
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/.swj)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/.swj)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/6)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/c/6)
+LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/c/6
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/c/6)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/c/6)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/e)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/5)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/c/5)
+LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/c/5
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/c/5)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/c/5)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/d)
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/d/8)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/c/d/8)
+LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/c/d/8
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/c/d/8)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/c/d/8)
+LancerFS log:release local file
+LancerFS log: close local file
+LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/small_test/c/d/7)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/c/d/7)
+LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/c/d/7
+LancerFS log: cloudfs_read(path=/home/student/mnt/ssd/small_test/c/d/7)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/c/d/7)
+LancerFS log:release local file
+LancerFS log: close local file
