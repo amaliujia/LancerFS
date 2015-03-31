@@ -1,0 +1,327 @@
+65536
+cache size: 33554432
+mkdir .cache: 
+mkdir!
+Create bucket
+Initialize string map
+Initialize head node
+md5 back up file doesn't exist, create a new one
+cache back up file doesn't exist, create a new one
+getattr! /home/student/mnt/ssd/
+lstat:0
+access!
+getattr! /home/student/mnt/ssd/a.txt
+lstat:-1
+CloudFS Error: cloudfs_getattr!
+
+create! /home/student/mnt/ssd/a.txt
+create: set open_cnt
+setxattr open_cnt complete:0, path: /home/student/mnt/ssd/a.txt
+getattr! /home/student/mnt/ssd/a.txt
+lstat:0
+utime! :/home/student/mnt/ssd/a.txt
+utime! :/home/student/mnt/ssd/a.txt
+getattr! /home/student/mnt/ssd/a.txt
+lstat:0
+release! /home/student/mnt/ssd/a.txt
+getxattr open_cnt retval:4,open_cnt:1, path: /home/student/mnt/ssd/a.txt
+read open_cnt successful!
+open_cnt == 0!
+/home/student/mnt/ssd/a.txt
+lstat:0, errno:61
+file_size: 0, state_.threshold:65536
+access!
+access!
+getattr! /home/student/mnt/ssd/a.txt
+lstat:0
+cloudfs_opendir! /home/student/mnt/ssd/
+access!
+access!
+cloudfs_opendir! /home/student/mnt/ssd/
+access!
+access!
+cloudfs_opendir! /home/student/mnt/ssd/
+access!
+access!
+cloudfs_opendir! /home/student/mnt/ssd/
+access!
+access!
+cloudfs_opendir! /home/student/mnt/ssd/
+access!
+access!
+cloudfs_opendir! /home/student/mnt/ssd/
+access!
+access!
+cloudfs_opendir! /home/student/mnt/ssd/
+access!
+access!
+cloudfs_opendir! /home/student/mnt/ssd/
+access!
+access!
+cloudfs_opendir! /home/student/mnt/ssd/
+access!
+access!
+cloudfs_opendir! /home/student/mnt/ssd/
+access!
+access!
+cloudfs_opendir! /home/student/mnt/ssd/
+access!
+access!
+cloudfs_opendir! /home/student/mnt/ssd/
+access!
+access!
+cloudfs_opendir! /home/student/mnt/ssd/
+access!
+access!
+cloudfs_opendir! /home/student/mnt/ssd/
+access!
+access!
+cloudfs_opendir! /home/student/mnt/ssd/
+access!
+access!
+cloudfs_opendir! /home/student/mnt/ssd/
+access!
+access!
+cloudfs_opendir! /home/student/mnt/ssd/
+access!
+access!
+access!
+open! /home/student/mnt/ssd/a.txt
+setxattr is_proxy : 0, is_proxy:0, path: /home/student/mnt/ssd/a.txt
+setxattr open_cnt complete:0, path: /home/student/mnt/ssd/a.txt
+getattr! /home/student/mnt/ssd/.a.txt.swp
+lstat:-1
+CloudFS Error: cloudfs_getattr!
+
+getattr! /home/student/mnt/ssd/.a.txt.swp
+lstat:-1
+CloudFS Error: cloudfs_getattr!
+
+create! /home/student/mnt/ssd/.a.txt.swp
+create: set open_cnt
+setxattr open_cnt complete:0, path: /home/student/mnt/ssd/.a.txt.swp
+getattr! /home/student/mnt/ssd/.a.txt.swp
+lstat:0
+getattr! /home/student/mnt/ssd/.a.txt.swx
+lstat:-1
+CloudFS Error: cloudfs_getattr!
+
+getattr! /home/student/mnt/ssd/.a.txt.swx
+lstat:-1
+CloudFS Error: cloudfs_getattr!
+
+create! /home/student/mnt/ssd/.a.txt.swx
+create: set open_cnt
+setxattr open_cnt complete:0, path: /home/student/mnt/ssd/.a.txt.swx
+getattr! /home/student/mnt/ssd/.a.txt.swx
+lstat:0
+release! /home/student/mnt/ssd/.a.txt.swx
+getxattr open_cnt retval:4,open_cnt:1, path: /home/student/mnt/ssd/.a.txt.swx
+read open_cnt successful!
+open_cnt == 0!
+/home/student/mnt/ssd/.a.txt.swx
+lstat:0, errno:61
+file_size: 0, state_.threshold:65536
+unlink!
+release! /home/student/mnt/ssd/.a.txt.swp
+getxattr open_cnt retval:4,open_cnt:1, path: /home/student/mnt/ssd/.a.txt.swp
+read open_cnt successful!
+open_cnt == 0!
+/home/student/mnt/ssd/.a.txt.swp
+lstat:0, errno:61
+file_size: 0, state_.threshold:65536
+unlink!
+getattr! /home/student/mnt/ssd/.a.txt.swp
+lstat:-1
+CloudFS Error: cloudfs_getattr!
+
+getattr! /home/student/mnt/ssd/.a.txt.swp
+lstat:-1
+CloudFS Error: cloudfs_getattr!
+
+getattr! /home/student/mnt/ssd/.a.txt.swp
+lstat:-1
+CloudFS Error: cloudfs_getattr!
+
+getattr! /home/student/mnt/ssd/.a.txt.swp
+lstat:-1
+CloudFS Error: cloudfs_getattr!
+
+create! /home/student/mnt/ssd/.a.txt.swp
+create: set open_cnt
+setxattr open_cnt complete:0, path: /home/student/mnt/ssd/.a.txt.swp
+getattr! /home/student/mnt/ssd/.a.txt.swp
+lstat:0
+getxattr!
+CloudFS Error: cloudfs_getxattr!
+
+write! /home/student/mnt/ssd/.a.txt.swp
+write: regular file write!
+chmod!
+getattr! /home/student/mnt/ssd/.a.txt.swp
+lstat:0
+release! /home/student/mnt/ssd/a.txt
+getxattr open_cnt retval:4,open_cnt:1, path: /home/student/mnt/ssd/a.txt
+read open_cnt successful!
+open_cnt == 0!
+/home/student/mnt/ssd/a.txt
+lstat:0, errno:61
+file_size: 0, state_.threshold:65536
+open! /home/student/mnt/ssd/a.txt
+not proxy
+setxattr open_cnt complete:0, path: /home/student/mnt/ssd/a.txt
+read! /home/student/mnt/ssd/a.txt
+read /home/student/mnt/ssd/a.txt
+release! /home/student/mnt/ssd/a.txt
+getxattr open_cnt retval:4,open_cnt:1, path: /home/student/mnt/ssd/a.txt
+read open_cnt successful!
+open_cnt == 0!
+/home/student/mnt/ssd/a.txt
+lstat:0, errno:61
+file_size: 0, state_.threshold:65536
+cloudfs_opendir! /home/student/mnt/ssd/
+access!
+access!
+getattr! /home/student/mnt/ssd/a.txt
+lstat:0
+getxattr!
+CloudFS Error: cloudfs_getxattr!
+
+write! /home/student/mnt/ssd/.a.txt.swp
+write: regular file write!
+getattr! /home/student/mnt/ssd/a.txt
+lstat:0
+access!
+access!
+getxattr!
+CloudFS Error: cloudfs_getxattr!
+
+getattr! /home/student/mnt/ssd/4913
+lstat:-1
+CloudFS Error: cloudfs_getattr!
+
+getattr! /home/student/mnt/ssd/4913
+lstat:-1
+CloudFS Error: cloudfs_getattr!
+
+create! /home/student/mnt/ssd/4913
+create: set open_cnt
+setxattr open_cnt complete:0, path: /home/student/mnt/ssd/4913
+getattr! /home/student/mnt/ssd/4913
+lstat:0
+getxattr!
+CloudFS Error: cloudfs_getxattr!
+
+chown!: /home/student/mnt/ssd/4913
+getattr! /home/student/mnt/ssd/4913
+lstat:0
+release! /home/student/mnt/ssd/4913
+getxattr open_cnt retval:4,open_cnt:1, path: /home/student/mnt/ssd/4913
+read open_cnt successful!
+open_cnt == 0!
+/home/student/mnt/ssd/4913
+lstat:0, errno:61
+file_size: 0, state_.threshold:65536
+unlink!
+getattr! /home/student/mnt/ssd/a.txt~
+lstat:-1
+CloudFS Error: cloudfs_getattr!
+
+getattr! /home/student/mnt/ssd/a.txt~
+lstat:-1
+CloudFS Error: cloudfs_getattr!
+
+getattr! /home/student/mnt/ssd/a.txt~
+lstat:-1
+CloudFS Error: cloudfs_getattr!
+
+getattr! /home/student/mnt/ssd/a.txt~
+lstat:-1
+CloudFS Error: cloudfs_getattr!
+
+getxattr!
+CloudFS Error: cloudfs_getxattr!
+
+open! /home/student/mnt/ssd/a.txt
+not proxy
+setxattr open_cnt complete:0, path: /home/student/mnt/ssd/a.txt
+getattr! /home/student/mnt/ssd/a.txt~
+lstat:-1
+CloudFS Error: cloudfs_getattr!
+
+create! /home/student/mnt/ssd/a.txt~
+create: set open_cnt
+setxattr open_cnt complete:0, path: /home/student/mnt/ssd/a.txt~
+getattr! /home/student/mnt/ssd/a.txt~
+lstat:0
+read! /home/student/mnt/ssd/a.txt
+read /home/student/mnt/ssd/a.txt
+release! /home/student/mnt/ssd/a.txt
+getxattr open_cnt retval:4,open_cnt:1, path: /home/student/mnt/ssd/a.txt
+read open_cnt successful!
+open_cnt == 0!
+/home/student/mnt/ssd/a.txt
+lstat:0, errno:61
+file_size: 0, state_.threshold:65536
+release! /home/student/mnt/ssd/a.txt~
+getxattr open_cnt retval:4,open_cnt:1, path: /home/student/mnt/ssd/a.txt~
+read open_cnt successful!
+open_cnt == 0!
+/home/student/mnt/ssd/a.txt~
+lstat:0, errno:61
+file_size: 0, state_.threshold:65536
+setxattr!
+unlink!
+getattr! /home/student/mnt/ssd/a.txt
+lstat:-1
+CloudFS Error: cloudfs_getattr!
+
+create! /home/student/mnt/ssd/a.txt
+create: set open_cnt
+setxattr open_cnt complete:0, path: /home/student/mnt/ssd/a.txt
+getattr! /home/student/mnt/ssd/a.txt
+lstat:0
+getxattr!
+CloudFS Error: cloudfs_getxattr!
+
+write! /home/student/mnt/ssd/a.txt
+write: regular file write!
+getattr! /home/student/mnt/ssd/a.txt
+lstat:0
+release! /home/student/mnt/ssd/a.txt
+getxattr open_cnt retval:4,open_cnt:1, path: /home/student/mnt/ssd/a.txt
+read open_cnt successful!
+open_cnt == 0!
+/home/student/mnt/ssd/a.txt
+lstat:0, errno:61
+file_size: 8, state_.threshold:65536
+chmod!
+getattr! /home/student/mnt/ssd/a.txt
+lstat:0
+setxattr!
+getxattr!
+CloudFS Error: cloudfs_getxattr!
+
+write! /home/student/mnt/ssd/.a.txt.swp
+write: regular file write!
+getattr! /home/student/mnt/ssd/a.txt
+lstat:0
+unlink!
+release! /home/student/mnt/ssd/.a.txt.swp
+getxattr open_cnt retval:4,open_cnt:1, path: /home/student/mnt/ssd/.a.txt.swp
+read open_cnt successful!
+open_cnt == 0!
+/home/student/mnt/ssd/.a.txt.swp
+lstat:0, errno:61
+file_size: 4096, state_.threshold:65536
+getattr! /home/student/mnt/ssd/.a.txt.swp
+lstat:0
+unlink!
+cloudfs_opendir! /home/student/mnt/ssd/
+cloudfs_readdir /home/student/mnt/ssd/
+cloudfs_opendir! /home/student/mnt/ssd/
+cloudfs_readdir /home/student/mnt/ssd/
+getattr! /home/student/mnt/ssd/~
+lstat:-1
+CloudFS Error: cloudfs_getattr!
+

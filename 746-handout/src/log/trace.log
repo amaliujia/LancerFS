@@ -1,19 +1,94 @@
 Fuse path: /home/student/mnt/fuse/
 SSD path: /home/student/mnt/ssd/
-LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/)
-Lancer log: cfs_access(path=/home/student/mnt/ssd/, mode=0x00000001)
-LancerFS log: cfs_opendir(path=/home/student/mnt/ssd/)
-LancerFS log: cloudfs_readdir(path=/)
-LancerFS log: readdir: filler with name=lost+found)
-LancerFS log: readdir: filler with name=.)
-LancerFS log: readdir: filler with name=..)
-LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/lost+found)
-LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/)
-LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/test)
-LancerFS error: cfs_getattr(path=/home/student/mnt/ssd/test)
-LancerFS log: cfs_opendir(path=/home/student/mnt/ssd/)
-LancerFS log: cloudfs_readdir(path=/)
-LancerFS log: readdir: filler with name=lost+found)
-LancerFS log: readdir: filler with name=.)
-LancerFS log: readdir: filler with name=..)
-LancerFS log: cfs_getattr(path=/home/student/mnt/ssd/lost+found)
+LancerFS log: cfs_mkdir(path=/home/student/mnt/ssd/small_test)
+LancerFS log: cfs_mkdir(path=/home/student/mnt/ssd/small_test/c)
+LancerFS log: cfs_mkdir(path=/home/student/mnt/ssd/small_test/c/e)
+Lancer log: cfs_utimens(path=/home/student/mnt/ssd/small_test/c/e)
+LancerFS log: cfs_mkdir(path=/home/student/mnt/ssd/small_test/c/d)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/c/d/7)
+LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/c/d/7
+LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/c/d/7)
+LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/c/d/7
+
+LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/c/d/7, size=7,  						
+LancerFS Error: cannot write file /home/student/mnt/ssd/small_test/c/d/7 with offset 0 size 0 at  							buf 0x00000007
+
+Lancer log: cfs_utimens(path=/home/student/mnt/ssd/small_test/c/d/7)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/c/d/7)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/c/d/8)
+LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/c/d/8
+LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/c/d/8)
+LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/c/d/8
+
+LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/c/d/8, size=8,  						
+LancerFS Error: cannot write file /home/student/mnt/ssd/small_test/c/d/8 with offset 0 size 0 at  							buf 0x00000008
+
+Lancer log: cfs_utimens(path=/home/student/mnt/ssd/small_test/c/d/8)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/c/d/8)
+Lancer log: cfs_utimens(path=/home/student/mnt/ssd/small_test/c/d)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/c/5)
+LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/c/5
+LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/c/5)
+LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/c/5
+
+LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/c/5, size=5,  						
+LancerFS Error: cannot write file /home/student/mnt/ssd/small_test/c/5 with offset 0 size 0 at  							buf 0x00000005
+
+Lancer log: cfs_utimens(path=/home/student/mnt/ssd/small_test/c/5)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/c/5)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/c/6)
+LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/c/6
+LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/c/6)
+LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/c/6
+
+LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/c/6, size=6,  						
+LancerFS Error: cannot write file /home/student/mnt/ssd/small_test/c/6 with offset 0 size 0 at  							buf 0x00000006
+
+Lancer log: cfs_utimens(path=/home/student/mnt/ssd/small_test/c/6)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/c/6)
+Lancer log: cfs_utimens(path=/home/student/mnt/ssd/small_test/c)
+LancerFS log: cfs_mkdir(path=/home/student/mnt/ssd/small_test/a)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/a/3)
+LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/a/3
+LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/a/3)
+LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/a/3
+
+LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/a/3, size=3,  						
+LancerFS Error: cannot write file /home/student/mnt/ssd/small_test/a/3 with offset 0 size 0 at  							buf 0x00000003
+
+Lancer log: cfs_utimens(path=/home/student/mnt/ssd/small_test/a/3)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/a/3)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/a/2)
+LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/a/2
+LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/a/2)
+LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/a/2
+
+LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/a/2, size=2,  						
+LancerFS Error: cannot write file /home/student/mnt/ssd/small_test/a/2 with offset 0 size 0 at  							buf 0x00000002
+
+Lancer log: cfs_utimens(path=/home/student/mnt/ssd/small_test/a/2)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/a/2)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/a/1)
+LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/a/1
+LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/a/1)
+LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/a/1
+
+LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/a/1, size=1,  						
+LancerFS Error: cannot write file /home/student/mnt/ssd/small_test/a/1 with offset 0 size 0 at  							buf 0x00000001
+
+Lancer log: cfs_utimens(path=/home/student/mnt/ssd/small_test/a/1)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/a/1)
+Lancer log: cfs_utimens(path=/home/student/mnt/ssd/small_test/a)
+LancerFS log: cfs_mkdir(path=/home/student/mnt/ssd/small_test/b)
+LancerFS log: cloudfs_open(path=/home/student/mnt/ssd/small_test/b/4)
+LancerFS log: new file, set proxy to file /home/student/mnt/ssd/small_test/b/4
+LancerFS log: cloudfs_getxattr(path=/home/student/mnt/ssd/small_test/b/4)
+LancerFS Error: cannot getxattr of /home/student/mnt/ssd/small_test/b/4
+
+LancerFS log: cloudfs_write(path=/home/student/mnt/ssd/small_test/b/4, size=4,  						
+LancerFS Error: cannot write file /home/student/mnt/ssd/small_test/b/4 with offset 0 size 0 at  							buf 0x00000004
+
+Lancer log: cfs_utimens(path=/home/student/mnt/ssd/small_test/b/4)
+LancerFS log: cloudfs_release(path=/home/student/mnt/ssd/small_test/b/4)
+Lancer log: cfs_utimens(path=/home/student/mnt/ssd/small_test/b)
+Lancer log: cfs_utimens(path=/home/student/mnt/ssd/small_test)
