@@ -22,6 +22,7 @@
 #include <sys/xattr.h>
 #include <time.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
 static FILE *logfd = NULL;
 
