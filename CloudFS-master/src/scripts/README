@@ -1,0 +1,106 @@
+*********** Release note on April 26 2013 
+- test_part1.sh 
+  cache clean up code is relocated.
+
+- test_part2.sh 
+  cache clean up code is relocated.
+
+
+*********** Release note on April 22 2013 
+- functions.sh 
+  New clean up commands to delete hideen files are added to reinit_env 
+
+- test_part1.sh 
+  Clean-up code is added. 
+
+- test_part3.sh 
+  New cache directory size measurement method is applied. 
+
+
+
+*********** Release note on April 20 2013 
+- test_part3.sh 
+  New test cases are added. 
+  Minor bugs are fixed. 
+
+- test_part2.sh   
+  Minor bug fix 
+
+
+1. How to setup your disks (SSD) in the VirtualBox setup?
+=============================================================
+
+First "cd" into the 'scripts/' directory and then run the following scripts in 
+the order given below:
+
+./format_disks.sh           (to create the SSD disk with ext2 file system)
+./mount_disks.sh
+./umount_disks.sh
+
+If successful, you are ready to use the VirtualBox for your experiments.
+
+
+2. Description of all the scripts
+=================================
+
+This "scripts/" directory contains the following scripts:
+
+/*
+ ********************************
+ *** VirtualBox Setup Scripts ***
+ ********************************
+ */
+
+[format_disks.sh]
+    - To create the Ext2 file system on the SSD 
+    - Usage: ./format_disks.sh
+
+[mount_disks.sh]
+    - To mount the SSD  to appropriate mount points (passed as
+      arguments to the script)
+    - Usage: ./mount_disks.sh SSD_MNT_DIRECTORY 
+
+[umount_disks.sh]
+    - To un-mount the SSD from appropriate mount points (passed as
+      arguments to the script)
+    - Usage: ./umount_disks.sh SSD_MNT_DIRECTORY 
+
+/*
+ *******************************
+ *** Project Testing Scripts ***
+ *******************************
+ */
+
+[test_part1.sh]
+    - Runs the basic part1 tests using the tarball(passed as argument
+	  to the script)
+	- Usage ./test_part1.sh <data.tar.gz> [cloudfs options]
+
+[test_part2.sh]
+    - Runs the basic part2 tests using the tarball(passed as argument
+	  to the script)
+	- Usage ./test_part2.sh <data.tar.gz> [cloudfs options]
+
+[test_part3.sh]
+    - Runs the basic part3 tests using the tarball(passed as argument
+	  to the script)
+	- Usage ./test_part3.sh <data.tar.gz> [cloudfs options]
+
+/*
+ *******************************
+ *** General Support Scripts ***
+ *******************************
+ */
+
+[cloudfs_controller.sh]
+    - This allows you to unmount, mount and remout the file system at the
+      desired mount point and with the desired threshold
+    - NOTE: this script uses fixed constants for three cloudFS parameters ...
+            --- the process path (../src/build/bin/cloudfs)
+            --- the SSD mount point (/mnt/ssd/)
+            --- the Fuse mount point (/mnt/fuse/)
+    - Usage: 
+        ./cloudfs_controller.sh MODE <arguments-to-cloudfs>"
+      where ...
+        MODE is either m for mount, u for unmount, x for (unmount+mount)
+
