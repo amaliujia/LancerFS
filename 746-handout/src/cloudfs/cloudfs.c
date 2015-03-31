@@ -14,9 +14,10 @@ static struct cloudfs_state _state;
 **************/
 
 void cloudfs_get_fullpath(const char *path, char *fullpath){
-	sprintf(fullpath, "%s", _state.ssd_path);
-	path++; 
-	sprintf(fullpath, "%s%s", fullpath, path);	
+	//sprintf(fullpath, "%s", _state.ssd_path);
+	//path++; 
+	//sprintf(fullpath, "%s%s", fullpath, path);	
+	
 }
 
 void cloudfs_generate_proxy(const char *fullpath, struct stat *buf){
@@ -187,8 +188,14 @@ int cloudfs_open(const char *path, struct fuse_file_info *fileInfo){
   
 	fprintf(logfd, "LancerFS log: cloudfs_open(path=%s)\n", fullpath);
   fflush(logfd);
-							
-	fd = open(fullpath, fileInfo->flags);
+
+	fd = open(fullpath, fileInfo->flags);							
+	if(fd < 0){
+		ret = cloudfs_error("open error");
+	}
+	fileInfo->fh = fd;
+	return ret;		
+/*	fd = open(fullpath, fileInfo->flags);
 //	fd = open(fullpath, O_RDWR | O_CREAT, S_IRUSR|S_IWUSR);	
 	if(fd < 0){
 			char errMsg[MAX_MSG_LEN];
@@ -246,7 +253,7 @@ error:
 	fprintf(logfd, "LancerFS error: cannot open file %s\n", fullpath);
 	fflush(logfd);
 	ret = -errno;
-	goto done;	
+	goto done;*/	
 }
 
 int cloudfs_read(const char *path, char *buf, size_t size, off_t offset, 
@@ -254,7 +261,7 @@ int cloudfs_read(const char *path, char *buf, size_t size, off_t offset,
 {
 	int ret = 0;
 
-  char fullpath[MAX_PATH_LEN] = {0};
+  char fullpath[MAX_PATH_LEN];
   cloudfs_get_fullpath(path, fullpath);
 
   fprintf(logfd, "LancerFS log: cloudfs_read(path=%s)\n", fullpath);
@@ -272,7 +279,7 @@ int cloudfs_read(const char *path, char *buf, size_t size, off_t offset,
 int cloudfs_rmdir(const char *path){
   int ret = 0;
 
-  char fullpath[MAX_PATH_LEN] = {0};
+  char fullpath[MAX_PATH_LEN];
   cloudfs_get_fullpath(path, fullpath);
 
   fprintf(logfd, "LancerFS log: cloudfs_rmdir(path=%s)\n", fullpath);	
@@ -300,9 +307,9 @@ int cloudfs_write(const char *path, const char *buf, size_t size, off_t offset,
 						\n", fullpath, size);
 	fflush(logfd);
 	
-	lseek(fileInfo->fh, offset, SEEK_SET);
-	ret = write(fileInfo->fh, buf, size);
-	//ret = pwrite(fileInfo->fh, buf, size, offset);	
+	//lseek(fileInfo->fh, offset, SEEK_SET);
+	//ret = write(fileInfo->fh, buf, size);
+	ret = pwrite(fileInfo->fh, buf, size, offset);	
 	if(ret < 0){
      char errMsg[MAX_MSG_LEN];
      sprintf(errMsg, "cannot write file %s (id=%d)with offset %zu size %d at  \
@@ -310,7 +317,7 @@ int cloudfs_write(const char *path, const char *buf, size_t size, off_t offset,
      ret = cloudfs_error(errMsg);
 		 goto done;
 	}
-		
+	/*	
 	int slave = -1;
 	ret = lgetxattr(fullpath, "user.slave", &slave, sizeof(int));
 	if(ret > 0){// set slave attribute before
@@ -326,7 +333,7 @@ int cloudfs_write(const char *path, const char *buf, size_t size, off_t offset,
 								fullpath);
 				goto error;	
 			}	
-	}
+	}*/
 
 done:
 	return ret;
@@ -352,7 +359,6 @@ int cloudfs_chmod(const char *path, mode_t mode){
               fullpath, mode);
       ret = cloudfs_error(errMsg);
 	}
-	
 	return ret;
 }
 
@@ -416,7 +422,7 @@ int cloudfs_setxattr(const char *path, const char *name, const char *value,
 
 int cloudfs_unlink(const char *path){
 	int ret = 0;
-  char fullpath[MAX_PATH_LEN] = {0};
+  char fullpath[MAX_PATH_LEN];
   cloudfs_get_fullpath(path, fullpath);
 
   fprintf(logfd, "LancerFS log: cloudfs_unlink(path=%s)\n", fullpath);
@@ -439,7 +445,9 @@ int cloudfs_release(const char *path, struct fuse_file_info *fileInfo){
   fprintf(logfd, "LancerFS log: cloudfs_release(path=%s)\n", fullpath);
   fflush(logfd);
 
-	if(!get_proxy(fullpath)){
+	ret = close(fileInfo->fh);
+
+/*	if(!get_proxy(fullpath)){
 		//this is a local file
 		fprintf(logfd, "LancerFS log:release local file\n", fullpath);
 		struct stat buf;
@@ -450,7 +458,7 @@ int cloudfs_release(const char *path, struct fuse_file_info *fileInfo){
 			goto done; 	
 		}
 		//push this file to cloud
-		/*char cloudpath[MAX_PATH_LEN];
+		char cloudpath[MAX_PATH_LEN];
 		memset(cloudpath, 0, MAX_PATH_LEN);
 		strcpy(cloudpath, fullpath);	
 		cloud_filename(cloudpath);	
@@ -463,7 +471,7 @@ int cloudfs_release(const char *path, struct fuse_file_info *fileInfo){
 	
 		//now file should be deleted
 		//create a proxy file with same path
-		cloudfs_generate_proxy(fullpath, &stat_buf);*/
+		cloudfs_generate_proxy(fullpath, &stat_buf);
 	}else{// a proxy file
 			fprintf(logfd, "LancerFS log: handle proxy file\n", fullpath);	
 			struct stat buf;							
@@ -483,7 +491,7 @@ int cloudfs_release(const char *path, struct fuse_file_info *fileInfo){
 		set_dirty(fullpath, 0);
 		set_slave(fullpath, 0); 
 	}
-	
+*/	
 done:	
 	fflush(logfd);
 	return ret;
@@ -512,6 +520,7 @@ int cloudfs_mknod(const char *path, mode_t mode, dev_t dev){
 
 	printf(logfd, "Lancer log: cfs_mknod(path=%s, mode=0x%08x)\n", 
 					fullpath, mode);
+	
 	if(S_ISREG(mode)){
 			ret = open(fullpath, O_CREAT | O_EXCL | O_WRONLY, mode);
 			if(ret < 0){
@@ -582,7 +591,7 @@ int cloudfs_create(const char *path, mode_t mode, struct fuse_file_info *fileInf
 	if(fd < 0){
 		//ret = cloudfs_error("cloudfs fail to create\n");
      fprintf(logfd, "Lancer error: cfs create file fail\n");
-			ret = -errno;
+		 ret = -errno;
 	}
 	fileInfo->fh = fd;	
 	return ret;
@@ -601,6 +610,83 @@ int cloudfs_truncate(const char *path, off_t newSize){
 	}		
 	
 	return ret;
+}
+
+int cloudfs_readlink(const char *path, char *link, size_t size){
+	int ret = 0;
+  char fullpath[MAX_PATH_LEN];
+  cloudfs_get_fullpath(path, fullpath);
+	fprintf(logfd, "Lancer log: cloudfs_readlink(path=%s)\n", fullpath);
+	fflush(logfd);	
+
+	ret = readlink(fullpath, link, size - 1);
+	if(ret < 0){
+		ret = cloudfs_error("readlink fail\n");
+	}else{
+		link[ret] = "\0";
+		ret = 0;
+	}	
+	return 0;	
+}
+
+int cloudfs_symlink(const char *path, const char *link){
+	int ret = 0;
+  char flink[MAX_PATH_LEN];
+  cloudfs_get_fullpath(link, flink);
+  fprintf(logfd, "Lancer log: cloudfs_symlink(path=%s)\n", flink);
+  fflush(logfd);	
+
+	ret = symlink(path, flink); 
+  if(ret < 0){
+    ret = cloudfs_error("symlink fail\n");
+	}
+	return ret;
+}
+
+int cloudfs_chown(const char *path, uid_t uid, gid_t gid){
+		int ret = 0;
+ 	 	char fullpath[MAX_PATH_LEN];
+  	cloudfs_get_fullpath(path, fullpath);				
+  	fprintf(logfd, "Lancer log: cloudfs_chown(path=%s)\n", fullpath);
+  	fflush(logfd);		
+
+		ret = chown(fullpath, uid, gid);
+		if(ret < 0){
+			ret = cloudfs_error("chown fail\n");
+		}
+		return ret;	
+}
+
+/*int cloudfs_utime(cosnt char *path, struct utimbuf *buf){
+	int ret = 0;
+
+  char fullpath[MAX_PATH_LEN];
+  cloudfs_get_fullpath(path, fullpath);	
+
+  fprintf(logfd, "Lancer log: cloudfs_utime(path=%s)\n", fullpath);
+  fflush(logfd);
+	
+	ret = utime(fullpath, buf);
+	if(ret < 0){
+		ret = cloudfs_error("wonrg utime\n");
+	}	
+	return ret;
+}*/
+
+int cloudfs_utime(const char *path, struct utimbuf *ubuf)
+{
+    int retstat = 0;
+    char fpath[MAX_PATH_LEN];
+    
+    //log_msg("\nbb_utime(path=\"%s\", ubuf=0x%08x)\n",
+	  //  path, ubuf);
+    cloudfs_get_fullpath(path, fpath);
+    
+    retstat = utime(fpath, ubuf);
+    if (retstat < 0)
+			retstat = cloudfs_error("bb_utime utime");
+    
+    return retstat;
 }
 
 /*
@@ -624,12 +710,15 @@ struct fuse_operations cloudfs_operations = {
 		.setxattr				= cloudfs_setxattr,
 		.unlink					= cloudfs_unlink,
 		.release				= cloudfs_release,
-		.utimens				= cloudfs_utimens,
-		//.utime					= cloudfs_utime,
+		//.utimens				= cloudfs_utimens,
+		.utime					= cloudfs_utime,
 		.mknod					= cloudfs_mknod,
 		.access					= cloudfs_access,
 		.truncate				= cloudfs_truncate,
-		.create					= cloudfs_create 
+		.create					= cloudfs_create,
+		.readlink			= cloudfs_readlink,
+		.symlink				=	cloudfs_symlink,
+		.chown					=	cloudfs_chown
 		//.utime					= cloudfs_utime
 };
 
