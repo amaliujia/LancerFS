@@ -26,7 +26,7 @@ void cloudfs_generate_proxy(const char *fullpath, struct stat *buf){
 	lsetxattr(fullpath, "user.st_size", &(buf->st_size), sizeof(off_t), 0);	
 	//lsetxattr(fullpath, "user.st_mode", &(buf->st_mode), sizeof(mode_t), 0);
 	lsetxattr(fullpath, "user.st_mtime", &(buf->st_mtime), sizeof(time_t), 0);
-	lsetxattr(fullpath, "user.st_blksize", &(buf->st_blksize), sizeof(blksize_t), 0);
+	//lsetxattr(fullpath, "user.st_blksize", &(buf->st_blksize), sizeof(blksize_t), 0);
 	close(fd);
 }
 
@@ -41,9 +41,16 @@ int cloudfs_change_attribute(const char *fullpath, const char *slavepath){
 	}	
 	lsetxattr(fullpath, "user.st_size", &(buf.st_size), sizeof(off_t), 0);
 	lsetxattr(fullpath, "user.st_mtime", &(buf.st_mtime), sizeof(time_t), 0);
-	lsetxattr(fullpath, "user.st_blksize", &(buf.st_blksize), sizeof(blksize_t), 0);
-	
+	//lsetxattr(fullpath, "user.st_blksize", &(buf.st_blksize), sizeof(blksize_t), 0);
+
 	return ret;
+}
+
+void cloudfd_set_attribute(const char *fullpath, struct stat *buf){
+  lsetxattr(fullpath, "user.st_size", &(buf->st_size), sizeof(off_t), 0);
+  lsetxattr(fullpath, "user.st_mtime", &(buf->st_mtime), sizeof(time_t), 0);
+  //lsetxattr(fullpath, "user.st_blksize", &(buf.st_blksize), sizeof(blksize_t));
+	
 }
 
 int get_buffer(const char *buffer, int bufferLength) {
@@ -69,7 +76,7 @@ void cloud_push_file(const char *fpath, struct stat *stat_buf){
   memset(cloudpath, 0, MAX_PATH_LEN);
   strcpy(cloudpath, fpath);
   cloud_filename(cloudpath);
-
+	
 	infile = fopen(fpath, "rb");
 	if(infile == NULL){
 			log_msg("LancerFS error: cloud push %s failed\n", fpath);
@@ -94,13 +101,13 @@ void cloud_push_shadow(const char *fullpath, const char *shadowpath, struct stat
 
 	cloud_filename(cloudpath);
  	log_msg("LancerFS log: cloud_push_file(path=%s)\n", cloudpath);
-  lstat(cloudpath, stat_buf);
+  //lstat(cloudpath, stat_buf);
   cloud_put_object("bkt", cloudpath, stat_buf->st_size, put_buffer);
   fclose(infile);
 }
 
 void cloud_filename(char *path){
-  while(*path != '\0'){
+	while(*path != '\0'){
       if(*path == '/'){
           *path = '+';
       }
@@ -121,8 +128,8 @@ void cloudfs_get_fullpath(const char *path, char *fullpath){
 void log_msg(const char *format, ...){
     va_list ap;
     va_start(ap, format);
-    vfprintf(logfd, format, ap);
-		fflush(logfd);
+    //vfprintf(logfd, format, ap);
+		//fflush(logfd);
 }
 
 static int cloudfs_error(char *error_str)
@@ -184,13 +191,19 @@ int get_slave(const char *fullpath){
  * are valid, and if all is well, it mounts the file system ready for usage.
  *
  */
-void *cloudfs_init(struct fuse_conn_info *conn UNUSED)
+void *cloudfs_init(struct fuse_conn_info *conn)
 {
   cloud_init(state_.hostname);
-  return NULL;
+  //cloud_list_service(list_service);
+  cloud_delete_bucket("bkt");
+	int r = cloud_create_bucket("bkt");
+  if(r != 0){
+    exit(1);
+  }
+	return NULL;
 }
 
-void cloudfs_destroy(void *data UNUSED) {
+void cloudfs_destroy(void *data) {
   cloud_destroy();
 }
 
@@ -370,25 +383,25 @@ int cloudfs_open(const char *path, struct fuse_file_info *fi){
   		strcpy(cloudpath, fpath);	
 			cloud_filename(cloudpath);
 				
-			char slavepath[MAX_PATH_LEN+3];
+			/*char slavepath[MAX_PATH_LEN+3];
  			memset(slavepath, 0, MAX_PATH_LEN + 3);
   	  strcpy(slavepath, fpath);
 			cloud_slave_filename(slavepath);	
     	log_msg("LancerFS log: create slave file %s by cloud file %s\n",
-            slavepath, cloudpath);
+            slavepath, cloudpath);*/
 			
       //open shadow file with mode
       //mode_t mode; 
       //lgetxattr(fpath, "user.mode", &mode, sizeof(mode_t)); 	
-			struct stat buf;
-  		r = lstat(fpath, &buf);						
-			fd = creat(slavepath, buf.st_mode);
-			if(fd < 0){
+			//struct stat buf;
+  		//r = lstat(fpath, &buf);						
+			//fd = creat(slavepath, buf.st_mode);
+			/*if(fd < 0){
 				r = cloudfs_error("fail to create shadow file\n");
 				return r;	
-			}
+			}*/
 			//close(fd);	
-			cloud_get_shadow(slavepath, cloudpath);
+			cloud_get_shadow(fpath, cloudpath);
 				
 			//int slave = 1;
 			int dirty = 0;
@@ -474,18 +487,21 @@ int cloudfs_release(const char *path, struct fuse_file_info *fi){
 	}else{// a proxy file
 			log_msg("LancerFS log: handle proxy file\n");	
 			struct stat buf;							
-      char slavepath[MAX_PATH_LEN+3];
+      /*char slavepath[MAX_PATH_LEN+3];
       memset(slavepath, 0, MAX_PATH_LEN + 3);
       strcpy(slavepath, fullpath);
-      cloud_slave_filename(slavepath);
+      cloud_slave_filename(slavepath);*/
 		
 			if(get_dirty(fullpath)){//dirty file, flush to Cloud
-				cloud_push_shadow(fullpath, slavepath, &buf);		
+				cloud_push_shadow(fullpath, fullpath, &buf);		
 			}
-	
-			cloudfs_change_attribute(fullpath, slavepath);	
+			
+			lstat(fullpath, &buf); 
+			unlink(fullpath);
+			cloudfs_generate_proxy(fullpath, &buf);	
+			//cloudfs_change_attribute(fullpath, slavepath);	
 			//delete slave file	
-			close(fi->fh);
+			//close(fi->fh);
 			//unlink(slavepath);	
 			//set proxy file attribute?
 			set_dirty(fullpath, 0);
@@ -613,12 +629,12 @@ int cloudfs_start(struct cloudfs_state *state,
   argv[argc] = (char *) malloc(1024 * sizeof(char));
   strcpy(argv[argc++], state->fuse_path);
   argv[argc++] = "-s"; // set the fuse mode to single thread
-  argv[argc++] = "-f"; // run fuse in foreground 
+  //argv[argc++] = "-f"; // run fuse in foreground 
 
   state_  = *state;
-	cloudfs_log_init();
-  cloud_create_bucket("bkt");
+	//cloudfs_log_init();
+  
 	int fuse_stat = fuse_main(argc, argv, &cloudfs_operations, NULL);
-  cloudfs_log_close(); 
+  //cloudfs_log_close(); 
   return fuse_stat;
 }
