@@ -14,9 +14,9 @@ static struct cloudfs_state _state;
 **************/
 
 void cloudfs_get_fullpath(const char *path, char *fullpath){
-	//sprintf(fullpath, "%s", _state.ssd_path);
-	//path++; 
-	//sprintf(fullpath, "%s%s", fullpath, path);	
+	sprintf(fullpath, "%s", _state.ssd_path);
+	path++; 
+	sprintf(fullpath, "%s%s", fullpath, path);	
 	
 }
 
@@ -389,10 +389,10 @@ int cloudfs_getxattr(const char *path, const char *name, char *value, size_t siz
   char fullpath[MAX_PATH_LEN] = {0};
   cloudfs_get_fullpath(path, fullpath);
 
-  fprintf(logfd, "LancerFS log: cloudfs_getxattr(path=%s)\n", fullpath);
+  fprintf(logfd, "LancerFS log: cloudfs_getxattr(path = \"%s\", name = \"%s\", value = 0x%08x, size = %d)\n", path, name, value, size);
   fflush(logfd);
 
-	ret = getxattr(fullpath, name, value, size);
+	ret = lgetxattr(fullpath, name, value, size);
 	if(ret < 0){
       char errMsg[MAX_MSG_LEN];
       sprintf(errMsg, "cannot getxattr of %s\n", fullpath);
@@ -408,10 +408,10 @@ int cloudfs_setxattr(const char *path, const char *name, const char *value,
   char fullpath[MAX_PATH_LEN] = {0};
   cloudfs_get_fullpath(path, fullpath);
 
-  fprintf(logfd, "LancerFS log: cloudfs_setxattr(path=%s)\n", fullpath);
+  fprintf(logfd, "LancerFS log: cloudfs_setxattr(path=\"%s\", name=\"%s\", value=\"%s\", size=%d, flags=0x%08x)\n", path, name, value, size, flags);
   fflush(logfd);
 
-	ret = setxattr(fullpath, name, value, size, flags);
+	ret = lsetxattr(fullpath, name, value, size, flags);
 	if(ret < 0){
       char errMsg[MAX_MSG_LEN];
       sprintf(errMsg, "cannot setxattr of %s\n", fullpath);
@@ -710,15 +710,19 @@ struct fuse_operations cloudfs_operations = {
 		.setxattr				= cloudfs_setxattr,
 		.unlink					= cloudfs_unlink,
 		.release				= cloudfs_release,
-		//.utimens				= cloudfs_utimens,
-		.utime					= cloudfs_utime,
+		.utimens				= cloudfs_utimens,
+		//.utime					= _utime,
 		.mknod					= cloudfs_mknod,
-		.access					= cloudfs_access,
-		.truncate				= cloudfs_truncate,
-		.create					= cloudfs_create,
-		.readlink			= cloudfs_readlink,
-		.symlink				=	cloudfs_symlink,
-		.chown					=	cloudfs_chown
+		.access					= cloudfs_access
+		//.truncate				= cloudfs_truncate,
+		//.create					= create,
+		//.readlink			= readlink,
+		//.symlink				=	symlink,
+		//.chown					=	chown,
+	
+		//.rename					= rename,
+		//.listxattr			= listxattr,
+		//.removexattr		=	removexattr
 		//.utime					= cloudfs_utime
 };
 

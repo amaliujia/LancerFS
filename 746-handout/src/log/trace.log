@@ -1,4 +1,189 @@
-Fuse path: /home/student/mnt/fuse/
-SSD path: /home/student/mnt/ssd/
-LancerFS Error: cannot open dir 
 
+cfs_getattr(path="/", statbuf=0xbf86c7b4)
+
+cfs_access(path="/", mask=01)
+
+cfs_opendir(path="/", fi=0xbf86c7f4)
+
+cfs_readdir(path="/", buf=0x08e0ed40, filler=0xb7736e80, offset=0, fi=0xbf86c7d4)
+calling filler with name ..
+calling filler with name lost+found
+calling filler with name small_test
+calling filler with name .
+
+cfs_getattr(path="/lost+found", statbuf=0xbf86c7c4)
+
+cfs_getxattr(path = "/lost+found", name = "security.selinux", value = 0x08e0ed90, size = 255)
+cfs_getxattr lgetxattr
+cfs_getxattr(path = "/lost+found", name = "system.posix_acl_access", value = 0x00000000, size = 0)
+cfs_getxattr lgetxattr
+cfs_getxattr(path = "/lost+found", name = "system.posix_acl_default", value = 0x00000000, size = 0)
+cfs_getxattr lgetxattr
+cfs_getattr(path="/small_test", statbuf=0xbf86c7c4)
+
+cfs_getxattr(path = "/small_test", name = "security.selinux", value = 0x08e0ed90, size = 255)
+cfs_getxattr lgetxattr
+cfs_getxattr(path = "/small_test", name = "system.posix_acl_access", value = 0x00000000, size = 0)
+cfs_getxattr lgetxattr
+cfs_getxattr(path = "/small_test", name = "system.posix_acl_default", value = 0x00000000, size = 0)
+cfs_getxattr lgetxattr
+cfs_opendir(path="/lost+found", fi=0xbf86c7f4)
+
+cfs_readdir(path="/lost+found", buf=0x08e0ed40, filler=0xb7736e80, offset=0, fi=0xbf86c7d4)
+calling filler with name .
+calling filler with name ..
+
+cfs_opendir(path="/small_test", fi=0xbf86c7f4)
+
+cfs_readdir(path="/small_test", buf=0x08e0ed40, filler=0xb7736e80, offset=0, fi=0xbf86c7d4)
+calling filler with name ..
+calling filler with name a
+calling filler with name b
+calling filler with name .
+calling filler with name c
+
+cfs_getattr(path="/small_test/a", statbuf=0xbf86c7c4)
+
+cfs_getxattr(path = "/small_test/a", name = "security.selinux", value = 0x08e0ed90, size = 255)
+cfs_getxattr lgetxattr
+cfs_getxattr(path = "/small_test/a", name = "system.posix_acl_access", value = 0x00000000, size = 0)
+cfs_getxattr lgetxattr
+cfs_getxattr(path = "/small_test/a", name = "system.posix_acl_default", value = 0x00000000, size = 0)
+cfs_getxattr lgetxattr
+cfs_getattr(path="/small_test/b", statbuf=0xbf86c7c4)
+
+cfs_getxattr(path = "/small_test/b", name = "security.selinux", value = 0x08e0ed90, size = 255)
+cfs_getxattr lgetxattr
+cfs_getxattr(path = "/small_test/b", name = "system.posix_acl_access", value = 0x00000000, size = 0)
+cfs_getxattr lgetxattr
+cfs_getxattr(path = "/small_test/b", name = "system.posix_acl_default", value = 0x00000000, size = 0)
+cfs_getxattr lgetxattr
+cfs_getattr(path="/small_test/c", statbuf=0xbf86c7c4)
+
+cfs_getxattr(path = "/small_test/c", name = "security.selinux", value = 0x08e0ed90, size = 255)
+cfs_getxattr lgetxattr
+cfs_getxattr(path = "/small_test/c", name = "system.posix_acl_access", value = 0x00000000, size = 0)
+cfs_getxattr lgetxattr
+cfs_getxattr(path = "/small_test/c", name = "system.posix_acl_default", value = 0x00000000, size = 0)
+cfs_getxattr lgetxattr
+cfs_opendir(path="/small_test/a", fi=0xbf86c7f4)
+
+cfs_readdir(path="/small_test/a", buf=0x08e0ed40, filler=0xb7736e80, offset=0, fi=0xbf86c7d4)
+calling filler with name ..
+calling filler with name 3
+calling filler with name .
+calling filler with name 1
+calling filler with name 2
+
+cfs_getattr(path="/small_test/a/3", statbuf=0xbf86c7c4)
+
+cfs_getxattr(path = "/small_test/a/3", name = "security.selinux", value = 0x08e0ed90, size = 255)
+cfs_getxattr lgetxattr
+cfs_getxattr(path = "/small_test/a/3", name = "system.posix_acl_access", value = 0x00000000, size = 0)
+cfs_getxattr lgetxattr
+cfs_getxattr(path = "/small_test/a/3", name = "system.posix_acl_default", value = 0x00000000, size = 0)
+cfs_getxattr lgetxattr
+cfs_getattr(path="/small_test/a/1", statbuf=0xbf86c7c4)
+
+cfs_getxattr(path = "/small_test/a/1", name = "security.selinux", value = 0x08e0ed90, size = 255)
+cfs_getxattr lgetxattr
+cfs_getxattr(path = "/small_test/a/1", name = "system.posix_acl_access", value = 0x00000000, size = 0)
+cfs_getxattr lgetxattr
+cfs_getxattr(path = "/small_test/a/1", name = "system.posix_acl_default", value = 0x00000000, size = 0)
+cfs_getxattr lgetxattr
+cfs_getattr(path="/small_test/a/2", statbuf=0xbf86c7c4)
+
+cfs_getxattr(path = "/small_test/a/2", name = "security.selinux", value = 0x08e0ed90, size = 255)
+cfs_getxattr lgetxattr
+cfs_getxattr(path = "/small_test/a/2", name = "system.posix_acl_access", value = 0x00000000, size = 0)
+cfs_getxattr lgetxattr
+cfs_getxattr(path = "/small_test/a/2", name = "system.posix_acl_default", value = 0x00000000, size = 0)
+cfs_getxattr lgetxattr
+cfs_opendir(path="/small_test/b", fi=0xbf86c7f4)
+
+cfs_readdir(path="/small_test/b", buf=0x08e0ed40, filler=0xb7736e80, offset=0, fi=0xbf86c7d4)
+calling filler with name ..
+calling filler with name 4
+calling filler with name .
+
+cfs_getattr(path="/small_test/b/4", statbuf=0xbf86c7c4)
+
+cfs_getxattr(path = "/small_test/b/4", name = "security.selinux", value = 0x08e0ed90, size = 255)
+cfs_getxattr lgetxattr
+cfs_getxattr(path = "/small_test/b/4", name = "system.posix_acl_access", value = 0x00000000, size = 0)
+cfs_getxattr lgetxattr
+cfs_getxattr(path = "/small_test/b/4", name = "system.posix_acl_default", value = 0x00000000, size = 0)
+cfs_getxattr lgetxattr
+cfs_opendir(path="/small_test/c", fi=0xbf86c7f4)
+
+cfs_readdir(path="/small_test/c", buf=0x08e0ed40, filler=0xb7736e80, offset=0, fi=0xbf86c7d4)
+calling filler with name ..
+calling filler with name e
+calling filler with name d
+calling filler with name .
+calling filler with name 5
+calling filler with name 6
+
+cfs_getattr(path="/small_test/c/e", statbuf=0xbf86c7c4)
+
+cfs_getxattr(path = "/small_test/c/e", name = "security.selinux", value = 0x08e0ed90, size = 255)
+cfs_getxattr lgetxattr
+cfs_getxattr(path = "/small_test/c/e", name = "system.posix_acl_access", value = 0x00000000, size = 0)
+cfs_getxattr lgetxattr
+cfs_getxattr(path = "/small_test/c/e", name = "system.posix_acl_default", value = 0x00000000, size = 0)
+cfs_getxattr lgetxattr
+cfs_getattr(path="/small_test/c/d", statbuf=0xbf86c7c4)
+
+cfs_getxattr(path = "/small_test/c/d", name = "security.selinux", value = 0x08e0ed90, size = 255)
+cfs_getxattr lgetxattr
+cfs_getxattr(path = "/small_test/c/d", name = "system.posix_acl_access", value = 0x00000000, size = 0)
+cfs_getxattr lgetxattr
+cfs_getxattr(path = "/small_test/c/d", name = "system.posix_acl_default", value = 0x00000000, size = 0)
+cfs_getxattr lgetxattr
+cfs_getattr(path="/small_test/c/5", statbuf=0xbf86c7c4)
+
+cfs_getxattr(path = "/small_test/c/5", name = "security.selinux", value = 0x08e0ed90, size = 255)
+cfs_getxattr lgetxattr
+cfs_getxattr(path = "/small_test/c/5", name = "system.posix_acl_access", value = 0x00000000, size = 0)
+cfs_getxattr lgetxattr
+cfs_getxattr(path = "/small_test/c/5", name = "system.posix_acl_default", value = 0x00000000, size = 0)
+cfs_getxattr lgetxattr
+cfs_getattr(path="/small_test/c/6", statbuf=0xbf86c7c4)
+
+cfs_getxattr(path = "/small_test/c/6", name = "security.selinux", value = 0x08e0ed90, size = 255)
+cfs_getxattr lgetxattr
+cfs_getxattr(path = "/small_test/c/6", name = "system.posix_acl_access", value = 0x00000000, size = 0)
+cfs_getxattr lgetxattr
+cfs_getxattr(path = "/small_test/c/6", name = "system.posix_acl_default", value = 0x00000000, size = 0)
+cfs_getxattr lgetxattr
+cfs_opendir(path="/small_test/c/d", fi=0xbf86c7f4)
+
+cfs_readdir(path="/small_test/c/d", buf=0x08e0ed40, filler=0xb7736e80, offset=0, fi=0xbf86c7d4)
+calling filler with name ..
+calling filler with name 7
+calling filler with name 8
+calling filler with name .
+
+cfs_getattr(path="/small_test/c/d/7", statbuf=0xbf86c7c4)
+
+cfs_getxattr(path = "/small_test/c/d/7", name = "security.selinux", value = 0x08e0ed90, size = 255)
+cfs_getxattr lgetxattr
+cfs_getxattr(path = "/small_test/c/d/7", name = "system.posix_acl_access", value = 0x00000000, size = 0)
+cfs_getxattr lgetxattr
+cfs_getxattr(path = "/small_test/c/d/7", name = "system.posix_acl_default", value = 0x00000000, size = 0)
+cfs_getxattr lgetxattr
+cfs_getattr(path="/small_test/c/d/8", statbuf=0xbf86c7c4)
+
+cfs_getxattr(path = "/small_test/c/d/8", name = "security.selinux", value = 0x08e0ed90, size = 255)
+cfs_getxattr lgetxattr
+cfs_getxattr(path = "/small_test/c/d/8", name = "system.posix_acl_access", value = 0x00000000, size = 0)
+cfs_getxattr lgetxattr
+cfs_getxattr(path = "/small_test/c/d/8", name = "system.posix_acl_default", value = 0x00000000, size = 0)
+cfs_getxattr lgetxattr
+cfs_opendir(path="/small_test/c/e", fi=0xbf86c7f4)
+
+cfs_readdir(path="/small_test/c/e", buf=0x08e0ed40, filler=0xb7736e80, offset=0, fi=0xbf86c7d4)
+calling filler with name ..
+calling filler with name .
+
+cfs_getattr(path="/", statbuf=0xbf86c7b4)
