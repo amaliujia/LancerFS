@@ -676,15 +676,14 @@ int cloudfs_chown(const char *path, uid_t uid, gid_t gid){
 int cloudfs_utime(const char *path, struct utimbuf *ubuf)
 {
     int retstat = 0;
-    char fpath[MAX_PATH_LEN];
+    char fullpath[MAX_PATH_LEN];
     
-    //log_msg("\nbb_utime(path=\"%s\", ubuf=0x%08x)\n",
-	  //  path, ubuf);
+
     cloudfs_get_fullpath(path, fpath);
     
     retstat = utime(fpath, ubuf);
     if (retstat < 0)
-			retstat = cloudfs_error("bb_utime utime");
+	retstat = cloudfs_error("bb_utime utime");
     
     return retstat;
 }
