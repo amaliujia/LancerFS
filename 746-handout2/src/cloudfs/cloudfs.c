@@ -25,8 +25,9 @@ void cloudfs_generate_proxy(const char *fullpath, struct stat *buf){
 	int proxy = 1;
 	lsetxattr(fullpath, "user.proxy", &proxy, sizeof(int), 0);
 	lsetxattr(fullpath, "user.st_size", &(buf->st_size), sizeof(off_t), 0);	
-	lsetxattr(fullpath, "user.st_mode", &(buf->st_mode), sizeof(mode_t), 0);
+	//lsetxattr(fullpath, "user.st_mode", &(buf->st_mode), sizeof(mode_t), 0);
 	lsetxattr(fullpath, "user.st_mtime", &(buf->st_mtime), sizeof(time_t), 0);
+	lsetxattr(fullpath, "user.st_blksize", &(buf->st_blksize), sizeof(blksize_t), 0);
 	close(fd);
 }
 
@@ -188,9 +189,22 @@ int cloudfs_getattr(const char *path , struct stat *statbuf)
 
   log_msg("\ncfs_getattr(path=\"%s\", statbuf=0x%08x)\n",
 					path, statbuf);
-	ret = lstat(fpath, statbuf);	
-	if(ret != 0){
+	
+	if(get_proxy(fpath)){
+		ret = lstat(fpath, statbuf);
+	
+	  lgetxattr(fpath, "user.st_size", &(statbuf->st_size), sizeof(off_t));
+  	lgetxattr(fpath, "user.st_mtime", &(statbuf->st_mtime), sizeof(time_t));
+  	lgetxattr(fpath, "user.st_blksize", &(statbuf->st_blksize), sizeof(blksize_t));
+	
+		if(ret != 0){
 			ret = cloudfs_error("getattr lstat\n");
+		}		
+	}else{
+			ret = lstat(fpath, statbuf);	
+			if(ret != 0){
+				ret = cloudfs_error("getattr lstat\n");
+			}
 	}
   return ret;
 }
@@ -347,9 +361,11 @@ int cloudfs_open(const char *path, struct fuse_file_info *fi){
             slavepath, cloudpath);
 			
       //open shadow file with mode
-      mode_t mode; 
-      lgetxattr(fpath, "user.mode", &mode, sizeof(mode_t)); 	
-			fd = creat(slavepath, mode);
+      //mode_t mode; 
+      //lgetxattr(fpath, "user.mode", &mode, sizeof(mode_t)); 	
+			struct stat buf;
+  		ret = lstat(fpath, &buf);						
+			fd = creat(slavepath, buf.st_mode);
 			if(fd < 0){
 				ret = cloudfs_error("fail to create shadow file\n");
 				return ret;	
@@ -411,8 +427,8 @@ int cloudfs_write(const char *path, const char *buf, size_t size, off_t offset,
 				return ret;	
 			}
 			//TODO: add modified time attribute 
+				
 	}
-	
 	ret = 0;
   return ret;
 }
