@@ -10,7 +10,7 @@
 static FILE *outfile;
 static FILE *infile;
 
-static char *logpath = "/home/student/LancerFS/746-handout/src/log/trace.log";
+static char *logpath = "/tmp/cloudfs.log";
 static FILE *logfd = NULL ;
 
 static struct cloudfs_state state_;
@@ -128,8 +128,8 @@ void cloudfs_get_fullpath(const char *path, char *fullpath){
 void log_msg(const char *format, ...){
     va_list ap;
     va_start(ap, format);
-    //vfprintf(logfd, format, ap);
-		//fflush(logfd);
+    vfprintf(logfd, format, ap);
+		fflush(logfd);
 }
 
 static int cloudfs_error(char *error_str)
@@ -585,6 +585,23 @@ int cloudfs_rmdir(const char *path){
     
     return retstat;
 }
+
+int cloudfs_truncate(const char *path, off_t newsize)
+{
+    int retstat = 0;
+    char fpath[PATH_MAX];
+    
+    log_msg("\ncloudfs_truncate(path=\"%s\", newsize=%lld)\n",
+	    path, newsize);
+    cloudfs_get_fullpath(path, fpath);
+    
+    retstat = truncate(fpath, newsize);
+    if (retstat < 0)
+			cloudfs_error("bb_truncate truncate");
+    
+    return retstat;
+}
+
 /*
  * Functions supported by cloudfs 
  */
@@ -607,16 +624,16 @@ static struct fuse_operations cloudfs_operations = {
 		.chmod					= cloudfs_chmod,
 		.unlink					= cloudfs_unlink,
 		.rmdir					= cloudfs_rmdir,
-
-		.truncate				= truncate,
-		.readlink				=	readlink,
+		.truncate				= cloudfs_truncate
+		
+/*.readlink				=	readlink,
 		.symlink				=	symlink,
 		.rename					=	rename,
 		.link						= link,
 		.chown					=	chown,
 		.listxattr			=	listxattr,
 		.removexattr		=	removexattr,	
-
+*/
 };
 
 int cloudfs_start(struct cloudfs_state *state,
@@ -632,9 +649,9 @@ int cloudfs_start(struct cloudfs_state *state,
   //argv[argc++] = "-f"; // run fuse in foreground 
 
   state_  = *state;
-	//cloudfs_log_init();
+	cloudfs_log_init();
   
 	int fuse_stat = fuse_main(argc, argv, &cloudfs_operations, NULL);
-  //cloudfs_log_close(); 
+  cloudfs_log_close(); 
   return fuse_stat;
 }
