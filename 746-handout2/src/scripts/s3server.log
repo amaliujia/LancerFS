@@ -104,3 +104,4 @@
 2015-04-02 02:25:48,086 DEBUG S3 Server: DELETE Object bkt/+home+student+mnt+ssd+big4~
 2015-04-02 02:25:48,732 DEBUG S3 Server: PUT Object bkt/+home+student+mnt+ssd+.big4.swp
 2015-04-02 02:25:48,734 DEBUG S3 Server: DELETE Object bkt/+home+student+mnt+ssd+.big4.swp
+2015-04-02 03:20:31,480 DEBUG S3 Server: CREATE Bucket bkt

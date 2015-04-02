@@ -242,7 +242,7 @@ int cloudfs_getattr(const char *path , struct stat *statbuf)
 	
 	if(get_proxy(fpath)){
 		ret = lstat(fpath, statbuf);
-	
+		log_msg("\ncfs_getattr_proxy(path=\"%s\", statbuf=0x%08x)\n");	
 	  lgetxattr(fpath, "user.st_size", &(statbuf->st_size), sizeof(off_t));
   	lgetxattr(fpath, "user.st_mtime", &(statbuf->st_mtime), sizeof(time_t));
   	//lgetxattr(fpath, "user.st_blksize", &(statbuf->st_blksize), sizeof(blksize_t));
@@ -251,6 +251,7 @@ int cloudfs_getattr(const char *path , struct stat *statbuf)
 			ret = cloudfs_error("getattr lstat\n");
 		}		
 	}else{
+			log_msg("\ncfs_getattr_local(path=\"%s\", statbuf=0x%08x)\n"); 
 			ret = lstat(fpath, statbuf);	
 			if(ret != 0){
 				ret = cloudfs_error("getattr lstat\n");
@@ -354,6 +355,9 @@ int cloudfs_mknod(const char *path, mode_t mode, dev_t dev){
   log_msg("\nmknod(path=\"%s\", mode=0%3o, dev=%lld)\n",
 	path, mode, dev);
 	cloudfs_get_fullpath(path, fpath);
+
+	//struct stat 
+	//lstat(fpath, 
 	
   if(S_ISREG(mode)){
      ret = open(fpath, O_CREAT | O_EXCL | O_WRONLY, mode);
@@ -398,6 +402,13 @@ int cloudfs_open(const char *path, struct fuse_file_info *fi){
 		proxy = 0;
 		lsetxattr(fpath, "user.proxy", &proxy, sizeof(int), 0); 
 		log_msg("cfd_open, set proxy path=%s\n", path);
+		
+		//BUG
+	/*	struct stat buf;
+		lstat(fpath, &buf);
+		int new = 1;
+		lsetxattr(fpath, "user.st_mtime", &(buf.st_mtime), sizeof(time_t), 0);
+		lsetxattr(fpath, "user.new", &new, sizeof(int), 0);*/	
 	}else if(proxy == 0){//Small file that stored in SSD
 			log_msg("open non proxy file %s\n", path);
 	}else if(proxy == 1){// File opened is in cloud, only proxy file here
@@ -432,7 +443,7 @@ int cloudfs_open(const char *path, struct fuse_file_info *fi){
 					
 			//lsetxattr(fpath, "user.slave", &slave, sizeof(int), 0);	
 			lsetxattr(fpath, "user.dirty", &dirty, sizeof(int), 0);
-
+			
 	}else{
 		r = cloudfs_error("LFS error: wrong proxy file flag\n");  
 	}
@@ -470,6 +481,7 @@ int cloudfs_write(const char *path, const char *buf, size_t size, off_t offset,
 	int r = 0;	
 	//ret = lgetxattr(fpath, "user.slave", &slave, sizeof(int));
 	if(get_proxy(fpath)){// set slave attribute before
+			log_msg("dirty file %s\n", fpath);
 			int dirty = 1;
 			r = lsetxattr(fpath, "user.dirty", &dirty, sizeof(int), 0);
 			if(r < 0){
@@ -477,10 +489,10 @@ int cloudfs_write(const char *path, const char *buf, size_t size, off_t offset,
 				return r;	
 			}
 			//TODO: set time attribute
-			struct stat b;	
-			lstat(fpath, &b); 
+			//struct stat b;	
+			//lstat(fpath, &b); 
 			//lgetxattr(fpath, "user.st_time", &time, sizeof(time_t));
-			lsetxattr(fpath, "user.st_mtime", &(b.st_mtime), sizeof(time_t), 0); 
+			//lsetxattr(fpath, "user.st_mtime", &(b.st_mtime), sizeof(time_t), 0); 
 	}
   return ret;
 }
@@ -503,6 +515,9 @@ int cloudfs_release(const char *path, struct fuse_file_info *fi){
 		}else{
 			struct stat stat_buf;
 			cloud_push_file(fullpath, &stat_buf);
+		
+			//BUG
+			//int r = lgetattr(fullpath, 	
 			
 			//delete current from SSD
 			//assume only file can only be opened once
