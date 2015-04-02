@@ -56,7 +56,7 @@ ifndef CFLAGS
     ifdef DEBUG
         CFLAGS := -g
     else
-        CFLAGS := -g#-O3
+        CFLAGS := -O3
     endif
 endif
 

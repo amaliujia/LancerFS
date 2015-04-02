@@ -216,7 +216,7 @@ void *cloudfs_init(struct fuse_conn_info *conn UNUSED)
 {
   cloud_init(state_.hostname);
   //cloud_list_service(list_service);
-  cloud_delete_bucket("bkt");
+  //cloud_delete_bucket("bkt");
 	int r = cloud_create_bucket("bkt");
   if(r != 0){
     exit(1);
@@ -586,7 +586,15 @@ int cloudfs_unlink(const char *path)
     log_msg("cfs_unlink(path=\"%s\")\n",
 	    path);
     cloudfs_get_fullpath(path, fpath);
-    
+   
+		if(get_proxy(fpath)){
+				char cloudpath[MAX_PATH_LEN];
+				memset(cloudpath, 0, MAX_PATH_LEN);
+				strcpy(cloudpath, fpath);
+				cloud_filename(cloudpath);	
+				cloud_delete_object("bkt", cloudpath);	
+		}	
+ 
     retstat = unlink(fpath);
     if (retstat < 0)
 				retstat = cloudfs_error("unlink fail");
