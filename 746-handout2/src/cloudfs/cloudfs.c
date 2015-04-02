@@ -242,7 +242,7 @@ int cloudfs_getattr(const char *path , struct stat *statbuf)
 	
 	if(get_proxy(fpath)){
 		ret = lstat(fpath, statbuf);
-		log_msg("\ncfs_getattr_proxy(path=\"%s\", statbuf=0x%08x)\n");	
+		log_msg("\ncfs_getattr_proxy(path=\"%s\"\n", fpath);	
 	  lgetxattr(fpath, "user.st_size", &(statbuf->st_size), sizeof(off_t));
   	lgetxattr(fpath, "user.st_mtime", &(statbuf->st_mtime), sizeof(time_t));
   	//lgetxattr(fpath, "user.st_blksize", &(statbuf->st_blksize), sizeof(blksize_t));
@@ -251,7 +251,7 @@ int cloudfs_getattr(const char *path , struct stat *statbuf)
 			ret = cloudfs_error("getattr lstat\n");
 		}		
 	}else{
-			log_msg("\ncfs_getattr_local(path=\"%s\", statbuf=0x%08x)\n"); 
+			log_msg("\ncfs_getattr_local(path=\"%s\"\n", fpath); 
 			ret = lstat(fpath, statbuf);	
 			if(ret != 0){
 				ret = cloudfs_error("getattr lstat\n");
@@ -575,6 +575,7 @@ int cloudfs_utimens(const char *path, const struct timespec tv[2]){
 
 	log_msg("Lancer log: cfs_utimens(path=%s)\n", fullpath);
 	ret = utimensat(0, fullpath, tv, 0);
+	lsetxattr(fullpath, "user.st_mtime", &tv[1], sizeof(time_t), 0);	
 	if(ret < 0){
 		ret = cloudfs_error("utimes fail\n");
 	}			
