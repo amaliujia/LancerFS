@@ -93,3 +93,14 @@
 2015-04-01 23:46:07,985 DEBUG S3 Server: CREATE Bucket bkt
 2015-04-01 23:48:20,467 DEBUG S3 Server: DELETE Bucket bkt
 2015-04-01 23:48:20,469 DEBUG S3 Server: CREATE Bucket bkt
+2015-04-02 02:16:56,848 DEBUG S3 Server: CREATE Bucket bkt
+2015-04-02 02:17:30,647 DEBUG S3 Server: PUT Object bkt/+home+student+mnt+ssd+big4
+2015-04-02 02:25:39,972 DEBUG S3 Server: GET Object bkt/+home+student+mnt+ssd+big4
+2015-04-02 02:25:39,975 DEBUG S3 Server: GET Object bkt/+home+student+mnt+ssd+big4
+2015-04-02 02:25:48,075 DEBUG S3 Server: GET Object bkt/+home+student+mnt+ssd+big4
+2015-04-02 02:25:48,078 DEBUG S3 Server: PUT Object bkt/+home+student+mnt+ssd+big4~
+2015-04-02 02:25:48,080 DEBUG S3 Server: DELETE Object bkt/+home+student+mnt+ssd+big4
+2015-04-02 02:25:48,084 DEBUG S3 Server: PUT Object bkt/+home+student+mnt+ssd+big4
+2015-04-02 02:25:48,086 DEBUG S3 Server: DELETE Object bkt/+home+student+mnt+ssd+big4~
+2015-04-02 02:25:48,732 DEBUG S3 Server: PUT Object bkt/+home+student+mnt+ssd+.big4.swp
+2015-04-02 02:25:48,734 DEBUG S3 Server: DELETE Object bkt/+home+student+mnt+ssd+.big4.swp

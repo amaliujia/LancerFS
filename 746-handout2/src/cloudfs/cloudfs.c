@@ -18,8 +18,7 @@ static struct cloudfs_state state_;
 void cloudfs_generate_proxy(const char *fullpath, struct stat *buf){
 	int fd = creat(fullpath, buf->st_mode);
 	if(fd < 0){
-			log_msg("LancerFS error: fail to create proxy file %s\n", 
-							fullpath);	
+			log_msg("LancerFS error: fail to create proxy file %s\n", fullpath);	
 	}
 	int proxy = 1;
 	lsetxattr(fullpath, "user.proxy", &proxy, sizeof(int), 0);
@@ -41,17 +40,20 @@ int cloudfs_save_attribute(const char *fullpath, struct stat *buf){
 	off_t size;
 	ret = lgetxattr(fullpath, "user.st_size", &size, sizeof(off_t));
 	if(ret > 0){
+		log_msg("%s Save size attribute\n", fullpath);
 		buf->st_size = size;
 	}
 	time_t time;
 	ret = lgetxattr(fullpath, "user.st_mtime", &time, sizeof(time_t)); 
 	if(ret > 0){
+		log_msg("%s Save time attribute\n", fullpath);
 		buf->st_mtime = time;
 	}	
 	return ret;
 } 
 
-int cloudfs_change_attribute(const char *fullpath, const char *slavepath){
+
+int UNUSED cloudfs_change_attribute(const char *fullpath, const char *slavepath){
 	int ret = 0;
 	struct stat buf;
 	ret = lstat(slavepath, &buf);
@@ -61,7 +63,7 @@ int cloudfs_change_attribute(const char *fullpath, const char *slavepath){
 		return ret;	
 	}	
 	lsetxattr(fullpath, "user.st_size", &(buf.st_size), sizeof(off_t), 0);
-	lsetxattr(fullpath, "user.st_mtime", &(buf.st_mtime), sizeof(time_t), 0);
+	//lsetxattr(fullpath, "user.st_mtime", &(buf.st_mtime), sizeof(time_t), 0);
 	//lsetxattr(fullpath, "user.st_blksize", &(buf.st_blksize), sizeof(blksize_t), 0);
 
 	return ret;
@@ -92,6 +94,7 @@ void cloud_get_shadow(const char *fullpath, const char *cloudpath){
 } 
 
 void cloud_push_file(const char *fpath, struct stat *stat_buf){
+	lstat(fpath, stat_buf);
 	
   char cloudpath[MAX_PATH_LEN];
   memset(cloudpath, 0, MAX_PATH_LEN);
@@ -104,25 +107,25 @@ void cloud_push_file(const char *fpath, struct stat *stat_buf){
 			return;		
 	}
 	log_msg("LancerFS log: cloud_push_file(path=%s)\n", fpath);
-  lstat(fpath, stat_buf);
   cloud_put_object("bkt", cloudpath, stat_buf->st_size, put_buffer);
   fclose(infile);	
 }
 
-//TODO: confirm if api use correctly
 void cloud_push_shadow(const char *fullpath, const char *shadowpath, struct stat *stat_buf){
 	char cloudpath[MAX_PATH_LEN+3];
 	memset(cloudpath, 0, MAX_PATH_LEN+3);
 	strcpy(cloudpath, fullpath);
+	
 	infile = fopen(shadowpath, "rb");
   if(infile == NULL){
      log_msg("LancerFS error: cloud push %s failed, cloudpath %s, shadowpath %s\n", fullpath, cloudpath, shadowpath);
       return;
   }	
 
+	
 	cloud_filename(cloudpath);
  	log_msg("LancerFS log: cloud_push_file(path=%s)\n", cloudpath);
-  //lstat(cloudpath, stat_buf);
+  lstat(shadowpath, stat_buf);
   cloud_put_object("bkt", cloudpath, stat_buf->st_size, put_buffer);
   fclose(infile);
 }
@@ -473,7 +476,11 @@ int cloudfs_write(const char *path, const char *buf, size_t size, off_t offset,
 				r = cloudfs_error("LancerFS eror: set dirty bit on failt\n");
 				return r;	
 			}
-			//TODO: set time attribute	
+			//TODO: set time attribute
+			struct stat b;	
+			lstat(fpath, &b); 
+			//lgetxattr(fpath, "user.st_time", &time, sizeof(time_t));
+			lsetxattr(fpath, "user.st_mtime", &(b.st_mtime), sizeof(time_t), 0); 
 	}
   return ret;
 }
@@ -508,10 +515,6 @@ int cloudfs_release(const char *path, struct fuse_file_info *fi){
 	}else{// a proxy file
 			log_msg("LancerFS log: handle proxy file\n");	
 			struct stat buf;							
-      /*char slavepath[MAX_PATH_LEN+3];
-      memset(slavepath, 0, MAX_PATH_LEN + 3);
-      strcpy(slavepath, fullpath);
-      cloud_slave_filename(slavepath);*/
 		
 			if(get_dirty(fullpath)){//dirty file, flush to Cloud
 				cloud_push_shadow(fullpath, fullpath, &buf);		
