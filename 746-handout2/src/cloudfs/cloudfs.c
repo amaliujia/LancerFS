@@ -30,6 +30,27 @@ void cloudfs_generate_proxy(const char *fullpath, struct stat *buf){
 	close(fd);
 }
 
+int cloudfs_save_attribute(const char *fullpath, struct stat *buf){
+	int ret = 0;
+ 	ret = lstat(fullpath, buf);
+	if(ret < 0){
+			log_msg("save attribute\n");
+			return ret;
+	}
+
+	off_t size;
+	ret = lgetxattr(fullpath, "user.st_size", &size, sizeof(off_t));
+	if(ret > 0){
+		buf->st_size = size;
+	}
+	time_t time;
+	ret = lgetxattr(fullpath, "user.st_mtime", &time, sizeof(time_t)); 
+	if(ret > 0){
+		buf->st_mtime = time;
+	}	
+	return ret;
+} 
+
 int cloudfs_change_attribute(const char *fullpath, const char *slavepath){
 	int ret = 0;
 	struct stat buf;
@@ -191,7 +212,7 @@ int get_slave(const char *fullpath){
  * are valid, and if all is well, it mounts the file system ready for usage.
  *
  */
-void *cloudfs_init(struct fuse_conn_info *conn)
+void *cloudfs_init(struct fuse_conn_info *conn UNUSED)
 {
   cloud_init(state_.hostname);
   //cloud_list_service(list_service);
@@ -203,7 +224,7 @@ void *cloudfs_init(struct fuse_conn_info *conn)
 	return NULL;
 }
 
-void cloudfs_destroy(void *data) {
+void cloudfs_destroy(void *data UNUSED) {
   cloud_destroy();
 }
 
@@ -221,7 +242,7 @@ int cloudfs_getattr(const char *path , struct stat *statbuf)
 	
 	  lgetxattr(fpath, "user.st_size", &(statbuf->st_size), sizeof(off_t));
   	lgetxattr(fpath, "user.st_mtime", &(statbuf->st_mtime), sizeof(time_t));
-  	lgetxattr(fpath, "user.st_blksize", &(statbuf->st_blksize), sizeof(blksize_t));
+  	//lgetxattr(fpath, "user.st_blksize", &(statbuf->st_blksize), sizeof(blksize_t));
 	
 		if(ret != 0){
 			ret = cloudfs_error("getattr lstat\n");
@@ -497,6 +518,7 @@ int cloudfs_release(const char *path, struct fuse_file_info *fi){
 			}
 			
 			lstat(fullpath, &buf); 
+			//cloudfs_save_attribute(fullpath, &buf);
 			unlink(fullpath);
 			cloudfs_generate_proxy(fullpath, &buf);	
 			//cloudfs_change_attribute(fullpath, slavepath);	
@@ -597,7 +619,7 @@ int cloudfs_truncate(const char *path, off_t newsize)
     
     retstat = truncate(fpath, newsize);
     if (retstat < 0)
-			cloudfs_error("bb_truncate truncate");
+			cloudfs_error("cloudfs_truncate truncate");
     
     return retstat;
 }
@@ -646,7 +668,7 @@ int cloudfs_start(struct cloudfs_state *state,
   argv[argc] = (char *) malloc(1024 * sizeof(char));
   strcpy(argv[argc++], state->fuse_path);
   argv[argc++] = "-s"; // set the fuse mode to single thread
-  //argv[argc++] = "-f"; // run fuse in foreground 
+  argv[argc++] = "-f"; // run fuse in foreground 
 
   state_  = *state;
 	cloudfs_log_init();
