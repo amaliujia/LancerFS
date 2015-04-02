@@ -517,8 +517,8 @@ int cloudfs_release(const char *path, struct fuse_file_info *fi){
 				cloud_push_shadow(fullpath, fullpath, &buf);		
 			}
 			
-			lstat(fullpath, &buf); 
-			//cloudfs_save_attribute(fullpath, &buf);
+			//lstat(fullpath, &buf); 
+			cloudfs_save_attribute(fullpath, &buf);
 			unlink(fullpath);
 			cloudfs_generate_proxy(fullpath, &buf);	
 			//cloudfs_change_attribute(fullpath, slavepath);	
