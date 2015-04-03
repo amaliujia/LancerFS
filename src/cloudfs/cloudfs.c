@@ -24,9 +24,6 @@
 
 static struct cloudfs_state state_;
 
-void cloudfs_get_fullpath(const char *path, char *fullpath){
-
-}
 
 int cloudfs_error(char *error_str)
 {
@@ -48,6 +45,7 @@ void cloudfs_destroy(void *data) {
 int cloudfs_getattr(const char *path, struct stat *statbuf)
 {
 	int retval = 0;
+	wgetattr(path, statbuf);
 	return retval;
 }
 

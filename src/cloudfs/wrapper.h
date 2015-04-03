@@ -14,7 +14,7 @@
 #include <sys/types.h>
 #include <sys/xattr.h>
 
-#include "Lancerfs.h"
+//#include "Lancerfs.h"
 
 #ifdef __cplusplus 
 extern "C"{

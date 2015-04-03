@@ -13,28 +13,38 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/xattr.h>
-
+#include <stdarg.h>
 //#include "include.h"
 
 //#ifdef __cplusplus 
 
-/*#include <string>
 #include <map>
 #include <set>
-#include <vector>*/
+#include <vector>
 #include <iostream>
+
 
 class LancerFS{
 private:
 
 	static LancerFS *_lancerFS;
 	
+	char *logpath = "/tmp/cloudfs.log";	
+	FILE *logfd = NULL; 
+			
+	FILE *outfile;	
+	FILE *infile;
+	
 public:
 	LancerFS();
 	~LancerFS();
 
 	static LancerFS *instance();
-		
+
+	//log
+	void log_msg(const char *format, ...);	
+	int cloudfs_error(char *error_str);	
+	// FS API	
 	int getattr(const char *path, struct stat *statbuf);
 	int readlink(const char *path, char *link, size_t size);
 	int mknod(const char *path, mode_t mode, dev_t dev);
@@ -66,6 +76,8 @@ public:
 	int init(struct fuse_conn_info *conn);
 	int truncate(const char *path, off_t offset, struct fuse_file_info *fileInfo);
 };
+
+
 /*
 #else
 	typedef 
@@ -83,5 +95,7 @@ extern "C"{
 #ifdef __cplusplus 
 }
 #endif */
+
+
 
 #endif

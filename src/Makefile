@@ -41,9 +41,8 @@ endif
 FUSE_CFLAGS := -D_FILE_OFFSET_BITS=64 \
 					 		 -DFUSE_USE_VERSION=26 \
 					     -I/usr/local/include/fuse \
-					     -I/usr/include/fuse \
-						 	-Icloud-lib \
-						 	-Idedup-lib
+					     -I/usr/include/fuse	\
+								-Ibin/obj 
 
 FUSE_LIBS := -lfuse
 
@@ -66,7 +65,17 @@ CFLAGS += -Wall  -Wshadow -Wextra -Iinclude \
 					$(FUSE_CFLAGS) \
           -D__STRICT_ANSI__ \
           -D_ISOC99_SOURCE \
+          -D_POSIX_C_SOURCE=200112L \
+					-lstdc++
+					#-D_FILE_OFFSET_BITS=64
+
+CPPFLAGS := -Wall  -Wshadow -Wextra -Iinclude \
+          $(FUSE_CFLAGS) \
+          -D__STRICT_ANSI__ \
+          -D_ISOC99_SOURCE \
           -D_POSIX_C_SOURCE=200112L 
+ 
+CPPLD := -Wall `pkg-config fuse --libs` -lcl
 
 ifndef CC
     ifdef DEBUG
@@ -77,7 +86,7 @@ ifndef CC
 endif
 
 
-LDFLAGS = $(CURL_LIBS) $(LIBXML2_LIBS) $(FUSE_LIBS) -lpthread -lcrypto -lssl -lcurl -lcl
+LDFLAGS = $(CURL_LIBS) $(LIBXML2_LIBS) $(FUSE_LIBS) -lpthread -lcrypto -lssl -lcurl 
 LIBRARY = ./lib/libs3.a -lcurl -lxml2
 ifdef DEBUG
 	LIBRARY += ./lib/libdedup-dbg.a
@@ -94,21 +103,48 @@ all: cloudfs
 # --------------------------------------------------------------------------
 # Compile target patterns
 
-$(BUILD)/obj/%.o: cloudfs/%.cpp
+$(BUILD)/obj/Lancerfs.o:cloudfs/Lancerfs.cpp 
 	$(QUIET_ECHO) $@: Compiling object
 	@ mkdir -p $(dir $(BUILD)/dep/$<)
-	@ g++ $(CFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
+	g++ $(CPPFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
         -o $(BUILD)/dep/$(<:%.c=%.d) -c $<
-	@ mkdir -p $(dir $@)
-	$(VERBOSE_SHOW) g++ $(CFLAGS) -o $@ -c $<
+	mkdir -p $(dir $@)
+	$(VERBOSE_SHOW) g++ $(CPPFLAGS) -o $@ -c $<
 
-$(BUILD)/obj/%.o: cloudfs/%.c
+$(BUILD)/obj/wrapper.o: cloudfs/wrapper.cpp 
 	$(QUIET_ECHO) $@: Compiling object
 	@ mkdir -p $(dir $(BUILD)/dep/$<)
-	@ g++ $(CFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
+	g++ $(CPPFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
         -o $(BUILD)/dep/$(<:%.c=%.d) -c $<
-	@ mkdir -p $(dir $@)
-	$(VERBOSE_SHOW) g++ $(CFLAGS) -o $@ -c $<
+	mkdir -p $(dir $@)
+	$(VERBOSE_SHOW) g++ $(CPPFLAGS) -o $@ -c $<
+
+$(BUILD)/obj/cloudfs.o: cloudfs/cloudfs.c cloudfs/cloudfs.h
+	$(QUIET_ECHO) $@: Compiling object
+	@ mkdir -p $(dir $(BUILD)/dep/$<)
+	gcc $(CFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
+        -o $(BUILD)/dep/$(<:%.c=%.d) -c $<
+	mkdir -p $(dir $@)
+	$(VERBOSE_SHOW) gcc $(CFLAGS) -o $@ -c $<
+
+
+$(BUILD)/obj/cloudapi.o: cloud-lib/cloudapi.c 
+	$(QUIET_ECHO) $@: Compiling object
+	@ mkdir -p $(dir $(BUILD)/dep/$<)
+	gcc $(CFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
+        -o $(BUILD)/dep/$(<:%.c=%.d) -c $<
+	mkdir -p $(dir $@)
+	$(VERBOSE_SHOW) gcc $(CFLAGS) -o $@ -c $<
+
+
+$(BUILD)/obj/main.o: cloudfs/main.c cloudfs/cloudfs.h	\
+										cloudfs/cloudapi.c 
+	$(QUIET_ECHO) $@: Compiling object
+	@ mkdir -p $(dir $(BUILD)/dep/$<)
+	gcc $(CFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
+        -o $(BUILD)/dep/$(<:%.c=%.d) -c $<
+	mkdir -p $(dir $@)
+	$(VERBOSE_SHOW) gcc $(CFLAGS) -o $@ -c $<
 
 $(BUILD)/obj/%.o: cloud-lib/%.c
 	$(QUIET_ECHO) $@: Compiling object
@@ -118,13 +154,22 @@ $(BUILD)/obj/%.o: cloud-lib/%.c
 	@ mkdir -p $(dir $@)
 	$(VERBOSE_SHOW) gcc $(CFLAGS) -o $@ -c $<
 
-$(BUILD)/obj/%.o: dedup-lib/%.c
-	$(QUIET_ECHO) $@: Compiling object
-	@ mkdir -p $(dir $(BUILD)/dep/$<)
-	@ gcc $(CFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
+#$(BUILD)/obj/%.o: cloudfs/%.cpp
+#	$(QUIET_ECHO) $@: Compiling object
+#	@ mkdir -p $(dir $(BUILD)/dep/$<)
+#	@ g++ $(CPPFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
         -o $(BUILD)/dep/$(<:%.c=%.d) -c $<
-	@ mkdir -p $(dir $@)
-	$(VERBOSE_SHOW) gcc $(CFLAGS) -o $@ -c $<
+#	@ mkdir -p $(dir $@)
+#	$(VERBOSE_SHOW) g++ $(CFLAGS) -o $@ -c $<
+
+
+#$(BUILD)/obj/%.o: cloudfs/%.c
+#	$(QUIET_ECHO) $@: Compiling object
+#	@ mkdir -p $(dir $(BUILD)/dep/$<)
+#	@ gcc $(CFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
+        -o $(BUILD)/dep/$(<:%.c=%.d) -c $<
+#	@ mkdir -p $(dir $@)
+#	$(VERBOSE_SHOW) gcc $(CFLAGS) -o $@ -c $<
 
 # --------------------------------------------------------------------------
 # CloudFS targets
@@ -132,18 +177,18 @@ $(BUILD)/obj/%.o: dedup-lib/%.c
 .PHONY: cloudfs 
 cloudfs: $(BUILD)/bin/cloudfs
 
-CLOUDFS_OBJS = $(BUILD)/obj/cloudfs.o \
+CLOUDFS_OBJS = $(BUILD)/obj/Lancerfs.o \
+        $(BUILD)/obj/wrapper.o \
+				$(BUILD)/obj/cloudfs.o \
 			   $(BUILD)/obj/cloudapi.o \
-			   $(BUILD)/obj/main.o \
-				 $(BUILD)/obj/Lancerfs.o \
-				$(BUILD)/obj/wrapper.o 
+			   $(BUILD)/obj/main.o 
 					
 #You can append other objects
 
 $(BUILD)/bin/cloudfs: $(CLOUDFS_OBJS)
 	$(QUIET_ECHO) $@: Building executable
 	@ mkdir -p $(dir $@)
-	$(VERBOSE_SHOW) g++ -o $@ $^ $(LDFLAGS) $(LIBRARY) 
+	$(VERBOSE_SHOW) g++ -o $(BUILD)/bin/cloudfs $^ $(LDFLAGS) $(LIBRARY) 
 
 # --------------------------------------------------------------------------
 # Example targets

@@ -160,8 +160,6 @@ static int cloudfs_error(char *error_str)
 {
     int retval = -errno;
    	log_msg(error_str); 
-    //fprintf(stderr, "CloudFS Error: %s\n", error_str);
-
     return retval;
 }
 
