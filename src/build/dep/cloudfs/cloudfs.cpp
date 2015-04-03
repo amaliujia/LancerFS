@@ -58,7 +58,7 @@ build/obj/cloudfs.o: cloudfs/cloudfs.cpp /usr/include/stdc-predef.h \
  /usr/include/i386-linux-gnu/bits/environments.h \
  /usr/include/i386-linux-gnu/bits/confname.h \
  /usr/include/i386-linux-gnu/bits/unistd.h cloud-lib/cloudapi.h \
- include/libs3.h cloudfs/cloudfs.h cloudfs/wrapper.hh cloudfs/Lancerfs.hh \
+ include/libs3.h cloudfs/cloudfs.h cloudfs/wrapper.h cloudfs/Lancerfs.h \
  /usr/include/c++/4.8/iostream \
  /usr/include/i386-linux-gnu/c++/4.8/bits/c++config.h \
  /usr/include/i386-linux-gnu/c++/4.8/bits/os_defines.h \

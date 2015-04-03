@@ -4,12 +4,12 @@
 #define MAX_PATH_LEN 4096
 #define MAX_HOSTNAME_LEN 1024
 
-#include "wrapper.hh"
+#include "wrapper.h"
 
-/*#ifdef __cplusplus 
+#ifdef __cplusplus 
 extern "C"{
 #endif
-*/
+
 
 struct cloudfs_state {
   char ssd_path[MAX_PATH_LEN];
@@ -25,9 +25,9 @@ struct cloudfs_state {
 int cloudfs_start(struct cloudfs_state* state, const char* fuse_runtime_name);  
 void cloudfs_get_fullpath(const char *path, char *fullpath);
 
-/*
+
 #ifdef __cplusplus 
 }
-#endif*/
+#endif
 
 #endif

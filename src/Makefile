@@ -77,7 +77,7 @@ ifndef CC
 endif
 
 
-LDFLAGS = $(CURL_LIBS) $(LIBXML2_LIBS) $(FUSE_LIBS) -lpthread -lcrypto -lssl -lcurl
+LDFLAGS = $(CURL_LIBS) $(LIBXML2_LIBS) $(FUSE_LIBS) -lpthread -lcrypto -lssl -lcurl -lcl
 LIBRARY = ./lib/libs3.a -lcurl -lxml2
 ifdef DEBUG
 	LIBRARY += ./lib/libdedup-dbg.a
