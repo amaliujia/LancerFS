@@ -69,7 +69,7 @@ int cloudfs_start(struct cloudfs_state *state,
 	//argv[argc++] = "-f"; // run fuse in foreground 
 
 	state_  = *state;
-
+	winit(state);
 	int fuse_stat = fuse_main(argc, argv, &cloudfs_operations, NULL);
 
 	return fuse_stat;
