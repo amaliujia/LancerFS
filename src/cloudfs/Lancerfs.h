@@ -14,26 +14,30 @@
 #include <sys/types.h>
 #include <sys/xattr.h>
 #include <stdarg.h>
-//#include "include.h"
-
-//#ifdef __cplusplus 
+#include <fuse.h>
 
 #include <map>
 #include <set>
 #include <vector>
 #include <iostream>
 
+#include "libs3.h"
+//#include "cloudapi.h"
+
+#define MAX_PATH_LEN 4096
+#define MAX_HOSTNAME_LEN 1024
 
 class LancerFS{
 private:
 
 	static LancerFS *_lancerFS;
 	
-	char *logpath = "/tmp/cloudfs.log";	
-	FILE *logfd = NULL; 
+	FILE *logfd; 
 			
 	FILE *outfile;	
 	FILE *infile;
+
+public:
 	
 public:
 	LancerFS();
@@ -41,61 +45,32 @@ public:
 
 	static LancerFS *instance();
 
+	//base 
+	void cloudfs_get_fullpath(const char *path, char *fullpath);
+
 	//log
 	void log_msg(const char *format, ...);	
 	int cloudfs_error(char *error_str);	
+
+	//cloud	
+
 	// FS API	
-	int getattr(const char *path, struct stat *statbuf);
-	int readlink(const char *path, char *link, size_t size);
-	int mknod(const char *path, mode_t mode, dev_t dev);
-	int mkdir(const char *path, mode_t mode);
-	int unlink(const char *path);
-	int rmdir(const char *path);
-	int symlink(const char *path, const char *link);
-	int rename(const char *path, const char *newpath);
-	int link(const char *path, const char *newpath);
-	int chmod(const char *path, mode_t mode);
-	int chown(const char *path, uid_t uid, gid_t gid);
-	int truncate(const char *path, off_t newSize);
-	int utime(const char *path, struct utimbuf *ubuf);
-	int open(const char *path, struct fuse_file_info *fileInfo);
-	int read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fileInfo);
-	int write(const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fileInfo);
-	int statfs(const char *path, struct statvfs *statInfo);
-	int flush(const char *path, struct fuse_file_info *fileInfo);
-	int release(const char *path, struct fuse_file_info *fileInfo);
-	int fsync(const char *path, int datasync, struct fuse_file_info *fi);
-	int setxattr(const char *path, const char *name, const char *value, size_t size, int flags);
-	int getxattr(const char *path, const char *name, char *value, size_t size);
-	int listxattr(const char *path, char *list, size_t size);
-	int removexattr(const char *path, const char *name);
-	int opendir(const char *path, struct fuse_file_info *fileInfo);
-	int readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fileInfo);
-	int releasedir(const char *path, struct fuse_file_info *fileInfo);
-	int fsyncdir(const char *path, int datasync, struct fuse_file_info *fileInfo);
-	int init(struct fuse_conn_info *conn);
-	int truncate(const char *path, off_t offset, struct fuse_file_info *fileInfo);
+	int lgetattr(const char *path, struct stat *statbuf);
+	int lmknod(const char *path, mode_t mode, dev_t dev);
+	int lmkdir(const char *path, mode_t mode);
+	int lunlink(const char *path);
+	int lrmdir(const char *path);
+	int llink(const char *path, const char *newpath);
+	int lchmod(const char *path, mode_t mode);
+	int lopen(const char *path, struct fuse_file_info *fileInfo);
+	int lread(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fileInfo);
+	int lwrite(const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fileInfo);
+	int lrelease(const char *path, struct fuse_file_info *fileInfo);
+	int lsetxattr(const char *path, const char *name, const char *value, size_t size, int flags);
+	int lgetxattr(const char *path, const char *name, char *value, size_t size);
+	int lopendir(const char *path, struct fuse_file_info *fileInfo);
+	int lreaddir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fileInfo);
+	int ltruncate(const char *path, off_t offset, struct fuse_file_info *fileInfo);
 };
-
-
-/*
-#else
-	typedef 
-		struct LancerFS
-				LancerFS;
-
-#endif
- 
-#ifdef __cplusplus 
-extern "C"{
-#endif
-
-	extern void test();
-
-#ifdef __cplusplus 
-}
-#endif */
-
-
 
 #endif

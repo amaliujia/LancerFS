@@ -32,21 +32,19 @@ int cloudfs_error(char *error_str)
 	return retval;
 }
 
-void *cloudfs_init(struct fuse_conn_info *conn)
+void *cloudfs_init(struct fuse_conn_info *conn UNUSED)
 {
 	cloud_init(state_.hostname);
 	return NULL;
 }
 
-void cloudfs_destroy(void *data) {
+void cloudfs_destroy(void *data UNUSED) {
 	cloud_destroy();
 }
 
 int cloudfs_getattr(const char *path, struct stat *statbuf)
 {
-	int retval = 0;
-	wgetattr(path, statbuf);
-	return retval;
+	return wgetattr(path, statbuf);
 }
 
 static 

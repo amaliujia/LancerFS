@@ -16,9 +16,30 @@
 
 //#include "Lancerfs.h"
 
+#define MAX_PATH_LEN 4096
+#define MAX_HOSTNAME_LEN 1024
+
 #ifdef __cplusplus 
 extern "C"{
 #endif
+
+struct cloudfs_state {
+  char ssd_path[MAX_PATH_LEN];
+  char fuse_path[MAX_PATH_LEN];
+  char hostname[MAX_HOSTNAME_LEN];
+  int ssd_size;
+  int threshold;
+  int avg_seg_size;
+  int rabin_window_size;
+  char no_dedup;
+};
+
+
+
+//init Lancerfs
+void winit(struct cloudfs_state *state);
+
+ 
 
 int wgetattr(const char *path, struct stat *statbuf);
 /*int wreadlink(const char *path, char *link, size_t size);

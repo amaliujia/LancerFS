@@ -44,7 +44,7 @@ S3Status cloud_get_object(const char *bucketName, const char *key,
 
 S3Status cloud_delete_object(const char *bucketName, const char *key);
 
-#ifdef __CPLUSPLUSL
+#ifdef __cplusplus
 }
 #endif
 
