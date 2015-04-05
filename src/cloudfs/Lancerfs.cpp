@@ -1,5 +1,18 @@
 #include "Lancerfs.h"
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+#include "../cloud-lib/cloudapi.h"
+#ifdef __cplusplus
+}
+#endif
+
+static  FILE *outfile;
+static  FILE *infile;
+
 void LancerFS::cloudfs_generate_proxy(const char *fullpath, struct stat *buf){
 	int fd = creat(fullpath, buf->st_mode);
 	if(fd < 0){
@@ -43,19 +56,19 @@ void LancerFS::cloudfs_set_attribute(const char *fullpath, struct stat *buf){
   //lsetxattr(fullpath, "user.st_blksize", &(buf.st_blksize), sizeof(blksize_t));
 }
 
-int LancerFS::get_buffer(const char *buffer, int bufferLength) {
+int get_buffer(const char *buffer, int bufferLength) {
   return fwrite(buffer, 1, bufferLength, outfile);
 }
 
-int LancerFS::put_buffer(char *buffer, int bufferLength) {
-  fprintf(logfd, "put_buffer %d \n", bufferLength);
+int put_buffer(char *buffer, int bufferLength) {
+  //fprintf(logfd, "put_buffer %d \n", bufferLength);
   return fread(buffer, 1, bufferLength, infile);
 }
 
 void LancerFS::cloud_get_shadow(const char *fullpath, const char *cloudpath){
   //TODO: if need set mode
 	outfile = fopen(fullpath, "wb");
-  //cloud_get_object("bkt", cloudpath, get_buffer);
+  cloud_get_object("bkt", cloudpath, get_buffer);
 	//*fd = outfile;
 	fclose(outfile);
 } 
@@ -74,7 +87,7 @@ void LancerFS::cloud_push_file(const char *fpath, struct stat *stat_buf){
 			return;		
 	}
 	log_msg("LancerFS log: cloud_push_file(path=%s)\n", fpath);
-  //cloud_put_object("bkt", cloudpath, stat_buf->st_size, put_buffer);
+  cloud_put_object("bkt", cloudpath, stat_buf->st_size, put_buffer);
   fclose(infile);	
 }
 
@@ -92,7 +105,7 @@ void LancerFS::cloud_push_shadow(const char *fullpath, const char *shadowpath, s
 	cloud_filename(cloudpath);
  	log_msg("LancerFS log: cloud_push_file(path=%s)\n", cloudpath);
   lstat(shadowpath, stat_buf);
-  //cloud_put_object("bkt", cloudpath, stat_buf->st_size, put_buffer);
+  cloud_put_object("bkt", cloudpath, stat_buf->st_size, put_buffer);
   fclose(infile);
 }
 

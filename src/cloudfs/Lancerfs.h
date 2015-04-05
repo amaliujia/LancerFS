@@ -20,6 +20,7 @@
 #include <set>
 #include <vector>
 #include <iostream>
+#include <string>
 
 //#include "libs3.h"
 #include "Fuse.h"
@@ -35,8 +36,8 @@ private:
 	FILE *logfd; 
 	char *logpath;
 			
-	FILE *outfile;	
-	FILE *infile;
+//	FILE *outfile;	
+//	FILE *infile;
 
 public:
 	fuse_struct state_;	
@@ -80,8 +81,8 @@ private:
 	void cloudfs_log_init();
 
 	//cloud	
-	int get_buffer(const char *buffer, int bufferLength); 
-	int put_buffer(char *buffer, int bufferLength); 
+//	int get_buffer(const char *buffer, int bufferLength); 
+//	int put_buffer(char *buffer, int bufferLength); 
 	void cloud_get_shadow(const char *fullpath, const char *cloudpath);
 	void cloud_push_file(const char *fpath, struct stat *stat_buf);
 	void cloud_push_shadow(const char *fullpath, const char *shadowpath, struct stat *stat_buf);

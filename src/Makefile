@@ -146,13 +146,13 @@ $(BUILD)/obj/main.o: cloudfs/main.c cloudfs/cloudfs.h	\
 	mkdir -p $(dir $@)
 	$(VERBOSE_SHOW) gcc $(CFLAGS) -o $@ -c $<
 
-$(BUILD)/obj/%.o: cloud-lib/%.c
-	$(QUIET_ECHO) $@: Compiling object
-	@ mkdir -p $(dir $(BUILD)/dep/$<)
-	@ gcc $(CFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
+#$(BUILD)/obj/%.o: cloud-lib/%.c
+#	$(QUIET_ECHO) $@: Compiling object
+#	@ mkdir -p $(dir $(BUILD)/dep/$<)
+#	@ gcc $(CFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
         -o $(BUILD)/dep/$(<:%.c=%.d) -c $<
-	@ mkdir -p $(dir $@)
-	$(VERBOSE_SHOW) gcc $(CFLAGS) -o $@ -c $<
+#	@ mkdir -p $(dir $@)
+#	$(VERBOSE_SHOW) gcc $(CFLAGS) -o $@ -c $<
 
 #$(BUILD)/obj/%.o: cloudfs/%.cpp
 #	$(QUIET_ECHO) $@: Compiling object
@@ -177,10 +177,10 @@ $(BUILD)/obj/%.o: cloud-lib/%.c
 .PHONY: cloudfs 
 cloudfs: $(BUILD)/bin/cloudfs
 
-CLOUDFS_OBJS = $(BUILD)/obj/Lancerfs.o \
+CLOUDFS_OBJS = $(BUILD)/obj/cloudapi.o  \
+				$(BUILD)/obj/Lancerfs.o \
         $(BUILD)/obj/wrapper.o \
 				$(BUILD)/obj/cloudfs.o \
-			   $(BUILD)/obj/cloudapi.o \
 			   $(BUILD)/obj/main.o 
 					
 #You can append other objects
