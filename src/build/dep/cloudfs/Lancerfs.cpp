@@ -117,5 +117,4 @@ build/obj/Lancerfs.o: cloudfs/Lancerfs.cpp /usr/include/stdc-predef.h \
  /usr/include/c++/4.8/bits/locale_facets.tcc \
  /usr/include/c++/4.8/bits/basic_ios.tcc \
  /usr/include/c++/4.8/bits/ostream.tcc /usr/include/c++/4.8/istream \
- /usr/include/c++/4.8/bits/istream.tcc include/libs3.h cloudfs/Fuse.h \
- cloudfs/wrapper.h
+ /usr/include/c++/4.8/bits/istream.tcc cloudfs/Fuse.h cloudfs/wrapper.h

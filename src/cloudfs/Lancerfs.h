@@ -21,7 +21,7 @@
 #include <vector>
 #include <iostream>
 
-#include "libs3.h"
+//#include "libs3.h"
 #include "Fuse.h"
 
 #define MAX_PATH_LEN 4096
@@ -33,7 +33,7 @@ private:
 	static LancerFS *_lancerFS;
 	
 	FILE *logfd; 
-	char *ogpath;
+	char *logpath;
 			
 	FILE *outfile;	
 	FILE *infile;
@@ -63,7 +63,7 @@ public:
 	int cloudfs_getxattr(const char *path, const char *name, char *value, size_t size);
 	int cloudfs_opendir(const char *path, struct fuse_file_info *fileInfo);
 	int cloudfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fileInfo);
-	int cloudfs_truncate(const char *path, off_t offset, struct fuse_file_info *fileInfo);
+	int cloudfs_truncate(const char *path, off_t newsize);
 	void *cloudfs_init(struct fuse_conn_info *conn);
 	void cloudfs_destroy(void *data); 
 	int cloudfs_utimens(const char *path, const struct timespec tv[2]);
@@ -91,7 +91,7 @@ private:
 	//FS Kernel
 	void cloudfs_generate_proxy(const char *fullpath, struct stat *buf);
 	int cloudfs_save_attribute(const char *fullpath, struct stat *buf);
-	void cloudfd_set_attribute(const char *fullpath, struct stat *buf);
+	void cloudfs_set_attribute(const char *fullpath, struct stat *buf);
 	int get_proxy(const char *fullpath);
 	int set_proxy(const char *fullpath, int proxy);
 	int get_dirty(const char *fullpath);

@@ -37,7 +37,7 @@ int LancerFS::cloudfs_save_attribute(const char *fullpath, struct stat *buf){
 	return ret;
 } 
 
-void LancerFS::cloudfd_set_attribute(const char *fullpath, struct stat *buf){
+void LancerFS::cloudfs_set_attribute(const char *fullpath, struct stat *buf){
   lsetxattr(fullpath, "user.st_size", &(buf->st_size), sizeof(off_t), 0);
   lsetxattr(fullpath, "user.st_mtime", &(buf->st_mtime), sizeof(time_t), 0);
   //lsetxattr(fullpath, "user.st_blksize", &(buf.st_blksize), sizeof(blksize_t));
@@ -55,7 +55,7 @@ int LancerFS::put_buffer(char *buffer, int bufferLength) {
 void LancerFS::cloud_get_shadow(const char *fullpath, const char *cloudpath){
   //TODO: if need set mode
 	outfile = fopen(fullpath, "wb");
-  cloud_get_object("bkt", cloudpath, get_buffer);
+  //cloud_get_object("bkt", cloudpath, get_buffer);
 	//*fd = outfile;
 	fclose(outfile);
 } 
@@ -74,7 +74,7 @@ void LancerFS::cloud_push_file(const char *fpath, struct stat *stat_buf){
 			return;		
 	}
 	log_msg("LancerFS log: cloud_push_file(path=%s)\n", fpath);
-  cloud_put_object("bkt", cloudpath, stat_buf->st_size, put_buffer);
+  //cloud_put_object("bkt", cloudpath, stat_buf->st_size, put_buffer);
   fclose(infile);	
 }
 
@@ -92,7 +92,7 @@ void LancerFS::cloud_push_shadow(const char *fullpath, const char *shadowpath, s
 	cloud_filename(cloudpath);
  	log_msg("LancerFS log: cloud_push_file(path=%s)\n", cloudpath);
   lstat(shadowpath, stat_buf);
-  cloud_put_object("bkt", cloudpath, stat_buf->st_size, put_buffer);
+  //cloud_put_object("bkt", cloudpath, stat_buf->st_size, put_buffer);
   fclose(infile);
 }
 
@@ -170,10 +170,10 @@ int LancerFS::get_slave(const char *fullpath){
 
 void *LancerFS::cloudfs_init(struct fuse_conn_info *conn)
 {
-  cloud_init(state_.hostname);
+  //cloud_init(state_.hostname);
   //cloud_list_service(list_service);
   //cloud_delete_bucket("bkt");
-	int r = cloud_create_bucket("bkt");
+	int r = 0;//cloud_create_bucket("bkt");
   if(r != 0){
     exit(1);
   }
@@ -181,7 +181,7 @@ void *LancerFS::cloudfs_init(struct fuse_conn_info *conn)
 }
 
 void LancerFS::cloudfs_destroy(void *data) {
-  cloud_destroy();
+  //cloud_destroy();
 }
 
 
@@ -318,8 +318,8 @@ int LancerFS::cloudfs_read(const char *path, char *buf, size_t size, off_t offse
     return ret;
 }
 
-int LancerFS::cloudfs_write(const char *path, const char *buf, size_t size, off_t offset,
-	     struct fuse_file_info *fi){
+int LancerFS::cloudfs_write(const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
+{
 	int ret = 0;
   log_msg("\ncfs_write(path=\"%s\", buf=0x%08x, size=%d, offset=%lld, fi=0x%08x)\n", path, buf, size, offset, fi);
 	
@@ -342,10 +342,11 @@ int LancerFS::cloudfs_write(const char *path, const char *buf, size_t size, off_
 				r = cloudfs_error("LancerFS eror: set dirty bit on failt\n");
 				return r;	
 			}
+	}
   return ret;
 }
 
-/*int LancerFS::cloudfs_release(const char *path, struct fuse_file_info *fi){
+int LancerFS::cloudfs_release(const char *path, struct fuse_file_info *fi){
 	int ret = 0;
   char fullpath[MAX_PATH_LEN];
   cloudfs_get_fullpath(path, fullpath);	 
@@ -380,7 +381,7 @@ int LancerFS::cloudfs_write(const char *path, const char *buf, size_t size, off_
 			set_dirty(fullpath, 0);
 	}
 	return ret;
-}*/
+}
 
 int LancerFS::cloudfs_opendir(const char *path, struct fuse_file_info *fi)
 {
@@ -442,7 +443,7 @@ int LancerFS::cloudfs_unlink(const char *path)
 				memset(cloudpath, 0, MAX_PATH_LEN);
 				strcpy(cloudpath, fpath);
 				cloud_filename(cloudpath);	
-				cloud_delete_object("bkt", cloudpath);	
+				//cloud_delete_object("bkt", cloudpath);	
 		}	
  
     retstat = unlink(fpath);
@@ -489,18 +490,6 @@ int LancerFS::cloudfs_error(char *error_str)
     return retval;
 }
 
-void LancerFS::cloudfs_get_fullpath(const char *path, char *fullpath){
-	sprintf(fullpath, "%s", state_.ssd_path);
-	path++; 
-	sprintf(fullpath, "%s%s", fullpath, path);	
-}
-
-void LancerFS::log_msg(const char *format, ...){
-    va_list ap;
-    va_start(ap, format);
-    vfprintf(logfd, format, ap);
-    fflush(logfd);
-}
 
 //LancerFS* LancerFS::_lancerFS = NULL;
 
