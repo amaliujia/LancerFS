@@ -354,9 +354,6 @@ int cloudfs_mknod(const char *path, mode_t mode, dev_t dev){
 	path, mode, dev);
 	cloudfs_get_fullpath(path, fpath);
 
-	//struct stat 
-	//lstat(fpath, 
-	
   if(S_ISREG(mode)){
      ret = open(fpath, O_CREAT | O_EXCL | O_WRONLY, mode);
 		if(ret < 0)

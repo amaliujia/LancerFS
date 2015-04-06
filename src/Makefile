@@ -55,7 +55,7 @@ ifndef CFLAGS
     ifdef DEBUG
         CFLAGS := -g
     else
-        CFLAGS := -O3
+        CFLAGS := -g #-O3
     endif
 endif
 
@@ -73,7 +73,9 @@ CPPFLAGS := -Wall  -Wshadow -Wextra -Iinclude \
           $(FUSE_CFLAGS) \
           -D__STRICT_ANSI__ \
           -D_ISOC99_SOURCE \
-          -D_POSIX_C_SOURCE=200112L 
+          -D_POSIX_C_SOURCE=200112L 	\
+					-Wno-write-strings		\
+					-g
  
 CPPLD := -Wall `pkg-config fuse --libs` -lcl
 

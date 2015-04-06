@@ -10,6 +10,8 @@ extern "C"
 }
 #endif
 
+#define UNUSED __attribute__((unused))
+
 static  FILE *outfile;
 static  FILE *infile;
 
@@ -69,7 +71,6 @@ void LancerFS::cloud_get_shadow(const char *fullpath, const char *cloudpath){
   //TODO: if need set mode
 	outfile = fopen(fullpath, "wb");
   cloud_get_object("bkt", cloudpath, get_buffer);
-	//*fd = outfile;
 	fclose(outfile);
 } 
 
@@ -181,19 +182,18 @@ int LancerFS::get_slave(const char *fullpath){
 	return slave;
 }
 
-void *LancerFS::cloudfs_init(struct fuse_conn_info *conn)
+void *LancerFS::cloudfs_init(struct fuse_conn_info *conn UNUSED)
 {
-  //cloud_init(state_.hostname);
-  //cloud_list_service(list_service);
-  //cloud_delete_bucket("bkt");
-	int r = 0;//cloud_create_bucket("bkt");
+	int r = 0;
   if(r != 0){
     exit(1);
   }
+
+	
 	return NULL;
 }
 
-void LancerFS::cloudfs_destroy(void *data) {
+void LancerFS::cloudfs_destroy(void *data UNUSED) {
   //cloud_destroy();
 }
 
@@ -516,7 +516,8 @@ LancerFS::LancerFS(){
 		exit(1);	
 	}
 
-	//init cloud	
+	//init cloud
+	//cloud_create_bucket("bkt");
 }
 
 LancerFS::~LancerFS(){

@@ -1,0 +1,4 @@
+2015-04-05 23:58:19,665 DEBUG S3 Server: PUT Object bkt/+home+student+mnt+ssd+largefile
+2015-04-06 00:02:43,345 DEBUG S3 Server: PUT Object bkt/+home+student+mnt+ssd+largefile
+2015-04-06 00:06:05,745 DEBUG S3 Server: DELETE Bucket bkt
+2015-04-06 00:06:05,748 DEBUG S3 Server: CREATE Bucket bkt
