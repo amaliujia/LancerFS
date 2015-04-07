@@ -24,6 +24,7 @@
 
 //#include "libs3.h"
 #include "Fuse.h"
+#include "duplication.h"
 
 #define MAX_PATH_LEN 4096
 #define MAX_HOSTNAME_LEN 1024

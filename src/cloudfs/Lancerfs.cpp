@@ -6,6 +6,7 @@ extern "C"
 #endif
 
 #include "../cloud-lib/cloudapi.h"
+#include "../dedup-lib/dedup.h"
 #ifdef __cplusplus
 }
 #endif
