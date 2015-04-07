@@ -121,5 +121,5 @@ build/obj/Lancerfs.o: cloudfs/Lancerfs.cpp /usr/include/stdc-predef.h \
  cloudfs/duplication.h /usr/include/openssl/md5.h \
  /usr/include/openssl/e_os2.h \
  /usr/include/i386-linux-gnu/openssl/opensslconf.h include/dedup.h \
- cloudfs/../cloud-lib/cloudapi.h include/libs3.h \
+ cloud-lib/cloudapi.h include/libs3.h cloudfs/../cloud-lib/cloudapi.h \
  cloudfs/../dedup-lib/dedup.h

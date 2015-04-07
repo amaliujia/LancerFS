@@ -34,8 +34,6 @@ struct cloudfs_state {
   char no_dedup;
 };
 
-
-
 //init Lancerfs
 void winit(struct cloudfs_state *state);
 int wgetattr(const char *path, struct stat *statbuf);

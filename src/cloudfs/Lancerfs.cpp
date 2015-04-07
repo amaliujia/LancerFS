@@ -1,4 +1,3 @@
-#include "Lancerfs.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -13,11 +12,10 @@ extern "C"
 
 #define UNUSED __attribute__((unused))
 
-static  FILE *outfile;
-static  FILE *infile;
 
 void LancerFS::cloudfs_generate_proxy(const char *fullpath, struct stat *buf){
 	int fd = creat(fullpath, buf->st_mode);
+	log_msg("LancerFS log: create proxy file\n");
 	if(fd < 0){
 			log_msg("LancerFS error: fail to create proxy file %s\n", fullpath);	
 	}
@@ -57,15 +55,6 @@ void LancerFS::cloudfs_set_attribute(const char *fullpath, struct stat *buf){
   lsetxattr(fullpath, "user.st_size", &(buf->st_size), sizeof(off_t), 0);
   lsetxattr(fullpath, "user.st_mtime", &(buf->st_mtime), sizeof(time_t), 0);
   //lsetxattr(fullpath, "user.st_blksize", &(buf.st_blksize), sizeof(blksize_t));
-}
-
-int get_buffer(const char *buffer, int bufferLength) {
-  return fwrite(buffer, 1, bufferLength, outfile);
-}
-
-int put_buffer(char *buffer, int bufferLength) {
-  //fprintf(logfd, "put_buffer %d \n", bufferLength);
-  return fread(buffer, 1, bufferLength, infile);
 }
 
 void LancerFS::cloud_get_shadow(const char *fullpath, const char *cloudpath){
@@ -137,7 +126,6 @@ void LancerFS::log_msg(const char *format, ...){
 		fflush(logfd);
 }
 
-
 void LancerFS::cloudfs_log_close(){
 	fclose(logfd);
 }
@@ -189,8 +177,6 @@ void *LancerFS::cloudfs_init(struct fuse_conn_info *conn UNUSED)
   if(r != 0){
     exit(1);
   }
-
-	
 	return NULL;
 }
 
@@ -204,8 +190,8 @@ int LancerFS::cloudfs_getxattr(const char *path, const char *name, char *value, 
     int ret = 0;
     char fpath[MAX_PATH_LEN];
     
-    log_msg("\ncfs_getxattr(path = \"%s\", name = \"%s\", value = 0x%08x, size = %d)\n",
-	    path, name, value, size);
+    log_msg("\ncfs_getxattr(path = \"%s\", name = \"%s\", value = 0x%08x, \
+						size = %d)\n", path, name, value, size);
     cloudfs_get_fullpath(path, fpath);
     
     ret = lgetxattr(fpath, name, value, size);
@@ -377,7 +363,9 @@ int LancerFS::cloudfs_release(const char *path, struct fuse_file_info *fi){
 			//goto done; 	
 		}else{
 			struct stat stat_buf;
-			cloud_push_file(fullpath, &stat_buf);
+			//cloud_push_file(fullpath, &stat_buf);
+			//TODO: delete?
+			dup->deduplicate(fullpath);	
 			cloudfs_generate_proxy(fullpath, &stat_buf);
 		}
 	}else{// a proxy file
@@ -526,6 +514,8 @@ LancerFS::LancerFS(){
 
 LancerFS::~LancerFS(){
 	fclose(logfd);
+	
+	//memory management
 	delete dup;	
 }
 

@@ -64,7 +64,6 @@ int main(int argc, const char *argv[])
 		/* Use stdin if filename was not specified */
 		fd = STDIN_FILENO;
 	}
-
 	
 	/*
 	printf("Window size                : %d\n", window_size);
