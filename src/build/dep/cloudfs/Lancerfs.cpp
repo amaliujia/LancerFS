@@ -118,5 +118,8 @@ build/obj/Lancerfs.o: cloudfs/Lancerfs.cpp /usr/include/stdc-predef.h \
  /usr/include/c++/4.8/bits/basic_ios.tcc \
  /usr/include/c++/4.8/bits/ostream.tcc /usr/include/c++/4.8/istream \
  /usr/include/c++/4.8/bits/istream.tcc cloudfs/Fuse.h cloudfs/wrapper.h \
- cloudfs/duplication.h cloudfs/../cloud-lib/cloudapi.h include/libs3.h \
+ cloudfs/duplication.h /usr/include/openssl/md5.h \
+ /usr/include/openssl/e_os2.h \
+ /usr/include/i386-linux-gnu/openssl/opensslconf.h include/dedup.h \
+ cloudfs/../cloud-lib/cloudapi.h include/libs3.h \
  cloudfs/../dedup-lib/dedup.h

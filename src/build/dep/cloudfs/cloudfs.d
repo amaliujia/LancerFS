@@ -39,7 +39,7 @@ build/obj/cloudfs.o: cloudfs/cloudfs.c /usr/include/stdc-predef.h \
  /usr/include/strings.h /usr/include/i386-linux-gnu/sys/xattr.h \
  /usr/include/unistd.h /usr/include/i386-linux-gnu/bits/posix_opt.h \
  /usr/include/i386-linux-gnu/bits/environments.h \
- /usr/include/i386-linux-gnu/bits/confname.h cloudfs/cloudapi.h \
+ /usr/include/i386-linux-gnu/bits/confname.h cloud-lib/cloudapi.h \
  include/libs3.h /usr/include/i386-linux-gnu/sys/select.h \
  /usr/include/i386-linux-gnu/bits/select.h \
  /usr/include/i386-linux-gnu/bits/sigset.h cloudfs/cloudfs.h \

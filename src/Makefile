@@ -42,7 +42,9 @@ FUSE_CFLAGS := -D_FILE_OFFSET_BITS=64 \
 					 		 -DFUSE_USE_VERSION=26 \
 					     -I/usr/local/include/fuse \
 					     -I/usr/include/fuse	\
-								-Ibin/obj 
+								-Ibin/obj		\
+								-Icloud-lib	\
+								-Idedup-lib 
 
 FUSE_LIBS := -lfuse
 
@@ -146,7 +148,7 @@ $(BUILD)/obj/cloudapi.o: cloud-lib/cloudapi.c
 	$(VERBOSE_SHOW) gcc $(CFLAGS) -o $@ -c $<
 
 $(BUILD)/obj/main.o: cloudfs/main.c cloudfs/cloudfs.h	\
-										cloudfs/cloudapi.c 
+										cloud-lib/cloudapi.c 
 	$(QUIET_ECHO) $@: Compiling object
 	@ mkdir -p $(dir $(BUILD)/dep/$<)
 	gcc $(CFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
