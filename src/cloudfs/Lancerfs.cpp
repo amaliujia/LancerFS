@@ -519,10 +519,14 @@ LancerFS::LancerFS(){
 
 	//init cloud
 	//cloud_create_bucket("bkt");
+
+	//init deduplication layer
+	dup = new duplication(logfd);	
 }
 
 LancerFS::~LancerFS(){
 	fclose(logfd);
+	delete dup;	
 }
 
 int LancerFS::cloudfs_getattr(const char *path, struct stat *statbuf){

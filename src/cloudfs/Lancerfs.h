@@ -1,6 +1,7 @@
 #ifndef LANCER_FS_HPP
 #define LANCER_FS_HPP
 
+//c
 #include <ctype.h>
 #include <dirent.h>
 #include <errno.h>
@@ -16,13 +17,13 @@
 #include <stdarg.h>
 #include <fuse.h>
 
+//c++
 #include <map>
 #include <set>
 #include <vector>
 #include <iostream>
 #include <string>
 
-//#include "libs3.h"
 #include "Fuse.h"
 #include "duplication.h"
 
@@ -36,9 +37,8 @@ private:
 	
 	FILE *logfd; 
 	char *logpath;
-			
-//	FILE *outfile;	
-//	FILE *infile;
+
+	duplication *dup;			
 
 public:
 	fuse_struct state_;	
