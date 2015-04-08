@@ -1,3 +1,4 @@
+#include "Lancerfs.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -57,7 +58,7 @@ void LancerFS::cloudfs_set_attribute(const char *fullpath, struct stat *buf){
   //lsetxattr(fullpath, "user.st_blksize", &(buf.st_blksize), sizeof(blksize_t));
 }
 
-void LancerFS::cloud_get_shadow(const char *fullpath, const char *cloudpath){
+/*void LancerFS::cloud_get_shadow(const char *fullpath, const char *cloudpath){
   //TODO: if need set mode
 	outfile = fopen(fullpath, "wb");
   cloud_get_object("bkt", cloudpath, get_buffer);
@@ -98,7 +99,7 @@ void LancerFS::cloud_push_shadow(const char *fullpath, const char *shadowpath, s
   lstat(shadowpath, stat_buf);
   cloud_put_object("bkt", cloudpath, stat_buf->st_size, put_buffer);
   fclose(infile);
-}
+}*/
 
 void LancerFS::cloud_filename(char *path){
 	while(*path != '\0'){
@@ -287,13 +288,13 @@ int LancerFS::cloudfs_open(const char *path, struct fuse_file_info *fi){
 			log_msg("open non proxy file %s\n", path);
 	}else if(proxy == 1){// File opened is in cloud, only proxy file here
 			log_msg("LancerFS log: open proxy file %s\n", path);
-		  char cloudpath[MAX_PATH_LEN];
+		 /* char cloudpath[MAX_PATH_LEN];
   		memset(cloudpath, 0, MAX_PATH_LEN);
   		strcpy(cloudpath, fpath);	
-			cloud_filename(cloudpath);
+			cloud_filename(cloudpath);*/
 				
-			cloud_get_shadow(fpath, cloudpath);
-				
+			//cloud_get_shadow(fpath, cloudpath);
+			dup->retrieve(fpath);	
 			//int slave = 1;
 			int dirty = 0;
 			//lsetxattr(fpath, "user.slave", &slave, sizeof(int), 0);	
@@ -363,6 +364,7 @@ int LancerFS::cloudfs_release(const char *path, struct fuse_file_info *fi){
 			//goto done; 	
 		}else{
 			struct stat stat_buf;
+			lstat(fullpath, &stat_buf);
 			//cloud_push_file(fullpath, &stat_buf);
 			//TODO: delete?
 			dup->deduplicate(fullpath);	
@@ -373,7 +375,7 @@ int LancerFS::cloudfs_release(const char *path, struct fuse_file_info *fi){
 			struct stat buf;							
 		
 			if(get_dirty(fullpath)){//dirty file, flush to Cloud
-				cloud_push_shadow(fullpath, fullpath, &buf);		
+				//cloud_push_shadow(fullpath, fullpath, &buf);		
 			}
 			
 			//lstat(fullpath, &buf); 
