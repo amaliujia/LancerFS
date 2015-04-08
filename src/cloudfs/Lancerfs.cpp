@@ -443,11 +443,7 @@ int LancerFS::cloudfs_unlink(const char *path)
     cloudfs_get_fullpath(path, fpath);
    
 		if(get_proxy(fpath)){
-				char cloudpath[MAX_PATH_LEN];
-				memset(cloudpath, 0, MAX_PATH_LEN);
-				strcpy(cloudpath, fpath);
-				cloud_filename(cloudpath);	
-				//cloud_delete_object("bkt", cloudpath);	
+				dup->remove(fpath);		
 		}	
  
     retstat = unlink(fpath);

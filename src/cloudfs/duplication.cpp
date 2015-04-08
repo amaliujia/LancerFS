@@ -114,12 +114,40 @@ duplication::~duplication(){
 	rabin_free(&rp);
 }
 
+void duplication::remove(const char *fpath){
+  string s(fpath);
+  map<string, vector<MD5_code> >::iterator iter;
+  if((iter = file_map.find(s)) == file_map.end()){
+    log_msg("LancerFS error: not %s exist in index\n", fpath);
+  	return;
+	}
+
+	vector<MD5_code> chunks = file_map[s];
+	map<MD5_code, int>::iterator chunk_iter;	
+	for(unsigned int i = 0; i < chunks.size(); i++){
+		MD5_code c = chunks[i];
+
+ 		char md5c[MD5_DIGEST_LENGTH];
+  	memset(md5c, 0, MD5_DIGEST_LENGTH);
+  	memcpy(md5c, c.md5, MD5_DIGEST_LENGTH);
+		cloud_delete_object("bkt", md5c);	
+		if((chunk_iter = chunk_set.find(c)) != chunk_set.end()){
+			if(chunk_iter->second == 1){
+				chunk_set.erase(chunk_iter);
+			}else{
+				chunk_iter->second -= 1;
+			}		
+		}	
+	} 
+}
+
 void duplication::retrieve(const char *fpath){
 	string s(fpath);
 	map<string, vector<MD5_code> >::iterator iter;
 	if((iter = file_map.find(s)) == file_map.end()){
 		log_msg("LancerFS error: not %s exist in index\n", fpath);
-		exit(1);						
+		//exit(1);					
+		return;	
 	}			
 	
 	vector<MD5_code> chunks = file_map[s];

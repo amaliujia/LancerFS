@@ -99,6 +99,7 @@ public:
 	
 	void deduplicate(const char *path);
 	void retrieve(const char *fpath);
+	void remove(const char *fpath);
 private:
 	void init_rabin_structrue();
 	void fingerprint(const char *path, vector<MD5_code> &code_list);
@@ -109,6 +110,7 @@ private:
 	void serialization();
 	void put(const char *fpath, MD5_code &code, long offset);
 	void get(const char *fpath, MD5_code &code, long offset);	
+	void del(MD5_code &code);
 };
 
 #endif //DUPLICATION_HPP
