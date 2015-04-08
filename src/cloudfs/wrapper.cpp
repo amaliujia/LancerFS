@@ -37,7 +37,8 @@ int wchmod(const char *path, mode_t mode){
 	return instance.cloudfs_chmod(path, mode);
 }
 
-int wsetxattr(const char *path, const char *name, const char *value, size_t size, int flags){
+int wsetxattr(const char *path, const char *name, const char *value,
+              size_t size, int flags){
 	return instance.cloudfs_setxattr(path, name, value, size, flags);
 }
 
@@ -53,11 +54,14 @@ int wopen(const char *path, struct fuse_file_info *fileInfo){
 	return instance.cloudfs_open(path, fileInfo);
 }
 
-int wread(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fileInfo){
+int wread(const char *path, char *buf, size_t size, off_t offset,
+          struct fuse_file_info *fileInfo)
+{
 	return instance.cloudfs_read(path, buf, size, offset, fileInfo);
 }
 
-int wwrite(const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fileInfo){
+int wwrite(const char *path, const char *buf, size_t size, off_t offset,
+           struct fuse_file_info *fileInfo){
 	return instance.cloudfs_write(path, buf, size, offset, fileInfo);
 }
 

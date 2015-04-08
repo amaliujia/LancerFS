@@ -58,13 +58,18 @@ public:
 	int cloudfs_link(const char *path, const char *newpath);
 	int cloudfs_chmod(const char *path, mode_t mode);
 	int cloudfs_open(const char *path, struct fuse_file_info *fileInfo);
-	int cloudfs_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fileInfo);
-	int cloudfs_write(const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fileInfo);
+	int cloudfs_read(const char *path, char *buf, size_t size, off_t offset,
+                     struct fuse_file_info *fileInfo);
+	int cloudfs_write(const char *path, const char *buf, size_t size,
+                      off_t offset, struct fuse_file_info *fileInfo);
 	int cloudfs_release(const char *path, struct fuse_file_info *fi);
-	int cloudfs_setxattr(const char *path, const char *name, const char *value, size_t size, int flags);
-	int cloudfs_getxattr(const char *path, const char *name, char *value, size_t size);
+	int cloudfs_setxattr(const char *path, const char *name, const char *value,
+                         size_t size, int flags);
+	int cloudfs_getxattr(const char *path, const char *name, char *value,
+                         size_t size);
 	int cloudfs_opendir(const char *path, struct fuse_file_info *fileInfo);
-	int cloudfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fileInfo);
+	int cloudfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
+                        off_t offset, struct fuse_file_info *fileInfo);
 	int cloudfs_truncate(const char *path, off_t newsize);
 	void *cloudfs_init(struct fuse_conn_info *conn);
 	void cloudfs_destroy(void *data); 
@@ -86,7 +91,8 @@ private:
 //	int put_buffer(char *buffer, int bufferLength); 
 	void cloud_get_shadow(const char *fullpath, const char *cloudpath);
 	void cloud_push_file(const char *fpath, struct stat *stat_buf);
-	void cloud_push_shadow(const char *fullpath, const char *shadowpath, struct stat *stat_buf);
+	void cloud_push_shadow(const char *fullpath, const char *shadowpath,
+                           struct stat *stat_buf);
 	void cloud_filename(char *path);
 	void cloud_slave_filename(char *path);
 

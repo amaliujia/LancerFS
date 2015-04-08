@@ -41,15 +41,19 @@ int wmknod(const char *path, mode_t mode, dev_t dev);
 int wmkdir(const char *path, mode_t mode);
 int wrmdir(const char *path);
 int wunlink(const char *path);
-int wreaddir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fileInfo);
+int wreaddir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset,
+             struct fuse_file_info *fileInfo);
 int wchmod(const char *path, mode_t mode);
 int wchown(const char *path, uid_t uid, gid_t gid);
-int wsetxattr(const char *path, const char *name, const char *value, size_t size, int flags);
+int wsetxattr(const char *path, const char *name,
+              const char *value, size_t size, int flags);
 int wgetxattr(const char *path, const char *name, char *value, size_t size);
 int wrelease(const char *path, struct fuse_file_info *fileInfo);
 int wopen(const char *path, struct fuse_file_info *fileInfo);
-int wread(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fileInfo);
-int wwrite(const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fileInfo);
+int wread(const char *path, char *buf, size_t size, off_t offset,
+          struct fuse_file_info *fileInfo;
+int wwrite(const char *path, const char *buf, size_t size, off_t offset,
+           struct fuse_file_info *fileInfo);
 int wopendir(const char *path, struct fuse_file_info *fileInfo);
 int wtruncate(const char *path, off_t newSize);
 int waccess(const char *path, int mask);

@@ -58,49 +58,6 @@ void LancerFS::cloudfs_set_attribute(const char *fullpath, struct stat *buf){
   //lsetxattr(fullpath, "user.st_blksize", &(buf.st_blksize), sizeof(blksize_t));
 }
 
-/*void LancerFS::cloud_get_shadow(const char *fullpath, const char *cloudpath){
-  //TODO: if need set mode
-	outfile = fopen(fullpath, "wb");
-  cloud_get_object("bkt", cloudpath, get_buffer);
-	fclose(outfile);
-} 
-
-void LancerFS::cloud_push_file(const char *fpath, struct stat *stat_buf){
-	lstat(fpath, stat_buf);
-	
-  char cloudpath[MAX_PATH_LEN];
-  memset(cloudpath, 0, MAX_PATH_LEN);
-  strcpy(cloudpath, fpath);
-  cloud_filename(cloudpath);
-	
-	infile = fopen(fpath, "rb");
-	if(infile == NULL){
-			log_msg("LancerFS error: cloud push %s failed\n", fpath);
-			return;		
-	}
-	log_msg("LancerFS log: cloud_push_file(path=%s)\n", fpath);
-  cloud_put_object("bkt", cloudpath, stat_buf->st_size, put_buffer);
-  fclose(infile);	
-}
-
-void LancerFS::cloud_push_shadow(const char *fullpath, const char *shadowpath, struct stat *stat_buf){
-	char cloudpath[MAX_PATH_LEN+3];
-	memset(cloudpath, 0, MAX_PATH_LEN+3);
-	strcpy(cloudpath, fullpath);
-	
-	infile = fopen(shadowpath, "rb");
-  if(infile == NULL){
-     log_msg("LancerFS error: cloud push %s failed, cloudpath %s, shadowpath %s\n", fullpath, cloudpath, shadowpath);
-      return;
-  }	
-	
-	cloud_filename(cloudpath);
- 	log_msg("LancerFS log: cloud_push_file(path=%s)\n", cloudpath);
-  lstat(shadowpath, stat_buf);
-  cloud_put_object("bkt", cloudpath, stat_buf->st_size, put_buffer);
-  fclose(infile);
-}*/
-
 void LancerFS::cloud_filename(char *path){
 	while(*path != '\0'){
       if(*path == '/'){
@@ -186,7 +143,8 @@ void LancerFS::cloudfs_destroy(void *data UNUSED) {
 }
 
 
-int LancerFS::cloudfs_getxattr(const char *path, const char *name, char *value, size_t size)
+int LancerFS::cloudfs_getxattr(const char *path, const char *name,
+                               char *value, size_t size)
 {
     int ret = 0;
     char fpath[MAX_PATH_LEN];
@@ -204,10 +162,12 @@ int LancerFS::cloudfs_getxattr(const char *path, const char *name, char *value, 
     return ret;
 }
 
-int LancerFS::cloudfs_setxattr(const char *path, const char *name, const char *value, size_t size, int flags){
+int LancerFS::cloudfs_setxattr(const char *path, const char *name,
+                               const char *value, size_t size, int flags){
 	int ret = 0;
 	char fpath[MAX_PATH_LEN];	
-  log_msg("\ncfs_setxattr(path=\"%s\", name=\"%s\", value=\"%s\", size=%d, flags=0x%08x)\n", path, name, value, size, flags);
+  log_msg("\ncfs_setxattr(path=\"%s\", name=\"%s\", value=\"%s\", \
+            size=%d, flags=0x%08x)\n", path, name, value, size, flags);
   cloudfs_get_fullpath(path, fpath);
    
   ret = lsetxattr(fpath, name, value, size, flags);
@@ -305,7 +265,8 @@ int LancerFS::cloudfs_open(const char *path, struct fuse_file_info *fi){
 int LancerFS::cloudfs_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
 {
     int ret = 0;
-    log_msg("\ncfs_read(path=\"%s\", buf=0x%08x, size=%d, offset=%lld, fi=0x%08x)\n", path, buf, size, offset, fi);
+    log_msg("\ncfs_read(path=\"%s\", buf=0x%08x, size=%d, offset=%lld, \
+                fi=0x%08x)\n", path, buf, size, offset, fi);
     
     ret = pread(fi->fh, buf, size, offset);
     if (ret < 0)
@@ -314,10 +275,12 @@ int LancerFS::cloudfs_read(const char *path, char *buf, size_t size, off_t offse
     return ret;
 }
 
-int LancerFS::cloudfs_write(const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
+int LancerFS::cloudfs_write(const char *path, const char *buf, size_t size,
+                            off_t offset, struct fuse_file_info *fi)
 {
 	int ret = 0;
-  log_msg("\ncfs_write(path=\"%s\", buf=0x%08x, size=%d, offset=%lld, fi=0x%08x)\n", path, buf, size, offset, fi);
+  log_msg("\ncfs_write(path=\"%s\", buf=0x%08x, size=%d, offset=%lld, \
+          fi=0x%08x)\n", path, buf, size, offset, fi);
 	
   ret = pwrite(fi->fh, buf, size, offset);
   if(ret < 0){
