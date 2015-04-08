@@ -100,6 +100,8 @@ public:
 	void deduplicate(const char *path);
 	void retrieve(const char *fpath);
 	void remove(const char *fpath);
+	void clean(const char *fpath);
+	
 private:
 	void init_rabin_structrue();
 	void fingerprint(const char *path, vector<MD5_code> &code_list);

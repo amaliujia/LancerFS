@@ -288,12 +288,7 @@ int LancerFS::cloudfs_open(const char *path, struct fuse_file_info *fi){
 			log_msg("open non proxy file %s\n", path);
 	}else if(proxy == 1){// File opened is in cloud, only proxy file here
 			log_msg("LancerFS log: open proxy file %s\n", path);
-		 /* char cloudpath[MAX_PATH_LEN];
-  		memset(cloudpath, 0, MAX_PATH_LEN);
-  		strcpy(cloudpath, fpath);	
-			cloud_filename(cloudpath);*/
-				
-			//cloud_get_shadow(fpath, cloudpath);
+			
 			dup->retrieve(fpath);	
 			//int slave = 1;
 			int dirty = 0;

@@ -114,6 +114,11 @@ duplication::~duplication(){
 	rabin_free(&rp);
 }
 
+void duplication::clean(const char *fpath){
+	remove(fpath);
+	deduplicate(fpath);	
+}
+
 void duplication::remove(const char *fpath){
   string s(fpath);
   map<string, vector<MD5_code> >::iterator iter;
