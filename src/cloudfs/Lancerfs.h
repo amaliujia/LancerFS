@@ -45,6 +45,7 @@ public:
 	
 public:
 	LancerFS();
+ 	LancerFS(struct cloudfs_state *state);
 	~LancerFS();
 	static LancerFS *instance();
 

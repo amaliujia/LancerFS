@@ -46,7 +46,6 @@ private:
       public:
         char md5[MD5_LEN];
         int segment_len;
-				
         void set_code(unsigned char *code, int len){
 					memset(md5, 0, MD5_LEN); 
           for(int i = 0; i < MD5_DIGEST_LENGTH; i++){
@@ -54,6 +53,10 @@ private:
 					}
           segment_len = len;
         }
+				
+				void set_code(char *code){
+					memcpy(md5, code, MD5_LEN);		
+				}
 
         bool operator<(const MD5_code& other) const{
           for(int i = 0; i < MD5_LEN; i++){
@@ -95,7 +98,7 @@ private:
 	map<MD5_code, int> chunk_set;
 
 public:
-	duplication(FILE *fd);
+	duplication(FILE *fd, char *ssd_path);
 	duplication(FILE *fd, int ws, int ass, int mss, int mxx);
 	~duplication();
 	
@@ -112,9 +115,11 @@ private:
 	void log_msg(const char *format, ...);
 	bool lookup();
 	void serialization();
+	void recovery();
 	void put(const char *fpath, MD5_code &code, long offset);
 	void get(const char *fpath, MD5_code &code, long offset);	
 	void del(MD5_code &code);
+ 	void fullpath(const char *path, char *fpath);
 };
 
 #endif //DUPLICATION_HPP

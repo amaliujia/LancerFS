@@ -110,7 +110,7 @@ all: cloudfs
 $(BUILD)/obj/duplication.o:cloudfs/duplication.cpp
 	$(QUIET_ECHO) $@: Compiling object
 	@ mkdir -p $(dir $(BUILD)/dep/$<)
-	g++ $(CPPFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
+	@g++ $(CPPFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
         -o $(BUILD)/dep/$(<:%.c=%.d) -c $<
 	mkdir -p $(dir $@)
 	$(VERBOSE_SHOW) g++ $(CPPFLAGS) -o $@ -c $<
@@ -118,7 +118,7 @@ $(BUILD)/obj/duplication.o:cloudfs/duplication.cpp
 $(BUILD)/obj/Lancerfs.o:cloudfs/Lancerfs.cpp 
 	$(QUIET_ECHO) $@: Compiling object
 	@ mkdir -p $(dir $(BUILD)/dep/$<)
-	g++ $(CPPFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
+	@g++ $(CPPFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
         -o $(BUILD)/dep/$(<:%.c=%.d) -c $<
 	mkdir -p $(dir $@)
 	$(VERBOSE_SHOW) g++ $(CPPFLAGS) -o $@ -c $<
@@ -126,7 +126,7 @@ $(BUILD)/obj/Lancerfs.o:cloudfs/Lancerfs.cpp
 $(BUILD)/obj/wrapper.o: cloudfs/wrapper.cpp 
 	$(QUIET_ECHO) $@: Compiling object
 	@ mkdir -p $(dir $(BUILD)/dep/$<)
-	g++ $(CPPFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
+	@g++ $(CPPFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
         -o $(BUILD)/dep/$(<:%.c=%.d) -c $<
 	mkdir -p $(dir $@)
 	$(VERBOSE_SHOW) g++ $(CPPFLAGS) -o $@ -c $<
@@ -134,7 +134,7 @@ $(BUILD)/obj/wrapper.o: cloudfs/wrapper.cpp
 $(BUILD)/obj/cloudfs.o: cloudfs/cloudfs.c cloudfs/cloudfs.h
 	$(QUIET_ECHO) $@: Compiling object
 	@ mkdir -p $(dir $(BUILD)/dep/$<)
-	gcc $(CFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
+	@gcc $(CFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
         -o $(BUILD)/dep/$(<:%.c=%.d) -c $<
 	mkdir -p $(dir $@)
 	$(VERBOSE_SHOW) gcc $(CFLAGS) -o $@ -c $<
@@ -142,7 +142,7 @@ $(BUILD)/obj/cloudfs.o: cloudfs/cloudfs.c cloudfs/cloudfs.h
 $(BUILD)/obj/cloudapi.o: cloud-lib/cloudapi.c 
 	$(QUIET_ECHO) $@: Compiling object
 	@ mkdir -p $(dir $(BUILD)/dep/$<)
-	gcc $(CFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
+	@gcc $(CFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
         -o $(BUILD)/dep/$(<:%.c=%.d) -c $<
 	mkdir -p $(dir $@)
 	$(VERBOSE_SHOW) gcc $(CFLAGS) -o $@ -c $<
@@ -151,7 +151,7 @@ $(BUILD)/obj/main.o: cloudfs/main.c cloudfs/cloudfs.h	\
 										cloud-lib/cloudapi.c 
 	$(QUIET_ECHO) $@: Compiling object
 	@ mkdir -p $(dir $(BUILD)/dep/$<)
-	gcc $(CFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
+	@gcc $(CFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
         -o $(BUILD)/dep/$(<:%.c=%.d) -c $<
 	mkdir -p $(dir $@)
 	$(VERBOSE_SHOW) gcc $(CFLAGS) -o $@ -c $<

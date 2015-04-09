@@ -14,6 +14,23 @@ extern "C"
 #define UNUSED __attribute__((unused))
 
 
+LancerFS::LancerFS(struct cloudfs_state *state){
+	state_.init(state);
+
+  char *logpath = "/tmp/cloudfs.log";
+
+  //init log
+  logfd = fopen(logpath, "w");
+  if(logfd == NULL){
+    printf("LancerFS Error: connot find log file\n");
+    exit(1);
+  }
+
+  //init deduplication layer
+  dup = new duplication(logfd, state_.ssd_path);
+
+}
+
 void LancerFS::cloudfs_generate_proxy(const char *fullpath, struct stat *buf){
 	int fd = creat(fullpath, buf->st_mode);
 	log_msg("LancerFS log: create proxy file\n");
@@ -316,7 +333,7 @@ int LancerFS::cloudfs_release(const char *path, struct fuse_file_info *fi){
 		log_msg("LancerFS log: release local file\n");
 		struct stat buf;
 		lstat(fullpath, &buf); 
-		if(buf.st_size < 10){//state_.threshold){//small file, keep in SSD
+		if(buf.st_size < state_.threshold){//small file, keep in SSD
 			log_msg("LancerFS log: close local file\n");
 			ret = close(fi->fh);		
 			//goto done; 	
@@ -333,7 +350,9 @@ int LancerFS::cloudfs_release(const char *path, struct fuse_file_info *fi){
 			struct stat buf;							
 		
 			if(get_dirty(fullpath)){//dirty file, flush to Cloud
-				//cloud_push_shadow(fullpath, fullpath, &buf);		
+				//cloud_push_shadow(fullpath, fullpath, &buf);	
+				//dup->deduplicate(fullpath);		
+				dup->clean(fullpath);	
 			}
 			
 			//lstat(fullpath, &buf); 
@@ -465,7 +484,7 @@ LancerFS::LancerFS(){
 	//cloud_create_bucket("bkt");
 
 	//init deduplication layer
-	dup = new duplication(logfd);	
+	dup = new duplication(logfd, state_.ssd_path);	
 }
 
 LancerFS::~LancerFS(){

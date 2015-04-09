@@ -1,3 +1,6 @@
+#define INDEX_FILE "/.index.file"
+#define INDEX_CHUNK "/.index.chunk"
+
 #include "duplication.h"
 
 static  FILE *outfile;
@@ -11,7 +14,13 @@ int put_buffer(char *buffer, int bufferLength) {
   return fread(buffer, 1, bufferLength, infile);
 }
 
-duplication::duplication(FILE *fd){
+void duplication::fullpath(const char *path, char *fpath){
+  sprintf(fpath, "%s", fname);
+  path++;
+  sprintf(fpath, "%s%s", fpath, path);	
+}
+
+duplication::duplication(FILE *fd, char *ssd_path){
   window_size = 48;
   avg_seg_size = 4096;
   min_seg_size = 2048;
@@ -19,9 +28,13 @@ duplication::duplication(FILE *fd){
   //fname[PATH_MAX] = {0};
 	memset(fname, 0, PATH_MAX);
 	logfd = fd;
+	strcpy(fname, ssd_path);	
 
 	//init rabin 
-	init_rabin_structrue(); 
+	init_rabin_structrue();
+
+	//recover index
+	recovery();
 }
 
 duplication::duplication(FILE *fd, int ws, int ass, int mss, int mxx){
@@ -53,6 +66,7 @@ void duplication::init_rabin_structrue(){
 }
 
 void duplication::deduplicate(const char *path){
+		log_msg("deduplicate(path=%s)\n", path);
 		std::string s(path);
 	
 		//get fingerprint	
@@ -63,16 +77,17 @@ void duplication::deduplicate(const char *path){
 		map<string, vector<MD5_code> >::iterator iter;
 		iter = file_map.find(s);
 		if(iter == file_map.end()){
-			//file_map.put(s, code_list);
 			file_map.insert(pair<string, vector<MD5_code> >(s, code_list));	
 		}
 
 		//update chunk
-		update_chunk(path, code_list);												
+		update_chunk(path, code_list);											
+
+		//maintain indisk index
+		serialization();	
 }
 
 void duplication::update_chunk(const char *fpath, vector<MD5_code> &code_list){
-	//vector<MD5_code>::iterator iter;
 	map<MD5_code, int>::iterator iter;
 	long offset = 0;
 	for(unsigned int i = 0; i < code_list.size(); i++){
@@ -80,7 +95,6 @@ void duplication::update_chunk(const char *fpath, vector<MD5_code> &code_list){
 		if((iter = chunk_set.find(c)) != chunk_set.end()){
 			iter->second += 1;	
 		}else{
-			//chunk_set.put(c, 1);
 			chunk_set.insert(pair<MD5_code, int>(c, 1));	
 			//push to cloud
 			put(fpath, c, offset);		
@@ -112,15 +126,97 @@ duplication::~duplication(){
 }
 
 void duplication::clean(const char *fpath){
+	log_msg("clean(path=%s\n", fpath);
 	remove(fpath);
 	deduplicate(fpath);	
 }
 
+void duplication::serialization(){
+	char fpath[PATH_LEN];
+	fullpath(INDEX_FILE, fpath);
+	FILE *fp = fopen(fpath, "w");
+	fprintf(fp, "%d\n", file_map.size());
+
+	map<string, vector<MD5_code> >::iterator iter;		
+	for(iter = file_map.begin(); iter != file_map.end(); iter++){
+		fprintf(fp, "%s %d\n", iter->first.c_str(), iter->second.size());
+		for(size_t j = 0; j < iter->second.size(); j++){
+			fprintf(fp, "%s\n",iter->second[j].md5);		
+		}	
+	}
+	fclose(fp);
+
+	fullpath(INDEX_CHUNK, fpath);
+	fp = fopen(fpath, "w");	
+	map<MD5_code, int>::iterator iter2;
+	for(iter2 = chunk_set.begin(); iter2 != chunk_set.end(); iter2++){
+		fprintf(fp, "%s %d\n", iter2->first.md5, iter2->second);	
+	}
+	fclose(fp);
+}
+
+void duplication::recovery(){
+  char fpath[PATH_LEN];
+  fullpath(INDEX_FILE, fpath);
+  FILE *fp = fopen(fpath, "r");
+	
+	if(fp != NULL){
+		int file_num = 0;
+		int ret = 0;
+		ret = fscanf(fp, "%d", &file_num);
+		if(ret != 1){
+			log_msg("no data in index\n");
+			fclose(fp);
+			return;
+		}
+		for(int i = 0; i < file_num; i++){
+			char filepath[PATH_LEN];
+			int md5_num = 0;	
+			ret = fscanf(fp, "%s %d", filepath, &md5_num);
+			if(ret != 2){
+				log_msg("wrong md5 num %s %d\n", filepath, md5_num);
+				continue;
+			}
+			vector<MD5_code> chunks;
+			for(int j = 0; j < md5_num; j++){
+					char md5[MD5_LEN] = {0};	
+					ret = fscanf(fp, "%s", md5);
+      		if(ret != 1){
+        		log_msg("wrong md5 %s\n", filepath);
+						continue;
+      		}
+					MD5_code c;
+					//TODO:: no len here
+					c.set_code(md5);
+					chunks.push_back(c);			
+			}
+			string s(filepath);
+			file_map.insert(pair<string, vector<MD5_code> >(s, chunks));
+		}	 	
+	}else{
+		return;
+	}
+	fclose(fp);
+	
+	//read md5 chunk
+  fullpath(INDEX_CHUNK, fpath);
+ 	fp = fopen(fpath, "r");
+	char md5[MD5_LEN] = {0};
+	int count = 0;	
+	while(fscanf(fp,"%s %d", md5, &count) == 2){
+		MD5_code c;
+		c.set_code(md5);
+		chunk_set.insert(pair<MD5_code, int>(c, count));	
+	} 
+	fclose(fp);	
+}
+
 void duplication::remove(const char *fpath){
+	log_msg("remove(path=%s\n", fpath);
   string s(fpath);
   map<string, vector<MD5_code> >::iterator iter;
   if((iter = file_map.find(s)) == file_map.end()){
-    log_msg("LancerFS error: not %s exist in index\n", fpath);
+    log_msg("LancerFS error: %s doesn't exist in index\n", fpath);
   	return;
 	}
 
@@ -137,14 +233,18 @@ void duplication::remove(const char *fpath){
 				chunk_iter->second -= 1;
 			}		
 		}	
-	} 
+	}
+	
+	//maintain indisk index
+  serialization(); 
 }
 
 void duplication::retrieve(const char *fpath){
+	log_msg("retrieve(path=%s\n", fpath);
 	string s(fpath);
 	map<string, vector<MD5_code> >::iterator iter;
 	if((iter = file_map.find(s)) == file_map.end()){
-		log_msg("LancerFS error: not %s exist in index\n", fpath);
+		log_msg("LancerFS error: %s doesn't exist in index, size %d\n", fpath, file_map.size());
 		//exit(1);					
 		return;	
 	}			
