@@ -69,7 +69,6 @@ void duplication::deduplicate(const char *path){
 
 		//update chunk
 		update_chunk(path, code_list);												
-					
 }
 
 void duplication::update_chunk(const char *fpath, vector<MD5_code> &code_list){
@@ -103,10 +102,8 @@ void duplication::put(const char *fpath, MD5_code &code, long offset){
 			log_msg("LancerFS error: cloud push %s offset %l\n", fpath, offset); 
       return;
 	}
-	char md5c[MD5_DIGEST_LENGTH];
-	memset(md5c, 0, MD5_DIGEST_LENGTH);
-	memcpy(md5c, code.md5, MD5_DIGEST_LENGTH);
-	cloud_put_object("bkt", md5c, code.segment_len, put_buffer);
+	
+	cloud_put_object("bkt", code.md5, code.segment_len, put_buffer);
 	fclose(infile);				
 }
 
@@ -132,10 +129,7 @@ void duplication::remove(const char *fpath){
 	for(unsigned int i = 0; i < chunks.size(); i++){
 		MD5_code c = chunks[i];
 
- 		char md5c[MD5_DIGEST_LENGTH];
-  	memset(md5c, 0, MD5_DIGEST_LENGTH);
-  	memcpy(md5c, c.md5, MD5_DIGEST_LENGTH);
-		cloud_delete_object("bkt", md5c);	
+		cloud_delete_object("bkt", c.md5);	
 		if((chunk_iter = chunk_set.find(c)) != chunk_set.end()){
 			if(chunk_iter->second == 1){
 				chunk_set.erase(chunk_iter);
@@ -165,7 +159,7 @@ void duplication::retrieve(const char *fpath){
 }
 
 void duplication::get(const char *fpath, MD5_code &code, long offset){
-  outfile = fopen(fpath, "wb");
+  outfile = fopen(fpath, "ab");
 	 
 	if(outfile == NULL){
      log_msg("LancerFS error: cloud pull %s\n", fpath);
@@ -178,11 +172,7 @@ void duplication::get(const char *fpath, MD5_code &code, long offset){
       return;
   }
 
-  char md5c[MD5_DIGEST_LENGTH];
-  memset(md5c, 0, MD5_DIGEST_LENGTH);
-  memcpy(md5c, code.md5, MD5_DIGEST_LENGTH);
- 
-	cloud_get_object("bkt", md5c, get_buffer);
+	cloud_get_object("bkt", code.md5, get_buffer);
   fclose(outfile);
 }
 void duplication::fingerprint(const char *path, vector<MD5_code> &code_list){

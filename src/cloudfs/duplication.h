@@ -37,24 +37,26 @@ extern "C"
 #endif
 
 #define PATH_LEN 4096
-
+#define MD5_LEN ((MD5_DIGEST_LENGTH * 2) + 1)
 using namespace std;
 
 class duplication{
 private:
   class MD5_code{
       public:
-        unsigned char md5[MD5_DIGEST_LENGTH];
+        char md5[MD5_LEN];
         int segment_len;
 				
         void set_code(unsigned char *code, int len){
-          memset(md5, 0, MD5_DIGEST_LENGTH);
-          memcpy(md5, code, MD5_DIGEST_LENGTH);
+					memset(md5, 0, MD5_LEN); 
+          for(int i = 0; i < MD5_DIGEST_LENGTH; i++){
+						sprintf(&md5[i * 2], "%02x", code[i]);
+					}
           segment_len = len;
         }
 
         bool operator<(const MD5_code& other) const{
-          for(int i = 0; i < MD5_DIGEST_LENGTH; i++){
+          for(int i = 0; i < MD5_LEN; i++){
             if(md5[i] == other.md5[i]){
                 continue;
             }else if(md5[i] < other.md5[i]){
@@ -67,7 +69,7 @@ private:
         }
 
         bool operator==(const MD5_code& other) const{
-           for(int i = 0; i < MD5_DIGEST_LENGTH; i++){
+           for(int i = 0; i < MD5_LEN; i++){
             if(md5[i] == other.md5[i]){
                 continue;
             }else{

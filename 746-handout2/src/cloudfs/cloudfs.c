@@ -15,18 +15,26 @@ static FILE *logfd = NULL ;
 
 static struct cloudfs_state state_;
 
+void cloudfs_savetime(const char *fpath, struct timespec tv[2]){
+	struct stat buf;
+	lstat(fpath, &buf);
+
+	tv[0].tv_sec = buf.st_atime;
+	tv[1].tv_sec = buf.st_mtime;	
+	tv[0].tv_nsec = 0;
+	tv[1].tv_nsec = 0;	
+} 
+
 void cloudfs_generate_proxy(const char *fullpath, struct stat *buf){
-	int fd = creat(fullpath, buf->st_mode);
-	if(fd < 0){
-			log_msg("LancerFS error: fail to create proxy file %s\n", fullpath);	
-	}
+	//int fd = creat(fullpath, buf->st_mode);
+	truncate(fullpath, 0);
+	
 	int proxy = 1;
 	lsetxattr(fullpath, "user.proxy", &proxy, sizeof(int), 0);
 	lsetxattr(fullpath, "user.st_size", &(buf->st_size), sizeof(off_t), 0);	
 	//lsetxattr(fullpath, "user.st_mode", &(buf->st_mode), sizeof(mode_t), 0);
-	lsetxattr(fullpath, "user.st_mtime", &(buf->st_mtime), sizeof(time_t), 0);
+	//lsetxattr(fullpath, "user.st_mtime", &(buf->st_mtime), sizeof(time_t), 0);
 	//lsetxattr(fullpath, "user.st_blksize", &(buf->st_blksize), sizeof(blksize_t), 0);
-	close(fd);
 }
 
 int cloudfs_save_attribute(const char *fullpath, struct stat *buf){
@@ -43,12 +51,12 @@ int cloudfs_save_attribute(const char *fullpath, struct stat *buf){
 		log_msg("%s Save size attribute\n", fullpath);
 		buf->st_size = size;
 	}
-	time_t time;
+	/*time_t time;
 	ret = lgetxattr(fullpath, "user.st_mtime", &time, sizeof(time_t)); 
 	if(ret > 0){
 		log_msg("%s Save time attribute\n", fullpath);
 		buf->st_mtime = time;
-	}	
+	}*/	
 	return ret;
 } 
 
@@ -71,7 +79,7 @@ int UNUSED cloudfs_change_attribute(const char *fullpath, const char *slavepath)
 
 void cloudfd_set_attribute(const char *fullpath, struct stat *buf){
   lsetxattr(fullpath, "user.st_size", &(buf->st_size), sizeof(off_t), 0);
-  lsetxattr(fullpath, "user.st_mtime", &(buf->st_mtime), sizeof(time_t), 0);
+  //lsetxattr(fullpath, "user.st_mtime", &(buf->st_mtime), sizeof(time_t), 0);
   //lsetxattr(fullpath, "user.st_blksize", &(buf.st_blksize), sizeof(blksize_t));
 	
 }
@@ -242,7 +250,7 @@ int cloudfs_getattr(const char *path , struct stat *statbuf)
 		ret = lstat(fpath, statbuf);
 		log_msg("\ncfs_getattr_proxy(path=\"%s\"\n", fpath);	
 	  lgetxattr(fpath, "user.st_size", &(statbuf->st_size), sizeof(off_t));
-  	lgetxattr(fpath, "user.st_mtime", &(statbuf->st_mtime), sizeof(time_t));
+  	//lgetxattr(fpath, "user.st_mtime", &(statbuf->st_mtime), sizeof(time_t));
   	//lgetxattr(fpath, "user.st_blksize", &(statbuf->st_blksize), sizeof(blksize_t));
 	
 		if(ret != 0){
@@ -413,32 +421,13 @@ int cloudfs_open(const char *path, struct fuse_file_info *fi){
   		strcpy(cloudpath, fpath);	
 			cloud_filename(cloudpath);
 				
-			/*char slavepath[MAX_PATH_LEN+3];
- 			memset(slavepath, 0, MAX_PATH_LEN + 3);
-  	  strcpy(slavepath, fpath);
-			cloud_slave_filename(slavepath);	
-    	log_msg("LancerFS log: create slave file %s by cloud file %s\n",
-            slavepath, cloudpath);*/
-			
-      //open shadow file with mode
-      //mode_t mode; 
-      //lgetxattr(fpath, "user.mode", &mode, sizeof(mode_t)); 	
-			//struct stat buf;
-  		//r = lstat(fpath, &buf);						
-			//fd = creat(slavepath, buf.st_mode);
-			/*if(fd < 0){
-				r = cloudfs_error("fail to create shadow file\n");
-				return r;	
-			}*/
-			//close(fd);	
+			struct timespec tv[2];
+			cloudfs_savetime(fpath, tv); 
 			cloud_get_shadow(fpath, cloudpath);
-				
-			//int slave = 1;
+			utimensat(0, fpath, tv, 0);		
 			int dirty = 0;
 					
-			//lsetxattr(fpath, "user.slave", &slave, sizeof(int), 0);	
 			lsetxattr(fpath, "user.dirty", &dirty, sizeof(int), 0);
-			
 	}else{
 		r = cloudfs_error("LFS error: wrong proxy file flag\n");  
 	}
@@ -509,38 +498,35 @@ int cloudfs_release(const char *path, struct fuse_file_info *fi){
 			//goto done; 	
 		}else{
 			struct stat stat_buf;
+			struct timespec tv[2];
+      cloudfs_savetime(fullpath, tv);
 			cloud_push_file(fullpath, &stat_buf);
 		
-			//BUG
-			//int r = lgetattr(fullpath, 	
-			
 			//delete current from SSD
 			//assume only file can only be opened once
-			unlink(fullpath);
+			//unlink(fullpath);
 
 			//now file should be deleted
 			//create a proxy file with same path
 			cloudfs_generate_proxy(fullpath, &stat_buf);
+			utimensat(0, fullpath, tv, 0);
 		}
 	}else{// a proxy file
 			log_msg("LancerFS log: handle proxy file\n");	
 			struct stat buf;							
-		
+		  struct timespec tv[2];
+      cloudfs_savetime(fullpath, tv);	
 			if(get_dirty(fullpath)){//dirty file, flush to Cloud
 				cloud_push_shadow(fullpath, fullpath, &buf);		
 			}
 			
 			//lstat(fullpath, &buf); 
 			cloudfs_save_attribute(fullpath, &buf);
-			unlink(fullpath);
-			cloudfs_generate_proxy(fullpath, &buf);	
-			//cloudfs_change_attribute(fullpath, slavepath);	
-			//delete slave file	
-			//close(fi->fh);
-			//unlink(slavepath);	
-			//set proxy file attribute?
+			//unlink(fullpath);
+			truncate(fullpath, 0);
+			cloudfs_generate_proxy(fullpath, &buf);
+			utimensat(0, fullpath, tv, 0);	
 			set_dirty(fullpath, 0);
-			//set_slave(fullpath, 0);	
 	}
 	
 	return ret;
@@ -570,7 +556,7 @@ int cloudfs_utimens(const char *path, const struct timespec tv[2]){
 
 	log_msg("Lancer log: cfs_utimens(path=%s)\n", fullpath);
 	ret = utimensat(0, fullpath, tv, 0);
-	lsetxattr(fullpath, "user.st_mtime", &tv[1], sizeof(time_t), 0);	
+	//lsetxattr(fullpath, "user.st_mtime", &tv[1], sizeof(time_t), 0);	
 	if(ret < 0){
 		ret = cloudfs_error("utimes fail\n");
 	}			

@@ -88,7 +88,7 @@ int main(int argc, const char *argv[])
 	int len, segment_len = 0, b;
 	char buf[1024];
 	int bytes;
-
+	int count = 0;
 	MD5_Init(&ctx);
 	while( (bytes = read(fd, buf, sizeof buf)) > 0 ) {
 		char *buftoread = (char *)&buf[0];
@@ -101,6 +101,7 @@ int main(int argc, const char *argv[])
 				MD5_Final(md5, &ctx);
 
 				printf("%u ", segment_len);
+				printf("this is count %d ", count++);
 				for(b = 0; b < MD5_DIGEST_LENGTH; b++)
 					printf("%02x", md5[b]);
 				printf("\n");
@@ -124,6 +125,7 @@ int main(int argc, const char *argv[])
 	MD5_Final(md5, &ctx);
 
 	printf("%u ", segment_len);
+	printf("this is count %d ", count++);
 	for(b = 0; b < MD5_DIGEST_LENGTH; b++) {
 		printf("%02x", md5[b]);
 	}

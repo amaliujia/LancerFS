@@ -316,7 +316,7 @@ int LancerFS::cloudfs_release(const char *path, struct fuse_file_info *fi){
 		log_msg("LancerFS log: release local file\n");
 		struct stat buf;
 		lstat(fullpath, &buf); 
-		if(buf.st_size < state_.threshold){//small file, keep in SSD
+		if(buf.st_size < 10){//state_.threshold){//small file, keep in SSD
 			log_msg("LancerFS log: close local file\n");
 			ret = close(fi->fh);		
 			//goto done; 	

@@ -51,7 +51,7 @@ int wgetxattr(const char *path, const char *name, char *value, size_t size);
 int wrelease(const char *path, struct fuse_file_info *fileInfo);
 int wopen(const char *path, struct fuse_file_info *fileInfo);
 int wread(const char *path, char *buf, size_t size, off_t offset,
-          struct fuse_file_info *fileInfo;
+          struct fuse_file_info *fileInfo);
 int wwrite(const char *path, const char *buf, size_t size, off_t offset,
            struct fuse_file_info *fileInfo);
 int wopendir(const char *path, struct fuse_file_info *fileInfo);
