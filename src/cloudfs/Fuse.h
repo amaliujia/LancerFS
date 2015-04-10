@@ -25,6 +25,17 @@ public:
 		rabin_window_size = state->rabin_window_size;
 		no_dedup = state->no_dedup;	
 	}
+
+	void copy(fuse_struct *state){
+    strcpy(ssd_path, state->ssd_path);
+    strcpy(fuse_path, state->fuse_path);
+    strcpy(hostname, state->hostname);
+    ssd_size = state->ssd_size;
+    threshold = state->threshold;
+    avg_seg_size = state->avg_seg_size;
+    rabin_window_size = state->rabin_window_size;
+    no_dedup = state->no_dedup;
+	}
 };
 
 #endif

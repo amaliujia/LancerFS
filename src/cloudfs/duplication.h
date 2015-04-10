@@ -24,6 +24,8 @@
 #include <iostream>
 #include <string>
 
+#include "Fuse.h"
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -38,6 +40,7 @@ extern "C"
 
 #define PATH_LEN 4096
 #define MD5_LEN ((MD5_DIGEST_LENGTH * 2) + 1)
+
 using namespace std;
 
 class duplication{
@@ -89,7 +92,8 @@ private:
   int avg_seg_size;
   int min_seg_size;
   int max_seg_size;
-  char fname[PATH_MAX];
+  //char fname[PATH_MAX];
+	fuse_struct state_;
 	
 	rabinpoly_t *rp;
 	FILE *logfd;
@@ -99,7 +103,7 @@ private:
 
 public:
 	duplication(FILE *fd, char *ssd_path);
-	duplication(FILE *fd, int ws, int ass, int mss, int mxx);
+	duplication(FILE *fd, fuse_struct *state);
 	~duplication();
 	
 	void deduplicate(const char *path);

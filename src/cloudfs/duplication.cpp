@@ -15,7 +15,7 @@ int put_buffer(char *buffer, int bufferLength) {
 }
 
 void duplication::fullpath(const char *path, char *fpath){
-  sprintf(fpath, "%s", fname);
+  sprintf(fpath, "%s", state_.ssd_path);
   path++;
   sprintf(fpath, "%s%s", fpath, path);	
 }
@@ -26,9 +26,9 @@ duplication::duplication(FILE *fd, char *ssd_path){
   min_seg_size = 2048;
   max_seg_size = 8192;
   //fname[PATH_MAX] = {0};
-	memset(fname, 0, PATH_MAX);
+	//memset(fname, 0, PATH_MAX);
 	logfd = fd;
-	strcpy(fname, ssd_path);	
+	//strcpy(fname, ssd_path);	
 
 	//init rabin 
 	init_rabin_structrue();
@@ -37,16 +37,21 @@ duplication::duplication(FILE *fd, char *ssd_path){
 	recovery();
 }
 
-duplication::duplication(FILE *fd, int ws, int ass, int mss, int mxx){
-  window_size = ws;
-  avg_seg_size = ass;
-  min_seg_size = mss;
-  max_seg_size = mxx;
-	//fname[PATH_MAX] = {0};
-	memset(fname, 0, PATH_MAX);
+duplication::duplication(FILE *fd, fuse_struct *state){
+  state_.copy(state);
+	window_size = state_.rabin_window_size;
+  avg_seg_size = state_.avg_seg_size;
+  min_seg_size = 0.5 * state_.avg_seg_size;
+  max_seg_size = 2 * state_.avg_seg_size;
+  
 	logfd = fd;
 
-	init_rabin_structrue();
+  //init rabin 
+  init_rabin_structrue();
+
+  //recover index
+  if(state_.no_dedup)
+		recovery();
 }
 
 void duplication::log_msg(const char *format, ...){
@@ -66,25 +71,29 @@ void duplication::init_rabin_structrue(){
 }
 
 void duplication::deduplicate(const char *path){
-		log_msg("deduplicate(path=%s)\n", path);
-		std::string s(path);
-	
-		//get fingerprint	
-		vector<MD5_code> code_list;
-		fingerprint(path, code_list);
-		
-		//if file exist
-		map<string, vector<MD5_code> >::iterator iter;
-		iter = file_map.find(s);
-		if(iter == file_map.end()){
-			file_map.insert(pair<string, vector<MD5_code> >(s, code_list));	
-		}
+		if(state_.no_dedup){
+			log_msg("deduplicate(path=%s)\n", path);
+			std::string s(path);
 
-		//update chunk
-		update_chunk(path, code_list);											
+			//get fingerprint	
+			vector<MD5_code> code_list;
+			fingerprint(path, code_list);
 
-		//maintain indisk index
-		serialization();	
+			//if file exist
+			map<string, vector<MD5_code> >::iterator iter;
+			iter = file_map.find(s);
+			if(iter == file_map.end()){
+				file_map.insert(pair<string, vector<MD5_code> >(s, code_list));	
+			}
+
+			//update chunk
+			update_chunk(path, code_list);											
+
+			//maintain indisk index
+			serialization();
+		}else{
+			//log
+		}	
 }
 
 void duplication::update_chunk(const char *fpath, vector<MD5_code> &code_list){
