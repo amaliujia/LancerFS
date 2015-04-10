@@ -16,16 +16,16 @@ extern "C"
 
 LancerFS::LancerFS(struct cloudfs_state *state){
 	state_.init(state);
-
-  logpath = "/tmp/cloudfs.log";
-
+	
+  //logpath = "/tmp/cloudfs.log";
+	logpath = "/home/student/LancerFS/src/cloudfs.log";
   //init log
-  logfd = fopen(logpath, "w");
+  logfd = fopen(logpath, "a");
   if(logfd == NULL){
     printf("LancerFS Error: connot find log file\n");
     exit(1);
   }
-
+	log_msg("LancerFS log: filesystem start\n");
   //init deduplication layer
 	dup = new duplication(logfd, &state_);
 }
@@ -102,7 +102,7 @@ void LancerFS::cloudfs_log_close(){
 }
 
 void LancerFS::cloudfs_log_init(){
-	logfd = fopen(logpath, "w");
+	logfd = fopen(logpath, "a");
 	if(logfd == NULL){
 		printf("LancerFS Error: connot find log file\n");
 		exit(1);	
@@ -334,23 +334,24 @@ int LancerFS::cloudfs_release(const char *path, struct fuse_file_info *fi){
 			struct stat stat_buf;
 			lstat(fullpath, &stat_buf);
 			//cloud_push_file(fullpath, &stat_buf);
-			//TODO: delete?
-			if(state_.no_dedup){
-				dup->deduplicate(fullpath);
-			}	
+			dup->deduplicate(fullpath);
+			unlink(fullpath);	
 			cloudfs_generate_proxy(fullpath, &stat_buf);
 		}
 	}else{// a proxy file
 			log_msg("LancerFS log: handle proxy file\n");	
-			struct stat buf;							
-		
+			
 			if(get_dirty(fullpath)){//dirty file, flush to Cloud
 				//cloud_push_shadow(fullpath, fullpath, &buf);	
-				//dup->deduplicate(fullpath);		
 				dup->clean(fullpath);	
 			}
-			
-			//lstat(fullpath, &buf); 
+		
+			//time bug?
+			/*
+			*	if dirty, timestamp of file is correct file, but here doesn't 
+			*	save that one.
+			*/	
+			struct stat buf;	
 			cloudfs_save_attribute(fullpath, &buf);
 			unlink(fullpath);
 			cloudfs_generate_proxy(fullpath, &buf);	
@@ -466,12 +467,12 @@ LancerFS::LancerFS(){
 	logpath = "/tmp/cloudfs.log";
 
 	//init log
-	logfd = fopen(logpath, "w");
+	logfd = fopen(logpath, "a");
 	if(logfd == NULL){
 		printf("LancerFS Error: connot find log file\n");
 		exit(1);	
 	}
-
+	log_msg("LancerFS log: filesystem start\n");
 	//init deduplication layer
 	dup = new duplication(logfd, state_.ssd_path);	
 }

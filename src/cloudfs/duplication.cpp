@@ -2,7 +2,7 @@
 #define INDEX_CHUNK "/.index.chunk"
 
 #include "duplication.h"
-
+#define UNUSED __attribute__((unused))
 static  FILE *outfile;
 static  FILE *infile;
 
@@ -14,21 +14,71 @@ int put_buffer(char *buffer, int bufferLength) {
   return fread(buffer, 1, bufferLength, infile);
 }
 
-void duplication::fullpath(const char *path, char *fpath){
+void duplication::cloud_get_shadow(const char *fullpath, const char *cloudpath){
+	outfile = fopen(fullpath, "wb");
+  cloud_get_object("bkt", cloudpath, get_buffer);
+	fclose(outfile);
+} 
+
+void duplication::cloud_push_file(const char *fpath, struct stat *stat_buf){
+	lstat(fpath, stat_buf);
+	
+  char cloudpath[MAX_PATH_LEN];
+  memset(cloudpath, 0, MAX_PATH_LEN);
+  strcpy(cloudpath, fpath);
+  cloud_filename(cloudpath);
+	
+	infile = fopen(fpath, "rb");
+	if(infile == NULL){
+			log_msg("LancerFS error: cloud push %s failed\n", fpath);
+			return;		
+	}
+	log_msg("LancerFS log: cloud_push_file(path=%s)\n", fpath);
+  cloud_put_object("bkt", cloudpath, stat_buf->st_size, put_buffer);
+  fclose(infile);	
+}
+
+void duplication::cloud_filename(char *path){
+	while(*path != '\0'){
+      if(*path == '/'){
+          *path = '+';
+      }
+      path++;
+  }
+}
+
+void duplication::cloud_push_shadow(const char *fullpath){
+	struct stat stat_buf;
+	
+	char cloudpath[MAX_PATH_LEN+3];
+	memset(cloudpath, 0, MAX_PATH_LEN+3);
+	strcpy(cloudpath, fullpath);
+	
+	infile = fopen(fullpath, "rb");
+  if(infile == NULL){
+     log_msg("LancerFS error: cloud push %s failed, cloudpath %s\n", fullpath, cloudpath);
+      return;
+  }	
+	
+	cloud_filename(cloudpath);
+ 	log_msg("LancerFS log: cloud_push_file(path=%s)\n", cloudpath);
+  lstat(fullpath, &stat_buf);
+  cloud_put_object("bkt", cloudpath, stat_buf.st_size, put_buffer);
+  fclose(infile);
+}
+
+void duplication::ssd_fullpath(const char *path, char *fpath){
   sprintf(fpath, "%s", state_.ssd_path);
   path++;
   sprintf(fpath, "%s%s", fpath, path);	
 }
 
-duplication::duplication(FILE *fd, char *ssd_path){
+duplication::duplication(FILE *fd, char *ssd_path UNUSED){
   window_size = 48;
   avg_seg_size = 4096;
   min_seg_size = 2048;
   max_seg_size = 8192;
-  //fname[PATH_MAX] = {0};
-	//memset(fname, 0, PATH_MAX);
 	logfd = fd;
-	//strcpy(fname, ssd_path);	
 
 	//init rabin 
 	init_rabin_structrue();
@@ -43,7 +93,7 @@ duplication::duplication(FILE *fd, fuse_struct *state){
   avg_seg_size = state_.avg_seg_size;
   min_seg_size = 0.5 * state_.avg_seg_size;
   max_seg_size = 2 * state_.avg_seg_size;
-  
+	state_.no_dedup = state_.no_dedup ^ 1;  
 	logfd = fd;
 
   //init rabin 
@@ -92,7 +142,10 @@ void duplication::deduplicate(const char *path){
 			//maintain indisk index
 			serialization();
 		}else{
-			//log
+			//push to cloud
+      struct stat stat_buf;
+      lstat(path, &stat_buf);
+			cloud_push_file(path, &stat_buf);	
 		}	
 }
 
@@ -101,6 +154,7 @@ void duplication::update_chunk(const char *fpath, vector<MD5_code> &code_list){
 	long offset = 0;
 	for(unsigned int i = 0; i < code_list.size(); i++){
 		MD5_code c = code_list[i];	
+		//bug here !!! wrong compare, I guess
 		if((iter = chunk_set.find(c)) != chunk_set.end()){
 			iter->second += 1;	
 		}else{
@@ -135,14 +189,18 @@ duplication::~duplication(){
 }
 
 void duplication::clean(const char *fpath){
-	log_msg("clean(path=%s\n", fpath);
-	remove(fpath);
-	deduplicate(fpath);	
+		if(state_.no_dedup){
+			log_msg("clean(path=%s\n", fpath);
+			remove(fpath);
+			deduplicate(fpath);
+		}else{
+			cloud_push_shadow(fpath);	
+		}
 }
 
 void duplication::serialization(){
 	char fpath[PATH_LEN];
-	fullpath(INDEX_FILE, fpath);
+	ssd_fullpath(INDEX_FILE, fpath);
 	FILE *fp = fopen(fpath, "w");
 	fprintf(fp, "%d\n", file_map.size());
 
@@ -155,18 +213,20 @@ void duplication::serialization(){
 	}
 	fclose(fp);
 
-	fullpath(INDEX_CHUNK, fpath);
+	ssd_fullpath(INDEX_CHUNK, fpath);
 	fp = fopen(fpath, "w");	
 	map<MD5_code, int>::iterator iter2;
 	for(iter2 = chunk_set.begin(); iter2 != chunk_set.end(); iter2++){
 		fprintf(fp, "%s %d\n", iter2->first.md5, iter2->second);	
 	}
 	fclose(fp);
+
+	log_msg("LancerFS log: current index: files %d chunks %d\n", file_map.size(), chunk_set.size());
 }
 
 void duplication::recovery(){
   char fpath[PATH_LEN];
-  fullpath(INDEX_FILE, fpath);
+  ssd_fullpath(INDEX_FILE, fpath);
   FILE *fp = fopen(fpath, "r");
 	
 	if(fp != NULL){
@@ -208,7 +268,7 @@ void duplication::recovery(){
 	fclose(fp);
 	
 	//read md5 chunk
-  fullpath(INDEX_CHUNK, fpath);
+  ssd_fullpath(INDEX_CHUNK, fpath);
  	fp = fopen(fpath, "r");
 	char md5[MD5_LEN] = {0};
 	int count = 0;	
@@ -221,49 +281,70 @@ void duplication::recovery(){
 }
 
 void duplication::remove(const char *fpath){
-	log_msg("remove(path=%s\n", fpath);
-  string s(fpath);
-  map<string, vector<MD5_code> >::iterator iter;
-  if((iter = file_map.find(s)) == file_map.end()){
-    log_msg("LancerFS error: %s doesn't exist in index\n", fpath);
-  	return;
-	}
+	if(state_.no_dedup){
+		log_msg("remove(path=%s\n", fpath);
+		string s(fpath);
+		map<string, vector<MD5_code> >::iterator iter;
+		if((iter = file_map.find(s)) == file_map.end()){
+			log_msg("LancerFS error: %s doesn't exist in index\n", fpath);
+			return;
+		}
 
-	vector<MD5_code> chunks = file_map[s];
-	map<MD5_code, int>::iterator chunk_iter;	
-	for(unsigned int i = 0; i < chunks.size(); i++){
-		MD5_code c = chunks[i];
+		vector<MD5_code> chunks = file_map[s];
+		map<MD5_code, int>::iterator chunk_iter;	
+		for(unsigned int i = 0; i < chunks.size(); i++){
+			MD5_code c = chunks[i];
 
-		cloud_delete_object("bkt", c.md5);	
-		if((chunk_iter = chunk_set.find(c)) != chunk_set.end()){
-			if(chunk_iter->second == 1){
-				chunk_set.erase(chunk_iter);
-			}else{
-				chunk_iter->second -= 1;
-			}		
-		}	
-	}
-	
-	//maintain indisk index
-  serialization(); 
+			if((chunk_iter = chunk_set.find(c)) != chunk_set.end()){
+				if(chunk_iter->second == 1){
+					cloud_delete_object("bkt", c.md5);	
+					chunk_set.erase(chunk_iter);
+				}else{
+					chunk_iter->second -= 1;
+				}		
+			}	
+		}
+
+		file_map.erase(iter);
+		//maintain indisk index
+		serialization();
+	}else{
+			char cloudpath[MAX_PATH_LEN];
+			memset(cloudpath, 0, MAX_PATH_LEN);
+			strcpy(cloudpath, fpath);
+			cloud_filename(cloudpath);	
+			cloud_delete_object("bkt", cloudpath);
+	} 
 }
 
 void duplication::retrieve(const char *fpath){
-	log_msg("retrieve(path=%s\n", fpath);
-	string s(fpath);
-	map<string, vector<MD5_code> >::iterator iter;
-	if((iter = file_map.find(s)) == file_map.end()){
-		log_msg("LancerFS error: %s doesn't exist in index, size %d\n", fpath, file_map.size());
-		//exit(1);					
-		return;	
-	}			
-	
-	vector<MD5_code> chunks = file_map[s];
-	long offset = 0;
-	for(unsigned int i = 0; i < chunks.size(); i++){
-		MD5_code c = chunks[i];
-		get(fpath, c, offset);
-		offset += c.segment_len;	
+	if(state_.no_dedup){
+		log_msg("retrieve(path=%s\n", fpath);
+		string s(fpath);
+		map<string, vector<MD5_code> >::iterator iter;
+		if((iter = file_map.find(s)) == file_map.end()){
+			log_msg("LancerFS error: %s doesn't exist in index, size %d\n", fpath, file_map.size());
+			return;	
+		}			
+
+		vector<MD5_code> chunks = file_map[s];
+		long offset = 0;
+		for(unsigned int i = 0; i < chunks.size(); i++){
+			MD5_code c = chunks[i];
+			get(fpath, c, offset);
+			offset += c.segment_len;	
+		}
+	}else{
+			log_msg("LancerFS log: open proxy file %s\n", fpath);
+		  char cloudpath[MAX_PATH_LEN];
+  		memset(cloudpath, 0, MAX_PATH_LEN);
+  		strcpy(cloudpath, fpath);	
+			cloud_filename(cloudpath);
+			
+			cloud_get_shadow(fpath, cloudpath);
+				
+			int dirty = 0;
+			lsetxattr(fpath, "user.dirty", &dirty, sizeof(int), 0);		
 	}			
 }
 
@@ -290,7 +371,7 @@ void duplication::fingerprint(const char *path, vector<MD5_code> &code_list){
 	MD5_CTX ctx;
   unsigned char md5[MD5_DIGEST_LENGTH];
   int new_segment = 0;
-  int len, segment_len = 0, b;
+  int len, segment_len = 0, b UNUSED; 
   char buf[1024];
   int bytes;
 

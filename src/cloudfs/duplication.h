@@ -112,6 +112,9 @@ public:
 	void clean(const char *fpath);
 	
 private:
+	void cloud_push_file(const char *fpath, struct stat *stat_buf);
+	void cloud_get_shadow(const char *fullpath, const char *cloudpath);
+	void cloud_push_shadow(const char*);	
 	void init_rabin_structrue();
 	void fingerprint(const char *path, vector<MD5_code> &code_list);
 	void update_chunk(const char *fpath, vector<MD5_code> &code_list);
@@ -123,7 +126,8 @@ private:
 	void put(const char *fpath, MD5_code &code, long offset);
 	void get(const char *fpath, MD5_code &code, long offset);	
 	void del(MD5_code &code);
- 	void fullpath(const char *path, char *fpath);
+ 	void ssd_fullpath(const char *path, char *fpath);
+	void cloud_filename(char *path);
 };
 
 #endif //DUPLICATION_HPP
