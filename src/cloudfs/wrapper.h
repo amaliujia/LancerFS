@@ -14,7 +14,6 @@
 #include <sys/types.h>
 #include <sys/xattr.h>
 
-//#include "Lancerfs.h"
 
 #define MAX_PATH_LEN 4096
 #define MAX_HOSTNAME_LEN 1024

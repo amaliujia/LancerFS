@@ -5,8 +5,8 @@ extern "C"
 {
 #endif
 
-#include "../cloud-lib/cloudapi.h"
-#include "../dedup-lib/dedup.h"
+#include "cloudapi.h"
+#include "dedup.h"
 #ifdef __cplusplus
 }
 #endif
@@ -17,8 +17,8 @@ extern "C"
 LancerFS::LancerFS(struct cloudfs_state *state){
 	state_.init(state);
 	
-  //logpath = "/tmp/cloudfs.log";
-	logpath = "/home/student/LancerFS/src/cloudfs.log";
+  logpath = "/tmp/cloudfs.log";
+	//logpath = "/home/student/LancerFS/src/cloudfs.log";
   //init log
   logfd = fopen(logpath, "a");
   if(logfd == NULL){

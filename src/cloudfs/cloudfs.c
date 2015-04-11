@@ -35,7 +35,7 @@ int cloudfs_error(char *error_str)
 void *cloudfs_init(struct fuse_conn_info *conn UNUSED)
 {
 	cloud_init(state_.hostname);
-	cloud_delete_bucket("bkt");
+	//cloud_delete_bucket("bkt");
   cloud_create_bucket("bkt");
 	return NULL;
 }

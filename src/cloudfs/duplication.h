@@ -87,7 +87,6 @@ private:
   };
 
 private:
-	//TODO: what data structure should I have 	
   int window_size;
   int avg_seg_size;
   int min_seg_size;
