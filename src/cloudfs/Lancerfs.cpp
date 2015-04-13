@@ -20,10 +20,10 @@ LancerFS::LancerFS(struct cloudfs_state *state){
   logpath = "/tmp/cloudfs.log";
 	//logpath = "/home/student/LancerFS/src/cloudfs.log";
   //init log
-  logfd = fopen(logpath, "a");
+  logfd = fopen(logpath, "w");
   if(logfd == NULL){
     printf("LancerFS Error: connot find log file\n");
-    exit(1);
+    //exit(1);
   }
 	log_msg("LancerFS log: filesystem start\n");
   //init deduplication layer
@@ -102,10 +102,10 @@ void LancerFS::cloudfs_log_close(){
 }
 
 void LancerFS::cloudfs_log_init(){
-	logfd = fopen(logpath, "a");
+	logfd = fopen(logpath, "w");
 	if(logfd == NULL){
 		printf("LancerFS Error: connot find log file\n");
-		exit(1);	
+		//exit(1);	
 	}
 }
 
@@ -144,10 +144,6 @@ int LancerFS::get_slave(const char *fullpath){
 
 void *LancerFS::cloudfs_init(struct fuse_conn_info *conn UNUSED)
 {
-	int r = 0;
-  if(r != 0){
-    exit(1);
-  }
 	return NULL;
 }
 
@@ -261,8 +257,14 @@ int LancerFS::cloudfs_open(const char *path, struct fuse_file_info *fi){
 			log_msg("open non proxy file %s\n", path);
 	}else if(proxy == 1){// File opened is in cloud, only proxy file here
 			log_msg("LancerFS log: open proxy file %s\n", path);
-			
-			dup->retrieve(fpath);	
+			int size = dup->get_file_size(fpath);
+		
+			if(size >= state_.ssd_size){
+				string s(fpath);	
+				superfiles.insert(s);		
+			}else{	
+				dup->retrieve(fpath);
+			}	
 			//int slave = 1;
 			int dirty = 0;
 			lsetxattr(fpath, "user.dirty", &dirty, sizeof(int), 0);
@@ -277,13 +279,21 @@ int LancerFS::cloudfs_open(const char *path, struct fuse_file_info *fi){
 int LancerFS::cloudfs_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
 {
     int ret = 0;
-    log_msg("\ncfs_read(path=\"%s\", buf=0x%08x, size=%d, offset=%lld, \
+    log_msg("\ncfs_superfiles.insert(s);read(path=\"%s\", buf=0x%08x, size=%d, offset=%lld, \
                 fi=0x%08x)\n", path, buf, size, offset, fi);
-    
-    ret = pread(fi->fh, buf, size, offset);
-    if (ret < 0)
+  
+	  char fpath[MAX_PATH_LEN];
+  	cloudfs_get_fullpath(path, fpath); 
+		set<string>::iterator iter;	
+		string s(fpath);
+		iter = superfiles.find(s);
+		if(iter != superfiles.end()){
+			dup->offset_read(fpath, buf, size, offset);	
+		}else{
+    	ret = pread(fi->fh, buf, size, offset);
+    	if(ret < 0)
 				ret = cloudfs_error("cfs_read read");
-    
+		} 
     return ret;
 }
 
@@ -340,9 +350,15 @@ int LancerFS::cloudfs_release(const char *path, struct fuse_file_info *fi){
 		}
 	}else{// a proxy file
 			log_msg("LancerFS log: handle proxy file\n");	
+		
+			set<string>::iterator iter;	
+			string s(fullpath);
+			iter = superfiles.find(s);
+			if(iter != superfiles.end()){
+					superfiles.erase(iter);
+			}	
 			
 			if(get_dirty(fullpath)){//dirty file, flush to Cloud
-				//cloud_push_shadow(fullpath, fullpath, &buf);	
 				dup->clean(fullpath);	
 			}
 		
@@ -467,10 +483,10 @@ LancerFS::LancerFS(){
 	logpath = "/tmp/cloudfs.log";
 
 	//init log
-	logfd = fopen(logpath, "a");
+	logfd = fopen(logpath, "w");
 	if(logfd == NULL){
 		printf("LancerFS Error: connot find log file\n");
-		exit(1);	
+		//exit(1);	
 	}
 	log_msg("LancerFS log: filesystem start\n");
 	//init deduplication layer
@@ -494,9 +510,10 @@ int LancerFS::cloudfs_getattr(const char *path, struct stat *statbuf){
 	
 	if(get_proxy(fpath)){
 		ret = lstat(fpath, statbuf);
-		log_msg("\ncfs_getattr_proxy(path=\"%s\"\n", fpath);	
+		log_msg("\ncfs_getattr_proxy(path=\"%s\"\n", fpath);
 	  lgetxattr(fpath, "user.st_size", &(statbuf->st_size), sizeof(off_t));
-  	lgetxattr(fpath, "user.st_mtime", &(statbuf->st_mtime), sizeof(time_t));
+		//TODO::how to handle time
+		lgetxattr(fpath, "user.st_mtime", &(statbuf->st_mtime), sizeof(time_t));
 	
 		if(ret != 0){
 			ret = cloudfs_error("getattr lstat\n");
@@ -511,8 +528,9 @@ int LancerFS::cloudfs_getattr(const char *path, struct stat *statbuf){
   return ret;
 }
 
-int LancerFS::cloudfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler, 
-							off_t offset, struct fuse_file_info *fi)
+int LancerFS::cloudfs_readdir(const char *path, void *buf, 
+															fuse_fill_dir_t filler, off_t offset, 
+															struct fuse_file_info *fi)
 {
 	int ret = 0;
 	DIR *dp;

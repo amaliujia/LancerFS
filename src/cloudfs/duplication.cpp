@@ -6,12 +6,19 @@
 static  FILE *outfile;
 static  FILE *infile;
 
+static char *out_buffer;
+
 int get_buffer(const char *buffer, int bufferLength) {
   return fwrite(buffer, 1, bufferLength, outfile);
 }
 
 int put_buffer(char *buffer, int bufferLength) {
   return fread(buffer, 1, bufferLength, infile);
+}
+
+int get_chunk_buffer(const char *buffer, int bufferLength){
+	memcpy(out_buffer, buffer, bufferLength);
+	return 0;
 }
 
 void duplication::cloud_get_shadow(const char *fullpath, const char *cloudpath){
@@ -92,7 +99,6 @@ duplication::duplication(FILE *fd, fuse_struct *state){
 	window_size = state_.rabin_window_size;
   avg_seg_size = state_.avg_seg_size;
   min_seg_size = 0.5 * state_.avg_seg_size;
-  max_seg_size = 2 * state_.avg_seg_size;
 	state_.no_dedup = state_.no_dedup ^ 1;  
 	logfd = fd;
 
@@ -102,6 +108,10 @@ duplication::duplication(FILE *fd, fuse_struct *state){
   //recover index
   if(state_.no_dedup)
 		recovery();
+
+	out_buffer = NULL;
+	outfile = NULL;
+	infile = NULL;
 }
 
 void duplication::log_msg(const char *format, ...){
@@ -118,6 +128,74 @@ void duplication::init_rabin_structrue(){
     log_msg("Failed to init rabinhash algorithm\n");
 		exit(1);
   }
+}
+
+int duplication::get_file_size(const char *fpath){
+	string s(fpath);
+	map<string, vector<MD5_code> >::iterator iter;
+	if((iter = file_map.find(s)) != file_map.end()){
+    int size = 0;
+		for(size_t j = 0; j < iter->second.size(); j++){
+      size += iter->second[j].segment_len;   
+    }
+		return size;					
+	}
+	return 0;		
+}
+
+int duplication::offset_read(const char *fpath, char *buf, size_t size, off_t offset){
+	int ret = 0;
+	string s(fpath);
+	map<string, vector<MD5_code> >::iterator iter;
+	iter = file_map.find(s);
+	if(iter == file_map.end()){
+			ret = 1;
+			return ret;
+	}
+
+	char read_buf[size];
+	memset(read_buf, 0, size);
+	int bufoff = 0;
+	vector<MD5_code> v = iter->second;
+	vector<MD5_code> tv;
+	off_t end = offset + size - 1;
+	off_t start = offset;
+	int fileoff = 0;
+	for(size_t i = 0; i < v.size(); i++){
+		if(fileoff > end){
+			break;
+		}
+		int len = v[i].segment_len;
+		if((fileoff + len - 1) < start){
+      fileoff += len;
+			continue;
+    }
+	
+		char *tbuf = (char *)malloc(len * sizeof(char));
+		if(tbuf == NULL){
+				log_msg("LancerFS error: run out of memory\n");
+				ret = 1;
+				return ret;
+		}	
+		get_in_buffer(v[i], tbuf);
+		if((fileoff < start) && ((fileoff + len) > end)){
+				memcpy(read_buf + bufoff, tbuf + start - fileoff, size);
+				bufoff += size;		
+		}else if((fileoff < start) && ((fileoff + len) >= start)){
+				memcpy(read_buf + bufoff, tbuf + start - fileoff, len - start - fileoff);		
+				bufoff += (len - start - fileoff);	
+		}else if((fileoff <= end) && ((fileoff + len) > end)){
+				memcpy(read_buf + bufoff, tbuf, end - fileoff + 1);
+				bufoff += (end - fileoff + 1); 
+		}else{
+			memcpy(read_buf + bufoff, tbuf, len);
+			bufoff += len;	
+		}
+		free(tbuf);	
+		fileoff += len;														
+	}		
+	memcpy(buf, read_buf, size);
+	return ret;
 }
 
 void duplication::deduplicate(const char *path){
@@ -208,7 +286,7 @@ void duplication::serialization(){
 	for(iter = file_map.begin(); iter != file_map.end(); iter++){
 		fprintf(fp, "%s %d\n", iter->first.c_str(), iter->second.size());
 		for(size_t j = 0; j < iter->second.size(); j++){
-			fprintf(fp, "%s\n",iter->second[j].md5);		
+			fprintf(fp, "%s %d\n",iter->second[j].md5, iter->second[j].segment_len);		
 		}	
 	}
 	fclose(fp);
@@ -248,15 +326,15 @@ void duplication::recovery(){
 			}
 			vector<MD5_code> chunks;
 			for(int j = 0; j < md5_num; j++){
-					char md5[MD5_LEN] = {0};	
-					ret = fscanf(fp, "%s", md5);
-      		if(ret != 1){
-        		log_msg("wrong md5 %s\n", filepath);
+					char md5[MD5_LEN] = {0};
+					int len = 0;	
+					ret = fscanf(fp, "%s %d", md5, &len);
+      		if(ret != 2){
+        		log_msg("wrong md5 and md5 size %s\n", filepath);
 						continue;
       		}
 					MD5_code c;
-					//TODO:: no len here
-					c.set_code(md5);
+					c.set_code(md5, len);
 					chunks.push_back(c);			
 			}
 			string s(filepath);
@@ -365,6 +443,16 @@ void duplication::get(const char *fpath, MD5_code &code, long offset){
 	cloud_get_object("bkt", code.md5, get_buffer);
   fclose(outfile);
 }
+
+void duplication::get_in_buffer(MD5_code &code, char *buf){
+	out_buffer = buf;
+	if(out_buffer == NULL){
+     log_msg("LancerFS error: cloud pull chunk %s\n", code.md5);
+     return;
+  }
+	cloud_get_object("bkt", code.md5, get_chunk_buffer);	 
+}
+
 void duplication::fingerprint(const char *path, vector<MD5_code> &code_list){
 	int	fd = open(path, O_RDONLY);
   
@@ -386,7 +474,7 @@ void duplication::fingerprint(const char *path, vector<MD5_code> &code_list){
       if (new_segment) {
         MD5_Final(md5, &ctx);
 				MD5_code code;
-				code.set_code(md5, segment_len);
+				code.set_unsigned_code(md5, segment_len);
 				code_list.push_back(code);
         MD5_Init(&ctx);
         segment_len = 0;
@@ -406,7 +494,7 @@ void duplication::fingerprint(const char *path, vector<MD5_code> &code_list){
   }
   MD5_Final(md5, &ctx);
   MD5_code code;
-  code.set_code(md5, segment_len);
+  code.set_unsigned_code(md5, segment_len);
   code_list.push_back(code);
 	
 	rabin_reset(rp);

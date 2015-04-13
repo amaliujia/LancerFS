@@ -49,7 +49,7 @@ private:
       public:
         char md5[MD5_LEN];
         int segment_len;
-        void set_code(unsigned char *code, int len){
+        void set_unsigned_code(unsigned char *code, int len){
 					memset(md5, 0, MD5_LEN); 
           for(int i = 0; i < MD5_DIGEST_LENGTH; i++){
 						sprintf(&md5[i * 2], "%02x", code[i]);
@@ -59,6 +59,11 @@ private:
 				
 				void set_code(char *code){
 					memcpy(md5, code, MD5_LEN);		
+				}
+
+				void set_code(char *code, int len){
+					memcpy(md5, code, MD5_LEN);
+					segment_len = len;
 				}
 
         bool operator<(const MD5_code& other) const{
@@ -109,11 +114,14 @@ public:
 	void retrieve(const char *fpath);
 	void remove(const char *fpath);
 	void clean(const char *fpath);
-	
+
+	int get_file_size(const char *fpath);
+	int offset_read(const char *fpath, char *buf, size_t size, off_t offset); 
+		
 private:
 	void cloud_push_file(const char *fpath, struct stat *stat_buf);
 	void cloud_get_shadow(const char *fullpath, const char *cloudpath);
-	void cloud_push_shadow(const char*);	
+	void cloud_push_shadow(const char *fpath);
 	void init_rabin_structrue();
 	void fingerprint(const char *path, vector<MD5_code> &code_list);
 	void update_chunk(const char *fpath, vector<MD5_code> &code_list);
@@ -124,6 +132,7 @@ private:
 	void recovery();
 	void put(const char *fpath, MD5_code &code, long offset);
 	void get(const char *fpath, MD5_code &code, long offset);	
+	void get_in_buffer(MD5_code &code, char *buf);
 	void del(MD5_code &code);
  	void ssd_fullpath(const char *path, char *fpath);
 	void cloud_filename(char *path);
