@@ -132,7 +132,7 @@ private:
 	void recovery();
 	void put(const char *fpath, MD5_code &code, long offset);
 	void get(const char *fpath, MD5_code &code, long offset);	
-	void get_in_buffer(MD5_code &code, char *buf);
+	void get_in_buffer(MD5_code &code);
 	void del(MD5_code &code);
  	void ssd_fullpath(const char *path, char *fpath);
 	void cloud_filename(char *path);

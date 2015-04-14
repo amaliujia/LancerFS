@@ -288,7 +288,7 @@ int LancerFS::cloudfs_read(const char *path, char *buf, size_t size, off_t offse
 		string s(fpath);
 		iter = superfiles.find(s);
 		if(iter != superfiles.end()){
-			dup->offset_read(fpath, buf, size, offset);	
+			ret = dup->offset_read(fpath, buf, size, offset);	
 		}else{
     	ret = pread(fi->fh, buf, size, offset);
     	if(ret < 0)

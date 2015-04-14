@@ -99,6 +99,7 @@ duplication::duplication(FILE *fd, fuse_struct *state){
 	window_size = state_.rabin_window_size;
   avg_seg_size = state_.avg_seg_size;
   min_seg_size = 0.5 * state_.avg_seg_size;
+	max_seg_size = 2 * state_.avg_seg_size; 
 	state_.no_dedup = state_.no_dedup ^ 1;  
 	logfd = fd;
 
@@ -149,18 +150,18 @@ int duplication::offset_read(const char *fpath, char *buf, size_t size, off_t of
 	map<string, vector<MD5_code> >::iterator iter;
 	iter = file_map.find(s);
 	if(iter == file_map.end()){
-			ret = 1;
+			log_msg("LancerFS error: find something we believe it is large but actually it is not\n");
 			return ret;
 	}
-
-	char read_buf[size];
-	memset(read_buf, 0, size);
+	
 	int bufoff = 0;
 	vector<MD5_code> v = iter->second;
-	vector<MD5_code> tv;
 	off_t end = offset + size - 1;
 	off_t start = offset;
 	int fileoff = 0;
+	
+  char tpath[MAX_PATH_LEN];
+  ssd_fullpath("/.tmp", tpath);
 	for(size_t i = 0; i < v.size(); i++){
 		if(fileoff > end){
 			break;
@@ -171,30 +172,34 @@ int duplication::offset_read(const char *fpath, char *buf, size_t size, off_t of
 			continue;
     }
 	
-		char *tbuf = (char *)malloc(len * sizeof(char));
-		if(tbuf == NULL){
-				log_msg("LancerFS error: run out of memory\n");
-				ret = 1;
-				return ret;
+		get_in_buffer(v[i]);
+		//FILE *t = fopen(fpath, "rb");;
+		int fd = open(tpath, O_RDONLY);
+		if(fd < 0){
+			log_msg("LancerFS error: read fail\n");
+			return -1;
 		}	
-		get_in_buffer(v[i], tbuf);
 		if((fileoff < start) && ((fileoff + len) > end)){
-				memcpy(read_buf + bufoff, tbuf + start - fileoff, size);
-				bufoff += size;		
+				//memcpy(buf + bufoff, tbuf + start - fileoff, size);
+				ret = pread(fd, buf+bufoff, size, start - fileoff);	
 		}else if((fileoff < start) && ((fileoff + len) >= start)){
-				memcpy(read_buf + bufoff, tbuf + start - fileoff, len - start - fileoff);		
-				bufoff += (len - start - fileoff);	
+				//memcpy(buf + bufoff, tbuf + start - fileoff, len - start - fileoff);	
+		
+				ret = pread(fd, buf + bufoff, len - start + fileoff, start - fileoff);	
 		}else if((fileoff <= end) && ((fileoff + len) > end)){
-				memcpy(read_buf + bufoff, tbuf, end - fileoff + 1);
-				bufoff += (end - fileoff + 1); 
+				//memcpy(buf + bufoff, tbuf, end - fileoff + 1);
+				ret = pread(fd, buf + bufoff,	end - fileoff + 1, 0);	
 		}else{
-			memcpy(read_buf + bufoff, tbuf, len);
-			bufoff += len;	
+			//memcpy(buf + bufoff, tbuf, len);
+			ret = pread(fd, buf + bufoff, len, 0);	
 		}
-		free(tbuf);	
-		fileoff += len;														
+		//free(tbuf);	
+		fileoff += len;	
+		bufoff += ret;												
+		close(fd);	
 	}		
-	memcpy(buf, read_buf, size);
+	//memcpy(buf, buf, size);
+	ret = bufoff;
 	return ret;
 }
 
@@ -444,13 +449,17 @@ void duplication::get(const char *fpath, MD5_code &code, long offset){
   fclose(outfile);
 }
 
-void duplication::get_in_buffer(MD5_code &code, char *buf){
-	out_buffer = buf;
-	if(out_buffer == NULL){
-     log_msg("LancerFS error: cloud pull chunk %s\n", code.md5);
+void duplication::get_in_buffer(MD5_code &code){
+  char fpath[MAX_PATH_LEN];
+  ssd_fullpath("/.tmp", fpath); 
+	 
+	outfile = fopen(fpath, "wb");
+	if(outfile == NULL){
+     log_msg("LancerFS error: cloud pull %s\n", fpath);
      return;
   }
-	cloud_get_object("bkt", code.md5, get_chunk_buffer);	 
+	cloud_get_object("bkt", code.md5, get_buffer);
+  fclose(outfile);
 }
 
 void duplication::fingerprint(const char *path, vector<MD5_code> &code_list){
