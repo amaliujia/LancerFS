@@ -104,6 +104,8 @@ private:
 	
 	map<string, vector<MD5_code> > file_map; 
 	map<MD5_code, int> chunk_set;
+	
+	set<string> cache_chunk;
 
 public:
 	duplication(FILE *fd, char *ssd_path);
@@ -132,10 +134,12 @@ private:
 	void recovery();
 	void put(const char *fpath, MD5_code &code, long offset);
 	void get(const char *fpath, MD5_code &code, long offset);	
-	void get_in_buffer(MD5_code &code);
+	void get_in_buffer(MD5_code &code, char *fpath);
 	void del(MD5_code &code);
  	void ssd_fullpath(const char *path, char *fpath);
+	void hidden_chunk_fullpath(const char *path, char *fpath);
 	void cloud_filename(char *path);
+	void get_local(const char *fpath, MD5_code &code, long offset);
 };
 
 #endif //DUPLICATION_HPP

@@ -5,7 +5,7 @@
 #define UNUSED __attribute__((unused))
 static  FILE *outfile;
 static  FILE *infile;
-
+				
 static char *out_buffer;
 
 int get_buffer(const char *buffer, int bufferLength) {
@@ -144,6 +144,12 @@ int duplication::get_file_size(const char *fpath){
 	return 0;		
 }
 
+void duplication::hidden_chunk_fullpath(const char *path, char *fullpath){
+	sprintf(fullpath, "%s", state_.ssd_path);
+	sprintf(fullpath, "%s.", fullpath);	
+	sprintf(fullpath, "%s%s", fullpath, path);	
+}
+
 int duplication::offset_read(const char *fpath, char *buf, size_t size, off_t offset){
 	int ret = 0;
 	string s(fpath);
@@ -160,8 +166,6 @@ int duplication::offset_read(const char *fpath, char *buf, size_t size, off_t of
 	off_t start = offset;
 	int fileoff = 0;
 	
-  char tpath[MAX_PATH_LEN];
-  ssd_fullpath("/.tmp", tpath);
 	for(size_t i = 0; i < v.size(); i++){
 		if(fileoff > end){
 			break;
@@ -171,9 +175,17 @@ int duplication::offset_read(const char *fpath, char *buf, size_t size, off_t of
       fileoff += len;
 			continue;
     }
-	
-		get_in_buffer(v[i]);
-		//FILE *t = fopen(fpath, "rb");;
+		
+		//see if chunk has been cached
+		set<string>::iterator iter1;
+		char tpath[MAX_PATH_LEN];
+		memset(tpath, 0, MAX_PATH_LEN);
+		hidden_chunk_fullpath(v[i].md5, tpath);	
+		if((iter1 = cache_chunk.find(v[i].md5)) ==  cache_chunk.end()){
+			get_in_buffer(v[i], tpath);
+			cache_chunk.insert(v[i].md5);
+		}	
+		
 		int fd = open(tpath, O_RDONLY);
 		if(fd < 0){
 			log_msg("LancerFS error: read fail\n");
@@ -411,12 +423,20 @@ void duplication::retrieve(const char *fpath){
 		}			
 
 		vector<MD5_code> chunks = file_map[s];
+		//vector<string> cache_chunks;
 		long offset = 0;
+		
 		for(unsigned int i = 0; i < chunks.size(); i++){
 			MD5_code c = chunks[i];
-			get(fpath, c, offset);
-			offset += c.segment_len;	
+			//if(cache_chunks.find(c.md5) != cache_chunks.end()){
+					//read from local
+						
+			//}else{
+				get(fpath, c, offset);
+			//}
+				offset += c.segment_len;	
 		}
+		
 	}else{
 			log_msg("LancerFS log: open proxy file %s\n", fpath);
 		  char cloudpath[MAX_PATH_LEN];
@@ -429,6 +449,10 @@ void duplication::retrieve(const char *fpath){
 			int dirty = 0;
 			lsetxattr(fpath, "user.dirty", &dirty, sizeof(int), 0);		
 	}			
+}
+
+void duplication::get_local(const char *fpath, MD5_code &code, long offset){
+
 }
 
 void duplication::get(const char *fpath, MD5_code &code, long offset){
@@ -449,9 +473,10 @@ void duplication::get(const char *fpath, MD5_code &code, long offset){
   fclose(outfile);
 }
 
-void duplication::get_in_buffer(MD5_code &code){
-  char fpath[MAX_PATH_LEN];
-  ssd_fullpath("/.tmp", fpath); 
+
+void duplication::get_in_buffer(MD5_code &code, char *fpath){
+  //char fpath[MAX_PATH_LEN];
+  //ssd_fullpath("/.tmp", fpath); 
 	 
 	outfile = fopen(fpath, "wb");
 	if(outfile == NULL){

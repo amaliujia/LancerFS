@@ -18,10 +18,10 @@ LancerFS::LancerFS(struct cloudfs_state *state){
 	state_.init(state);
 	
   logpath = "/tmp/cloudfs.log";
-	//logpath = "/home/student/LancerFS/src/cloudfs.log";
   //init log
   logfd = fopen(logpath, "w");
-  if(logfd == NULL){
+  setvbuf(logfd, NULL, _IOLBF, 0);
+	if(logfd == NULL){
     printf("LancerFS Error: connot find log file\n");
     //exit(1);
   }
@@ -103,6 +103,7 @@ void LancerFS::cloudfs_log_close(){
 
 void LancerFS::cloudfs_log_init(){
 	logfd = fopen(logpath, "w");
+	setvbuf(logfd, NULL, _IOLBF, 0);
 	if(logfd == NULL){
 		printf("LancerFS Error: connot find log file\n");
 		//exit(1);	
@@ -259,12 +260,12 @@ int LancerFS::cloudfs_open(const char *path, struct fuse_file_info *fi){
 			log_msg("LancerFS log: open proxy file %s\n", path);
 			int size = dup->get_file_size(fpath);
 		
-			if(size >= state_.ssd_size){
-				string s(fpath);	
-				superfiles.insert(s);		
-			}else{	
-				dup->retrieve(fpath);
-			}	
+			//if(size >= state_.ssd_size){
+			//	string s(fpath);	
+			//superfiles.insert(s);		
+			//}else{	
+				//dup->retrieve(fpath);
+			//}	
 			//int slave = 1;
 			int dirty = 0;
 			lsetxattr(fpath, "user.dirty", &dirty, sizeof(int), 0);
@@ -284,10 +285,12 @@ int LancerFS::cloudfs_read(const char *path, char *buf, size_t size, off_t offse
   
 	  char fpath[MAX_PATH_LEN];
   	cloudfs_get_fullpath(path, fpath); 
-		set<string>::iterator iter;	
-		string s(fpath);
-		iter = superfiles.find(s);
-		if(iter != superfiles.end()){
+		//set<string>::iterator iter;	
+		//string s(fpath);
+		//iter = superfiles.find(s);
+		int s = dup->get_file_size(fpath);
+		//if(iter != superfiles.end()){
+		if(s > state_.threshold){
 			ret = dup->offset_read(fpath, buf, size, offset);	
 		}else{
     	ret = pread(fi->fh, buf, size, offset);
@@ -307,6 +310,7 @@ int LancerFS::cloudfs_write(const char *path, const char *buf, size_t size,
   ret = pwrite(fi->fh, buf, size, offset);
   if(ret < 0){
 		ret = cloudfs_error("pwrite fail\n");
+
    	return ret;
 	}
 
@@ -484,6 +488,7 @@ LancerFS::LancerFS(){
 
 	//init log
 	logfd = fopen(logpath, "w");
+	setvbuf(logfd, NULL, _IOLBF, 0);
 	if(logfd == NULL){
 		printf("LancerFS Error: connot find log file\n");
 		//exit(1);	
