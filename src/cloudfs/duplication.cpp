@@ -63,15 +63,16 @@ void duplication::cloud_push_shadow(const char *fullpath){
 	
 	infile = fopen(fullpath, "rb");
   if(infile == NULL){
-     log_msg("LancerFS error: cloud push %s failed, cloudpath %s\n", fullpath, cloudpath);
+     log_msg("LancerFS error: cloud push %s failed, cloudpath %s\n",
+             fullpath, cloudpath);
       return;
   }	
 	
 	cloud_filename(cloudpath);
  	log_msg("LancerFS log: cloud_push_file(path=%s)\n", cloudpath);
-  lstat(fullpath, &stat_buf);
-  cloud_put_object("bkt", cloudpath, stat_buf.st_size, put_buffer);
-  fclose(infile);
+    lstat(fullpath, &stat_buf);
+    cloud_put_object("bkt", cloudpath, stat_buf.st_size, put_buffer);
+    fclose(infile);
 }
 
 void duplication::ssd_fullpath(const char *path, char *fpath){
@@ -81,10 +82,10 @@ void duplication::ssd_fullpath(const char *path, char *fpath){
 }
 
 duplication::duplication(FILE *fd, char *ssd_path UNUSED){
-  window_size = 48;
-  avg_seg_size = 4096;
-  min_seg_size = 2048;
-  max_seg_size = 8192;
+    window_size = 48;
+    avg_seg_size = 4096;
+    min_seg_size = 2048;
+    max_seg_size = 8192;
 	logfd = fd;
 
 	//init rabin 
@@ -144,6 +145,7 @@ int duplication::get_file_size(const char *fpath){
 	return 0;		
 }
 
+<<<<<<< HEAD
 void duplication::hidden_chunk_fullpath(const char *path, char *fullpath){
 	sprintf(fullpath, "%s", state_.ssd_path);
 	sprintf(fullpath, "%s.", fullpath);	
@@ -151,12 +153,17 @@ void duplication::hidden_chunk_fullpath(const char *path, char *fullpath){
 }
 
 int duplication::offset_read(const char *fpath, char *buf, size_t size, off_t offset){
+=======
+int duplication::offset_read(const char *fpath, char *buf,
+                             size_t size, off_t offset){
+>>>>>>> d8f49c5a6e575f07834655717d01cda221bf8782
 	int ret = 0;
 	string s(fpath);
 	map<string, vector<MD5_code> >::iterator iter;
 	iter = file_map.find(s);
 	if(iter == file_map.end()){
-			log_msg("LancerFS error: find something we believe it is large but actually it is not\n");
+			log_msg("LancerFS error: find something we believe it is    \
+                    large but actually it is not\n");
 			return ret;
 	}
 	
@@ -197,7 +204,8 @@ int duplication::offset_read(const char *fpath, char *buf, size_t size, off_t of
 		}else if((fileoff < start) && ((fileoff + len) >= start)){
 				//memcpy(buf + bufoff, tbuf + start - fileoff, len - start - fileoff);	
 		
-				ret = pread(fd, buf + bufoff, len - start + fileoff, start - fileoff);	
+				ret = pread(fd, buf + bufoff, len - start + fileoff,
+                                            start - fileoff);
 		}else if((fileoff <= end) && ((fileoff + len) > end)){
 				//memcpy(buf + bufoff, tbuf, end - fileoff + 1);
 				ret = pread(fd, buf + bufoff,	end - fileoff + 1, 0);	
@@ -316,7 +324,8 @@ void duplication::serialization(){
 	}
 	fclose(fp);
 
-	log_msg("LancerFS log: current index: files %d chunks %d\n", file_map.size(), chunk_set.size());
+	log_msg("LancerFS log: current index: files %d chunks %d\n",
+                            file_map.size(), chunk_set.size());
 }
 
 void duplication::recovery(){
@@ -418,7 +427,8 @@ void duplication::retrieve(const char *fpath){
 		string s(fpath);
 		map<string, vector<MD5_code> >::iterator iter;
 		if((iter = file_map.find(s)) == file_map.end()){
-			log_msg("LancerFS error: %s doesn't exist in index, size %d\n", fpath, file_map.size());
+			log_msg("LancerFS error: %s doesn't exist in index, size %d\n",
+                                                fpath, file_map.size());
 			return;	
 		}			
 

@@ -534,8 +534,8 @@ int LancerFS::cloudfs_getattr(const char *path, struct stat *statbuf){
 }
 
 int LancerFS::cloudfs_readdir(const char *path, void *buf, 
-															fuse_fill_dir_t filler, off_t offset, 
-															struct fuse_file_info *fi)
+                            fuse_fill_dir_t filler, off_t offset,
+                            struct fuse_file_info *fi)
 {
 	int ret = 0;
 	DIR *dp;
