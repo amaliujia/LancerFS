@@ -145,18 +145,14 @@ int duplication::get_file_size(const char *fpath){
 	return 0;		
 }
 
-<<<<<<< HEAD
 void duplication::hidden_chunk_fullpath(const char *path, char *fullpath){
 	sprintf(fullpath, "%s", state_.ssd_path);
 	sprintf(fullpath, "%s.", fullpath);	
 	sprintf(fullpath, "%s%s", fullpath, path);	
 }
 
-int duplication::offset_read(const char *fpath, char *buf, size_t size, off_t offset){
-=======
 int duplication::offset_read(const char *fpath, char *buf,
                              size_t size, off_t offset){
->>>>>>> d8f49c5a6e575f07834655717d01cda221bf8782
 	int ret = 0;
 	string s(fpath);
 	map<string, vector<MD5_code> >::iterator iter;
@@ -461,7 +457,7 @@ void duplication::retrieve(const char *fpath){
 	}			
 }
 
-void duplication::get_local(const char *fpath, MD5_code &code, long offset){
+void duplication::get_local(const char *fpath UNUSED, MD5_code &code UNUSED, long offset UNUSED){
 
 }
 

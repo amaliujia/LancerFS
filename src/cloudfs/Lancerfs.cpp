@@ -258,7 +258,7 @@ int LancerFS::cloudfs_open(const char *path, struct fuse_file_info *fi){
 			log_msg("open non proxy file %s\n", path);
 	}else if(proxy == 1){// File opened is in cloud, only proxy file here
 			log_msg("LancerFS log: open proxy file %s\n", path);
-			int size = dup->get_file_size(fpath);
+			//int size = dup->get_file_size(fpath);
 		
 			//if(size >= state_.ssd_size){
 			//	string s(fpath);	
