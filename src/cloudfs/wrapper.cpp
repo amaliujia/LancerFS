@@ -87,3 +87,8 @@ int wutimens(const char *path, const struct timespec tv[2]){
 	return instance->cloudfs_utimens(path, tv);
 }
 
+int wioctl(const char *fd, int cmd, void *arg, 
+						struct fuse_file_info *info, unsigned int flags, void *data)
+{
+	return instance->cloudfs_ioctl(fd, cmd, arg, info, flags, data); 
+}

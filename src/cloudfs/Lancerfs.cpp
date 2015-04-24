@@ -7,6 +7,7 @@ extern "C"
     
 #include "cloudapi.h"
 #include "dedup.h"
+#include "../snapshot/snapshot-api.h"
 #ifdef __cplusplus
 }
 #endif
@@ -28,7 +29,20 @@ LancerFS::LancerFS(struct cloudfs_state *state){
     log_msg("LancerFS log: filesystem start\n");
     //init deduplication layer
     dup = new duplication(logfd, &state_);
+
+		//init snapshot
 }
+
+/*
+	init_snapshot - try to open .snapshot file. If this file does not exit, create it.	
+*/
+void LancerFS::init_snapshot(){
+  char fpath[MAX_PATH_LEN];
+	cloudfs_get_fullpath(".snapshot", fpath);
+
+	FILE *fp = fopen(fpath, "ab+");	
+	fclose(fp);	
+}									
 
 /*
     When file is bigger than threshold, push file into cloud, use this function
@@ -594,5 +608,11 @@ int LancerFS::cloudfs_mkdir(const char *path, mode_t mode){
         ret = cloudfs_error("mkdir fail\n");
     }
     return ret;
+}
+
+int LancerFS::cloudfs_ioctl(const char *fd, int cmd, void *arg ,
+													struct fuse_file_info *info, unsigned int flags, void *data)
+{
+	return 0;
 }
 
