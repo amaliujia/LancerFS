@@ -151,28 +151,28 @@ static struct fuse_operations cloudfs_operations = {
     .unlink         = cloudfs_unlink,
     .rmdir          = cloudfs_rmdir,
     .truncate       = cloudfs_truncate,
-		.ioctl          = ioctl
+    .ioctl          = ioctl
 };
 
 int cloudfs_start(struct cloudfs_state *state,
     const char* fuse_runtime_name) {
 
-  int argc = 0;
-  char* argv[10];
-  argv[argc] = (char *) malloc(128 * sizeof(char));
-  strcpy(argv[argc++], fuse_runtime_name);
-  argv[argc] = (char *) malloc(1024 * sizeof(char));
-  strcpy(argv[argc++], state->fuse_path);
-	
-
-	argv[argc++] = "-s"; // set the fuse mode to single thread
-	//argv[argc++] = "-f"; // run fuse in foreground 
-
-	state_  = *state;
-	
-	winit(state);
-	int fuse_stat = fuse_main(argc, argv, &cloudfs_operations, NULL);
-
-	return fuse_stat;
+    int argc = 0;
+    char* argv[10];
+    argv[argc] = (char *) malloc(128 * sizeof(char));
+    strcpy(argv[argc++], fuse_runtime_name);
+    argv[argc] = (char *) malloc(1024 * sizeof(char));
+    strcpy(argv[argc++], state->fuse_path);
+    
+    
+    argv[argc++] = "-s"; // set the fuse mode to single thread
+    //argv[argc++] = "-f"; // run fuse in foreground
+    
+    state_  = *state;
+    
+    winit(state);
+    int fuse_stat = fuse_main(argc, argv, &cloudfs_operations, NULL);
+    
+    return fuse_stat;
 }
 

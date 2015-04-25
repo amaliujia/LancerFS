@@ -78,8 +78,9 @@ public:
     void cloudfs_destroy(void *data);
     int cloudfs_utimens(const char *path, const struct timespec tv[2]);
     int cloudfs_access(const char *path, int mask);
-		int cloudfs_ioctl(const char *fd, int cmd, void *arg, 
-										struct fuse_file_info *info, unsigned int flags, void *data);
+    int cloudfs_ioctl(const char *fd, int cmd, void *arg,
+                      struct fuse_file_info *info,
+                      unsigned int flags, void *data);
  
 private:
     //base
@@ -110,8 +111,8 @@ private:
     int set_slave(const char *fullpath, int slave);
     int	get_slave(const char *fullpath);
 
-		//Snapshot 
-		void init_snapshot();									
+    //Snapshot
+    void init_snapshot();
 };
 
 #endif
