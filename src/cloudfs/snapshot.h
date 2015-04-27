@@ -2,14 +2,13 @@
 #define SNAPSHOT_H__
 
 
+
 //c++
 #include <map>
 #include <set>
 #include <vector>
 #include <iostream>
 #include <string>
-
-#include "transmission.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -22,8 +21,23 @@ extern "C"
 }
 #endif
 
+#include <ctype.h>
+#include <dirent.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <fuse.h>
+#include <limits.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/xattr.h>
+#include <stdarg.h>
+#include <sys/time.h>
 #include <libtar.h>
 #include "Fuse.h"
+#include "transmission.h"
 
 using namespace std;
  
@@ -34,14 +48,14 @@ public:
 	vector<TIMESTAMP> records;
 
 private:
-	void tar(TIMESTAMP t);
+	void tar(const char *tarFilename);
 	void recovery();	
 
 public:
 	SnapshotManager();
 	~SnapshotManager();
 
-	void snapshot(TIMESTAMP t);
+	void snapshot();
 	void restore(TIMESTAMP  t);
 	TIMESTAMP *list();
 	TIMESTAMP deletes(TIMESTAMP t); 		

@@ -4,9 +4,7 @@
 static LancerFS *instance;
 
 void winit(struct cloudfs_state *state){
-	//instance.state_.init(state);
 	instance = new LancerFS(state);
-	//instance->state_.init(state);
 }
 
 int wgetattr(const char *path, struct stat *statbuf){

@@ -20,7 +20,7 @@ LancerFS::LancerFS(struct cloudfs_state *state){
     logpath = "/tmp/cloudfs.log";
     //init log
     logfd = fopen(logpath, "w");
-    setvbuf(logfd, NULL, _IOLBF, 0);
+    //setvbuf(logfd, NULL, _IOLBF, 0);
     if(logfd == NULL){
         printf("LancerFS Error: connot find log file\n");
         //exit(1);
@@ -39,7 +39,7 @@ LancerFS::LancerFS(struct cloudfs_state *state){
 */
 void LancerFS::init_snapshot(){
   char fpath[MAX_PATH_LEN];
-	cloudfs_get_fullpath(".snapshot", fpath);
+	cloudfs_get_fullpath("/.snapshot", fpath);
 
 	//FILE *fp = fopen(fpath, "ab+");	
 	//fclose(fp);	
@@ -49,8 +49,8 @@ void LancerFS::init_snapshot(){
 	}
 	close(fd);	
 	snapshotMgr = new SnapshotManager();
-  strcpy(snapshotMgr->ssd_path, state->ssd_path);
-  strcpy(snapshotMgr->fuse_path, state->fuse_path);
+  strcpy(snapshotMgr->ssd_path, state_.ssd_path);
+  strcpy(snapshotMgr->fuse_path, state_.fuse_path);
 }
 
 /*
@@ -638,8 +638,7 @@ int LancerFS::cloudfs_ioctl(const char *fd, int cmd, void *arg ,
 													struct fuse_file_info *info, unsigned int flags, void *data)
 {
 	if(cmd == CLOUDFS_SNAPSHOT){
-		TIMESTAMP t = *(TIMESTAMP *)data;
-		snapshotMgr->snapshot(t);
+		snapshotMgr->snapshot();
 	}else if(cmd == CLOUDFS_RESTORE){
 		TIMESTAMP t = *(TIMESTAMP *)data;
 		snapshotMgr->restore(t);

@@ -36,6 +36,7 @@ void *cloudfs_init(struct fuse_conn_info *conn UNUSED)
 {
 	cloud_init(state_.hostname);
   cloud_create_bucket("bkt");
+	cloud_create_bucket("snapshot");
 	return NULL;
 }
 
