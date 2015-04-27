@@ -36,7 +36,6 @@ void *cloudfs_init(struct fuse_conn_info *conn UNUSED)
 {
 	cloud_init(state_.hostname);
   cloud_create_bucket("bkt");
-	cloud_create_bucket("snapshot");
 	return NULL;
 }
 
@@ -127,7 +126,8 @@ int cloudfs_truncate(const char *path, off_t newsize){
 	return wtruncate(path, newsize);
 }
 
-int ioctl(const char *fd, int cmd, void *arg ,struct fuse_file_info *info, unsigned int flags, void *data){
+int cloudfs_ioctl(const char *fd, int cmd, void *arg, 
+									struct fuse_file_info *info, unsigned int flags, void *data){
 	return wioctl(fd, cmd, arg, info, flags, data);
 }
 
@@ -151,7 +151,7 @@ static struct fuse_operations cloudfs_operations = {
     .unlink         = cloudfs_unlink,
     .rmdir          = cloudfs_rmdir,
     .truncate       = cloudfs_truncate,
-    .ioctl          = ioctl
+    .ioctl          = cloudfs_ioctl
 };
 
 int cloudfs_start(struct cloudfs_state *state,

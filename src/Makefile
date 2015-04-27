@@ -44,7 +44,9 @@ FUSE_CFLAGS := -D_FILE_OFFSET_BITS=64 \
 					     -I/usr/include/fuse	\
 								-Ibin/obj		\
 								-Icloud-lib	\
-								-Idedup-lib 
+								-Idedup-lib \
+								-Isnapshot	\
+								-Ilibarchive
 
 FUSE_LIBS := -lfuse
 
@@ -69,7 +71,6 @@ CFLAGS += -Wall  -Wshadow -Wextra -Iinclude \
           -D_ISOC99_SOURCE \
           -D_POSIX_C_SOURCE=200112L \
 					-lstdc++
-					#-D_FILE_OFFSET_BITS=64
 
 CPPFLAGS := -Wall  -Wshadow -Wextra -Iinclude \
           $(FUSE_CFLAGS) \
@@ -90,7 +91,7 @@ ifndef CC
 endif
 
 
-LDFLAGS = $(CURL_LIBS) $(LIBXML2_LIBS) $(FUSE_LIBS) -lpthread -lcrypto -lssl -lcurl 
+LDFLAGS = $(CURL_LIBS) $(LIBXML2_LIBS) $(FUSE_LIBS) -lpthread -lcrypto -lssl -lcurl -ltar 
 LIBRARY = ./lib/libs3.a -lcurl -lxml2
 ifdef DEBUG
 	LIBRARY += ./lib/libdedup-dbg.a
@@ -106,6 +107,14 @@ all: cloudfs
 
 # --------------------------------------------------------------------------
 # Compile target patterns
+
+$(BUILD)/obj/snapshot.o:cloudfs/snapshot.cpp
+	$(QUIET_ECHO) $@: Compiling object
+	@ mkdir -p $(dir $(BUILD)/dep/$<)
+	@g++ $(CPPFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
+        -o $(BUILD)/dep/$(<:%.c=%.d) -c $<
+	mkdir -p $(dir $@)
+	$(VERBOSE_SHOW) g++ $(CPPFLAGS) -o $@ -c $<
 
 $(BUILD)/obj/duplication.o:cloudfs/duplication.cpp
 	$(QUIET_ECHO) $@: Compiling object
@@ -170,7 +179,8 @@ $(BUILD)/obj/%.o: dedup-lib/%.c
 .PHONY: cloudfs 
 cloudfs: $(BUILD)/bin/cloudfs
 
-CLOUDFS_OBJS = $(BUILD)/obj/cloudapi.o  \
+CLOUDFS_OBJS = $(BUILD)/obj/cloudapi.o \
+				$(BUILD)/obj/snapshot.o	\
 				$(BUILD)/obj/duplication.o	\
 				$(BUILD)/obj/Lancerfs.o \
         $(BUILD)/obj/wrapper.o \

@@ -26,9 +26,7 @@
 
 #include "Fuse.h"
 #include "duplication.h"
-
-#define MAX_PATH_LEN 4096
-#define MAX_HOSTNAME_LEN 1024
+#include "snapshot.h"
 
 class LancerFS{
 private:
@@ -39,7 +37,7 @@ private:
     char *logpath;
     
     duplication *dup;
-    
+   	SnapshotManager *snapshotMgr; 
     set<string> superfiles;
     
 public:
