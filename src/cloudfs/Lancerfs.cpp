@@ -613,6 +613,9 @@ int LancerFS::cloudfs_mkdir(const char *path, mode_t mode){
 int LancerFS::cloudfs_ioctl(const char *fd, int cmd, void *arg ,
 													struct fuse_file_info *info, unsigned int flags, void *data)
 {
+	if(cmd == CLOUDFS_SNAPSHOT){
+			//do something
+	} 
 	return 0;
 }
 
