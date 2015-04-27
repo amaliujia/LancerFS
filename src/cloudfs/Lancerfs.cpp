@@ -49,6 +49,8 @@ void LancerFS::init_snapshot(){
 	}
 	close(fd);	
 	snapshotMgr = new SnapshotManager();
+  strcpy(snapshotMgr->ssd_path, state->ssd_path);
+  strcpy(snapshotMgr->fuse_path, state->fuse_path);
 }
 
 /*
@@ -324,7 +326,12 @@ int LancerFS::cloudfs_read(const char *path, char *buf, size_t size,
     int ret = 0;
     log_msg("\ncfs_superfiles.insert(s);read(path=\"%s\", buf=0x%08x, size=%d, \
             offset=%lld, fi=0x%08x)\n", path, buf, size, offset, fi);
-    
+   
+		if(strcmp(path, ".snapshot") == 0){
+      ret = 0;
+      return ret;
+    }
+ 
     char fpath[MAX_PATH_LEN];
     cloudfs_get_fullpath(path, fpath);
     int s = dup->get_file_size(fpath);
@@ -344,7 +351,11 @@ int LancerFS::cloudfs_write(const char *path, const char *buf, size_t size,
     int ret = 0;
     log_msg("\ncfs_write(path=\"%s\", buf=0x%08x, size=%d, offset=%lld, \
             fi=0x%08x)\n", path, buf, size, offset, fi);
-    
+    if(strcmp(path, ".snapshot") == 0){
+      ret = 0;
+      return ret;
+    }   
+ 
     ret = pwrite(fi->fh, buf, size, offset);
     if(ret < 0){
         ret = cloudfs_error("pwrite fail\n");
@@ -471,6 +482,11 @@ int LancerFS::cloudfs_unlink(const char *path)
     
     log_msg("cfs_unlink(path=\"%s\")\n",
             path);
+		if(strcmp(path, ".snapshot") == 0){
+			retstat = -1;
+			return retstat;
+		}
+
     cloudfs_get_fullpath(path, fpath);
     
     if(get_proxy(fpath)){
@@ -622,7 +638,18 @@ int LancerFS::cloudfs_ioctl(const char *fd, int cmd, void *arg ,
 													struct fuse_file_info *info, unsigned int flags, void *data)
 {
 	if(cmd == CLOUDFS_SNAPSHOT){
-			//do something
+		TIMESTAMP t = *(TIMESTAMP *)data;
+		snapshotMgr->snapshot(t);
+	}else if(cmd == CLOUDFS_RESTORE){
+		TIMESTAMP t = *(TIMESTAMP *)data;
+		snapshotMgr->restore(t);
+	}else if(cmd == CLOUDFS_DELETE){
+		TIMESTAMP t = *(TIMESTAMP *)data;
+		snapshotMgr->deletes(t);
+	}else if(cmd == CLOUDFS_SNAPSHOT_LIST){
+		snapshotMgr->list();
+	}else{
+		return -1;
 	} 
 	return 0;
 }

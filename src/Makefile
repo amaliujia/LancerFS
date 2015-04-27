@@ -45,8 +45,7 @@ FUSE_CFLAGS := -D_FILE_OFFSET_BITS=64 \
 								-Ibin/obj		\
 								-Icloud-lib	\
 								-Idedup-lib \
-								-Isnapshot	\
-								-Ilibarchive
+								-Isnapshot
 
 FUSE_LIBS := -lfuse
 
@@ -107,6 +106,14 @@ all: cloudfs
 
 # --------------------------------------------------------------------------
 # Compile target patterns
+
+$(BUILD)/obj/transmission.o:cloudfs/transmission.cpp
+	$(QUIET_ECHO) $@: Compiling object
+	@ mkdir -p $(dir $(BUILD)/dep/$<)
+	@g++ $(CPPFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
+        -o $(BUILD)/dep/$(<:%.c=%.d) -c $<
+	mkdir -p $(dir $@)
+	$(VERBOSE_SHOW) g++ $(CPPFLAGS) -o $@ -c $<
 
 $(BUILD)/obj/snapshot.o:cloudfs/snapshot.cpp
 	$(QUIET_ECHO) $@: Compiling object
@@ -180,6 +187,7 @@ $(BUILD)/obj/%.o: dedup-lib/%.c
 cloudfs: $(BUILD)/bin/cloudfs
 
 CLOUDFS_OBJS = $(BUILD)/obj/cloudapi.o \
+				$(BUILD)/obj/transmission.o	\
 				$(BUILD)/obj/snapshot.o	\
 				$(BUILD)/obj/duplication.o	\
 				$(BUILD)/obj/Lancerfs.o \

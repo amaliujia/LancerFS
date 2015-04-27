@@ -46,7 +46,7 @@ static void parse_arguments(int argc, char* argv[],
     strcpy(state->ssd_path, "/home/student/mnt/ssd/");
     strcpy(state->fuse_path, "/home/student/mnt/fuse/");
     strcpy(state->hostname, "localhost:8888");
-    state->ssd_size = 1024 * 1024 ;//* 1024;
+    state->ssd_size = 1024 * 1024 * 1024;
     state->threshold = 1024 * 64;
 
     state->no_dedup = 0;

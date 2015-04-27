@@ -6,6 +6,8 @@
 #define MAX_PATH_LEN 4096
 #define MAX_HOSTNAME_LEN 1024
 
+typedef unsigned long TIMESTAMP;
+
 /*
  This class is wrapper of fuse_struct, used into object-oriented programming.
  */
