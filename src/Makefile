@@ -107,6 +107,14 @@ all: cloudfs
 # --------------------------------------------------------------------------
 # Compile target patterns
 
+$(BUILD)/obj/log.o:cloudfs/log.cpp
+	$(QUIET_ECHO) $@: Compiling object
+	@ mkdir -p $(dir $(BUILD)/dep/$<)
+	@g++ $(CPPFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
+        -o $(BUILD)/dep/$(<:%.c=%.d) -c $<
+	mkdir -p $(dir $@)
+	$(VERBOSE_SHOW) g++ $(CPPFLAGS) -o $@ -c $<
+
 $(BUILD)/obj/transmission.o:cloudfs/transmission.cpp
 	$(QUIET_ECHO) $@: Compiling object
 	@ mkdir -p $(dir $(BUILD)/dep/$<)

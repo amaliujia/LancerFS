@@ -25,7 +25,7 @@
 #include <string>
 
 #include "Fuse.h"
-#include "log.h"
+//#include "log.h"
 #include "duplication.h"
 #include "snapshot.h"
 
@@ -34,8 +34,8 @@ private:
     
     static LancerFS *_lancerFS;
     
-//    FILE *logfd;
-//    char *logpath;
+    FILE *logfd;
+    char *logpath;
     
     duplication *dup;
    	SnapshotManager *snapshotMgr; 
@@ -86,7 +86,7 @@ private:
     void cloudfs_get_fullpath(const char *path, char *fullpath);
     
     //log
-    //void log_msg(const char *format, ...);
+    void log_msg(const char *format, ...);
     int cloudfs_error(char *error_str);
     void cloudfs_log_close();
     void cloudfs_log_init();

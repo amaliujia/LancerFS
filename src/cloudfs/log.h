@@ -14,9 +14,11 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/xattr.h>
+#include <stdarg.h>
 
-static FILE *logfd;
-static char *logpath;
+static FILE *logfd = NULL;
+static char *logpath = NULL;
 
 void log_msg(const char *format, ...);
+
 #endif // LOG_HPP

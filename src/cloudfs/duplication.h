@@ -25,7 +25,7 @@
 #include <string>
 
 #include "Fuse.h"
-#include "log.h"
+//#include "log.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -113,7 +113,7 @@ private:
     fuse_struct state_;
     
     rabinpoly_t *rp;
-    //FILE *logfd;
+    FILE *logfd;
     
     // mapping from filename to chunks list
     map<string, vector<MD5_code> > file_map;
@@ -145,7 +145,7 @@ private:
     void fingerprint(const char *path, vector<MD5_code> &code_list);
     void update_chunk(const char *fpath, vector<MD5_code> &code_list);
     void delete_chunk(const char *fpath, vector<MD5_code> &code_list);
-    //void log_msg(const char *format, ...);
+    void log_msg(const char *format, ...);
     bool lookup();
     void serialization();
     void recovery();

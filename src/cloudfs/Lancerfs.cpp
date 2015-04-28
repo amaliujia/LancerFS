@@ -124,12 +124,12 @@ void LancerFS::cloudfs_get_fullpath(const char *path, char *fullpath){
     sprintf(fullpath, "%s%s", fullpath, path);
 }
 
-//void LancerFS::log_msg(const char *format, ...){
-//    va_list ap;
-//    va_start(ap, format);
-//    vfprintf(logfd, format, ap);
-//    fflush(logfd);
-//}
+void LancerFS::log_msg(const char *format, ...){
+    va_list ap;
+    va_start(ap, format);
+    vfprintf(logfd, format, ap);
+    fflush(logfd);
+}
 
 void LancerFS::cloudfs_log_close(){
     fclose(logfd);
