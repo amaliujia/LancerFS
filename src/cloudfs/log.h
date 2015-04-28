@@ -15,14 +15,8 @@
 #include <sys/types.h>
 #include <sys/xattr.h>
 
-extern FILE *logfd;
-extern char *logpath;
+static FILE *logfd;
+static char *logpath;
 
-void log_msg(const char *format, ...){
-    va_list ap;
-    va_start(ap, format);
-    vfprintf(logfd, format, ap);
-    fflush(logfd);
-}
-
+void log_msg(const char *format, ...);
 #endif // LOG_HPP
