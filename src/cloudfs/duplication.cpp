@@ -3,6 +3,8 @@
 
 #include "duplication.h"
 #define UNUSED __attribute__((unused))
+#define SSD_DATA_PATH "data/"
+
 static  FILE *outfile;
 static  FILE *infile;
 
@@ -88,7 +90,7 @@ void duplication::cloud_push_shadow(const char *fullpath){
 void duplication::ssd_fullpath(const char *path, char *fpath){
     sprintf(fpath, "%s", state_.ssd_path);
     path++;
-    sprintf(fpath, "%s%s", fpath, path);
+    sprintf(fpath, "%s%s%s", fpath,SSD_DATA_PATH,  path);
 }
 
 duplication::duplication(FILE *fd, char *ssd_path UNUSED){
@@ -162,7 +164,7 @@ int duplication::get_file_size(const char *fpath){
 
 void duplication::hidden_chunk_fullpath(const char *path, char *fullpath){
     sprintf(fullpath, "%s", state_.ssd_path);
-    sprintf(fullpath, "%s.", fullpath);
+    sprintf(fullpath, "%s%s.", SSD_DATA_PATH, fullpath);
     sprintf(fullpath, "%s%s", fullpath, path);
 }
 
