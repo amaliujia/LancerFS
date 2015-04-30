@@ -320,6 +320,8 @@ int LancerFS::cloudfs_open(const char *path, struct fuse_file_info *fi){
         proxy = 0;
         lsetxattr(fpath, "user.proxy", &proxy, sizeof(int), 0);
         log_msg("cfd_open, set proxy path=%s\n", path);
+				string s(fpath);
+				proxyFlag.insert(pair<string, int>(s, 0));
     }else if(proxy == 0){//Small file that stored in SSD
         log_msg("open non proxy file %s\n", path);
     }else if(proxy == 1){// File opened is in cloud, only proxy file here
@@ -370,17 +372,21 @@ int LancerFS::cloudfs_write(const char *path, const char *buf, size_t size,
       ret = 0;
       return ret;
     }
-    
+
+    char fpath[MAX_PATH_LEN];
+    cloudfs_get_fullpath(path, fpath);
+
+   	struct timespec tv[2];
+		save_utime(fpath, tv);  
 		ret = pwrite(fi->fh, buf, size, offset);
+		set_utime(fpath, tv);
     if(ret < 0){
         ret = cloudfs_error("pwrite fail\n");
         
         return ret;
     }
-    
-    char fpath[MAX_PATH_LEN];
-    cloudfs_get_fullpath(path, fpath);
-    
+   
+ 
     int r = 0;
     if(get_proxy(fpath)){
         log_msg("dirty file %s\n", fpath);
@@ -413,13 +419,26 @@ int LancerFS::cloudfs_release(const char *path, struct fuse_file_info *fi){
             lstat(fullpath, &stat_buf);
             //cloud_push_file(fullpath, &stat_buf);
             dup->deduplicate(fullpath);
-            unlink(fullpath);
+             
+						struct timespec tv[2];
+        		save_utime(fullpath, tv);
+						unlink(fullpath);
             cloudfs_generate_proxy(fullpath, &stat_buf);
+						set_utime(fullpath, tv);	
+						
+						string s(fullpath);
+						map<string, int>::iterator it = proxyFlag.find(s);
+						if(it != proxyFlag.end()){
+							it->second = 1;
+						}				
         }
     }else{// a proxy file
         log_msg("LancerFS log: handle proxy file\n");
+       
+				struct timespec tv[2];
+    		save_utime(fullpath, tv);
         
-        set<string>::iterator iter;
+				set<string>::iterator iter;
         string s(fullpath);
         iter = superfiles.find(s);
         if(iter != superfiles.end()){
@@ -430,19 +449,18 @@ int LancerFS::cloudfs_release(const char *path, struct fuse_file_info *fi){
             dup->clean(fullpath);
         }
         
-        //time bug?
-        /*
-         *	if dirty, timestamp of file is correct file, but here doesn't
-         *	save that one.
-         */
         struct stat buf;
         cloudfs_save_attribute(fullpath, &buf);
         unlink(fullpath);
         cloudfs_generate_proxy(fullpath, &buf);
         set_dirty(fullpath, 0);
+					
+    		set_utime(fullpath, tv);	 
     }
     return ret;
 }
+
+
 
 int LancerFS::cloudfs_opendir(const char *path, struct fuse_file_info *fi)
 {
@@ -473,6 +491,25 @@ int LancerFS::cloudfs_utimens(const char *path, const struct timespec tv[2]){
         ret = cloudfs_error("utimes fail\n");
     }
     return ret;
+}
+
+void LancerFS::save_utime(const char *fpath, struct timespec times[2]){
+	struct stat buf;
+	lstat(fpath, &buf);
+		
+	times[0].tv_sec = buf.st_atime;
+	times[1].tv_sec = buf.st_mtime;
+	
+	times[0].tv_nsec = 0;
+	times[1].tv_nsec = 0;
+	
+	return;
+}
+
+int LancerFS::set_utime(const char *fpath, struct timespec times[2]){
+	int ret = 0;
+	ret = utimensat(0, fpath, times, 0);	
+	return ret;
 }
 
 int LancerFS::cloudfs_chmod(const char *path, mode_t mode)
@@ -507,11 +544,15 @@ int LancerFS::cloudfs_unlink(const char *path)
     if(get_proxy(fpath)){
         dup->remove(fpath);
     }
-    
     retstat = unlink(fpath);
     if (retstat < 0)
         retstat = cloudfs_error("unlink fail");
-    
+		string s(fpath);
+    map<string, int>::iterator it = proxyFlag.find(s);
+    if(it != proxyFlag.end()){
+    		proxyFlag.erase(it);
+		}
+		 
     return retstat;
 }
 
@@ -588,7 +629,7 @@ int LancerFS::cloudfs_getattr(const char *path, struct stat *statbuf){
         log_msg("\ncfs_getattr_proxy(path=\"%s\"\n", fpath);
         lgetxattr(fpath, "user.st_size", &(statbuf->st_size), sizeof(off_t));
         //TODO::how to handle time
-        lgetxattr(fpath, "user.st_mtime", &(statbuf->st_mtime), sizeof(time_t));
+        //lgetxattr(fpath, "user.st_mtime", &(statbuf->st_mtime), sizeof(time_t));
         
         if(ret != 0){
             ret = cloudfs_error("getattr lstat\n");
@@ -653,6 +694,7 @@ int LancerFS::cloudfs_ioctl(const char *fd, int cmd, void *arg,
 													struct fuse_file_info *info, unsigned int flags, void *data)
 {
 	if(cmd == CLOUDFS_SNAPSHOT){
+		dup->increment();
 		*(TIMESTAMP *)data = snapshotMgr->snapshot();
 	}else if(cmd == CLOUDFS_RESTORE){
 		TIMESTAMP t = *(TIMESTAMP *)data;

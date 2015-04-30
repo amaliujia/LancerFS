@@ -40,7 +40,8 @@ private:
     duplication *dup;
    	SnapshotManager *snapshotMgr; 
     set<string> superfiles;
-    
+		map<string, int> proxyFlag;
+			    
 public:
     fuse_struct state_;
     
@@ -112,6 +113,11 @@ private:
 
     //Snapshot
     void init_snapshot();
+		void save_utime(const char *fpath, struct timespec times[2]);
+		int set_utime(const char *fpath, struct timespec times[2]);
+		 		
+		//attribute
+		//void update_attribute(const char *fpath);
 };
 
 #endif

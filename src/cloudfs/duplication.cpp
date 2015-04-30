@@ -162,9 +162,19 @@ int duplication::get_file_size(const char *fpath){
 }
 
 
+void duplication::increment(){
+  map<string, vector<MD5_code> >::iterator i;
+  for(i = file_map.begin(); i != file_map.end(); i++){
+    vector<MD5_code> v = i->second;
+    update_chunk(i->first.c_str(), v);
+  }
+
+  serialization();
+}
+
 void duplication::hidden_chunk_fullpath(const char *path, char *fullpath){
     sprintf(fullpath, "%s", state_.ssd_path);
-    sprintf(fullpath, "%s%s.", SSD_DATA_PATH, fullpath);
+    sprintf(fullpath, "%s%s.",fullpath, SSD_DATA_PATH);
     sprintf(fullpath, "%s%s", fullpath, path);
 }
 

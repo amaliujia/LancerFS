@@ -167,7 +167,7 @@ int cloudfs_start(struct cloudfs_state *state,
     
     
     argv[argc++] = "-s"; // set the fuse mode to single thread
-    argv[argc++] = "-f"; // run fuse in foreground
+    //argv[argc++] = "-f"; // run fuse in foreground
     
     state_  = *state;
     

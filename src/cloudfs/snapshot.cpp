@@ -46,7 +46,7 @@ void SnapshotManager::restore(TIMESTAMP t){
   sprintf(tarFilename, "%s", ssd_path);
   sprintf(tarFilename, "%s%lu", tarFilename, t);			
 
-	get_from_cloud(cloudpath, tarFilename);
+	get_from_cloud("snapshot", cloudpath, tarFilename);
 
 	untar(tarFilename);
 	unlink(tarFilename);			

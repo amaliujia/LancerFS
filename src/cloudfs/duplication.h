@@ -25,7 +25,6 @@
 #include <string>
 
 #include "Fuse.h"
-//#include "log.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -133,7 +132,8 @@ public:
     void retrieve(const char *fpath);
     void remove(const char *fpath);
     void clean(const char *fpath);
-    void recovery();
+		void increment();	    
+		void recovery();
     
 		int get_file_size(const char *fpath);
     int offset_read(const char *fpath, char *buf, size_t size, off_t offset);

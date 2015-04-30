@@ -23,11 +23,11 @@ void push_to_cloud(const char *cloudpath, const char *filename){
 		fclose(inf);
 }
 
-void get_from_cloud(const char *cloudpath, const char *filename){
+void get_from_cloud(const char *bucket, const char *cloudpath, const char *filename){
 	outf = fopen(filename, "wb");
 	if(outf == NULL){
 		return;
 	}
-	 cloud_get_object("bkt", cloudpath, g_buffer);
+	 cloud_get_object(bucket, cloudpath, g_buffer);
 	fclose(outf);	
 }
