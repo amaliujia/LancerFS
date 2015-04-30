@@ -86,8 +86,11 @@ void LancerFS::write_size_proxy(const char *fullpath, int size){
 int LancerFS::get_size_proxy(const char *fullpath){
     FILE *fp = fopen(fullpath, "w");
     int size = 0;
-    ret = fscanf(fp, "%d", &size);
-    return size;
+    int ret = fscanf(fp, "%d", &size);
+    if(ret != 1){
+			log_msg("LancerFS error: read wrong proxy file szie, argument wrong");
+		}
+		return size;
 }
 
 void LancerFS::delete_proxy(const char *fullpath){
@@ -200,7 +203,7 @@ void LancerFS::get_proxy_path(const char *fullpath, char *hubfile){
         i--;
     }
     s.insert(i, 1, '.');
-    hubfile = s.c_str();
+    strcpy (hubfile, s.c_str());
 }
 
 /*
@@ -462,12 +465,6 @@ int LancerFS::cloudfs_write(const char *path, const char *buf, size_t size,
     int r = 0;
     if(get_proxy(fpath)){
         log_msg("dirty file %s\n", fpath);
-        int dirty = 1;
-        //r = lsetxattr(fpath, "user.dirty", &dirty, sizeof(int), 0);
-//        if(r < 0){
-//            r = cloudfs_error("LancerFS eror: set dirty bit on failt\n");
-//            return r;
-//        }
     }
     return ret;
 }
@@ -479,14 +476,14 @@ int LancerFS::cloudfs_release(const char *path, struct fuse_file_info *fi){
     log_msg("\ncfs_release(path=\"%s\", fi=0x%08x)\n", path, fi);
     
     if(!get_proxy(fullpath)){
-        //this is a local file
+        struct stat stat_buf;
+        lstat(fullpath, &stat_buf);
+
+				//this is a local file
         log_msg("LancerFS log: release local file\n");
-        if(buf.st_size < state_.threshold){//small file, keep in SSD
+        if(stat_buf.st_size < state_.threshold){//small file, keep in SSD
             log_msg("LancerFS log: close local file\n");
         }else{
-            struct stat stat_buf;
-            lstat(fullpath, &stat_buf);
-            
             dup->deduplicate(fullpath);
             
             struct timespec tv[2];
@@ -690,7 +687,7 @@ int LancerFS::cloudfs_getattr(const char *path, struct stat *statbuf){
         //lgetxattr(fpath, "user.st_size", &(statbuf->st_size), sizeof(off_t));
         //TODO::how to handle time
         //lgetxattr(fpath, "user.st_mtime", &(statbuf->st_mtime), sizeof(time_t));
-        stat_buf->st_size = get_size_proxy(fpath);
+        statbuf->st_size = get_size_proxy(fpath);
         if(ret != 0){
             ret = cloudfs_error("getattr lstat\n");
         }
