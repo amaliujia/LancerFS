@@ -40,7 +40,7 @@ private:
     duplication *dup;
    	SnapshotManager *snapshotMgr; 
     set<string> superfiles;
-		map<string, int> proxyFlag;
+    //map<string, int> proxyFlag;
 			    
 public:
     fuse_struct state_;
@@ -110,6 +110,9 @@ private:
     int	set_dirty(const char *fullpath, int dirty);
     int set_slave(const char *fullpath, int slave);
     int	get_slave(const char *fullpath);
+    void write_size_proxy(const char *fullpath, int size);
+    int get_size_proxy(const char *fullpath);
+    void delete_proxy(const char *fullpath);
 
     //Snapshot
     void init_snapshot();

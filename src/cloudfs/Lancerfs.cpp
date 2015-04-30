@@ -18,12 +18,12 @@ extern "C"
 
 LancerFS::LancerFS(struct cloudfs_state *state){
     state_.init(state);
-   
-		//create data directory into ssd path
-		char fpath[MAX_PATH_LEN];
-		sprintf(fpath, "%sdata", state_.ssd_path);
-		mkdir(fpath, S_IRWXU | S_IRWXG | S_IRWXO);			
- 
+    
+    //create data directory into ssd path
+    char fpath[MAX_PATH_LEN];
+    sprintf(fpath, "%sdata", state_.ssd_path);
+    mkdir(fpath, S_IRWXU | S_IRWXG | S_IRWXO);
+    
     logpath = "/tmp/cloudfs.log";
     //init log
     logfd = fopen(logpath, "w");
@@ -34,30 +34,30 @@ LancerFS::LancerFS(struct cloudfs_state *state){
     }
     log_msg("LancerFS log: filesystem start\n");
     
-		//init deduplication layer
+    //init deduplication layer
     dup = new duplication(logfd, &state_);
-
-		//init snapshot layer
-		init_snapshot();
+    
+    //init snapshot layer
+    init_snapshot();
 }
 
 /*
 	init_snapshot - try to open .snapshot file. If this file does not exit, create it.	
 */
 void LancerFS::init_snapshot(){
-  char fpath[MAX_PATH_LEN];
-	cloudfs_get_fullpath(SNAPSHOT_PATH, fpath);
-
-	//FILE *fp = fopen(fpath, "ab+");	
-	//fclose(fp);	
-	int fd = open(fpath, O_RDONLY | O_CREAT, S_IRUSR | S_IRGRP | S_IROTH);	
-	if(fd < 0){
-		cloudfs_error("LancerFS error: fail to create snapshot file");
-	}
-	close(fd);	
-	snapshotMgr = new SnapshotManager();
-  strcpy(snapshotMgr->ssd_path, state_.ssd_path);
-  strcpy(snapshotMgr->fuse_path, state_.fuse_path);
+    char fpath[MAX_PATH_LEN];
+    cloudfs_get_fullpath(SNAPSHOT_PATH, fpath);
+    
+    //FILE *fp = fopen(fpath, "ab+");
+    //fclose(fp);
+    int fd = open(fpath, O_RDONLY | O_CREAT, S_IRUSR | S_IRGRP | S_IROTH);
+    if(fd < 0){
+        cloudfs_error("LancerFS error: fail to create snapshot file");
+    }
+    close(fd);
+    snapshotMgr = new SnapshotManager();
+    strcpy(snapshotMgr->ssd_path, state_.ssd_path);
+    strcpy(snapshotMgr->fuse_path, state_.fuse_path);
 }
 
 /*
@@ -75,6 +75,25 @@ void LancerFS::cloudfs_generate_proxy(const char *fullpath, struct stat *buf){
     lsetxattr(fullpath, "user.st_size", &(buf->st_size), sizeof(off_t), 0);
     lsetxattr(fullpath, "user.st_mtime", &(buf->st_mtime), sizeof(time_t), 0);
     close(fd);
+}
+
+void LancerFS::write_size_proxy(const char *fullpath, int size){
+    FILE *fp = fopen(fullpath, "w");
+    fprintf(fp, "%d\n", size);
+    fclose(fp);
+}
+
+int LancerFS::get_size_proxy(const char *fullpath){
+    FILE *fp = fopen(fullpath, "w");
+    int size = 0;
+    ret = fscanf(fp, "%d", &size);
+    return size;
+}
+
+void LancerFS::delete_proxy(const char *fullpath){
+    char hubfile[MAX_PATH_LEN];
+    get_proxy_path(fullpath, hubfile);
+    unlink(hubfile);
 }
 
 /*
@@ -154,19 +173,72 @@ void LancerFS::cloudfs_log_init(){
     Get value of extend attribute: proxy.
  */
 int LancerFS::get_proxy(const char *fullpath){
-    int proxy = 0;
-    int r = lgetxattr(fullpath, "user.proxy", &proxy, sizeof(int));
-    if(r < 0){
-        proxy = 0;
+    string s(fullpath);
+    int i = s.size();
+    while (i >= 0) {
+        if(s[i] == '/'){
+            i++;
+            break;
+        }
+        i--;
     }
-    return proxy;
+    s.insert(i, 1, '.');
+    
+    int ret = access(s.c_str(), F_OK);
+    return ret == 0 ? 1 : 0;
+}
+
+
+void LancerFS::get_proxy_path(const char *fullpath, char *hubfile){
+    string s(fullpath);
+    int i = s.size();
+    while (i >= 0) {
+        if(s[i] == '/'){
+            i++;
+            break;
+        }
+        i--;
+    }
+    s.insert(i, 1, '.');
+    hubfile = s.c_str();
 }
 
 /*
     Set value of extend attribute: proxy.
  */
 int LancerFS::set_proxy(const char *fullpath, int proxy){
-    return lsetxattr(fullpath, "user.proxy", &proxy, sizeof(int), 0);
+
+    if(proxy == 1){
+        string s(fullpath);
+        int i = s.size();
+        while (i >= 0) {
+            if(s[i] == '/'){
+                i++;
+                break;
+            }
+            i--;
+        }
+        s.insert(i, 1, '.');
+        
+        //create proxy hub file
+        int fd = creat(s.c_str(), S_IRWXU | S_IRWXG | S_IRWXO);
+        if(fd < 0){
+            log_msg("LancerFS error: fail to create proxy hub file %s",
+                    fullpath);
+            return -1;
+        }
+        
+        //write size to proxy hub.
+//        FILE *fp = fopen(s.c_str(), "w");
+//        struct stat buf;
+//        lstat(fullpath, &buf);
+//        fprintf(fp, "%d\n", buf->st_size);
+//        fclose(fp);
+        
+    }
+    return 0;
+    
+    //return lsetxattr(fullpath, "user.proxy", &proxy, sizeof(int), 0);
 }
 
 /*
@@ -313,24 +385,24 @@ int LancerFS::cloudfs_open(const char *path, struct fuse_file_info *fi){
         return ret;
     }
     //if has proxy flag, otherwise it is a new file
-    int proxy;
-    int r = 0;
-    r = lgetxattr(fpath, "user.proxy", &proxy, sizeof(int));
-    if(r < 0){// this is a new file, set proxy as 0
-        proxy = 0;
-        lsetxattr(fpath, "user.proxy", &proxy, sizeof(int), 0);
-        log_msg("cfd_open, set proxy path=%s\n", path);
-				string s(fpath);
-				proxyFlag.insert(pair<string, int>(s, 0));
-    }else if(proxy == 0){//Small file that stored in SSD
-        log_msg("open non proxy file %s\n", path);
-    }else if(proxy == 1){// File opened is in cloud, only proxy file here
-        log_msg("LancerFS log: open proxy file %s\n", path);
-        int dirty = 0;
-        lsetxattr(fpath, "user.dirty", &dirty, sizeof(int), 0);
-    }else{
-        r = cloudfs_error("LFS error: wrong proxy file flag\n");
-    }
+    //int proxy;
+    //int r = 0;
+    //r = lgetxattr(fpath, "user.proxy", &proxy, sizeof(int));
+    //if(r < 0){// this is a new file, set proxy as 0
+    //    proxy = 0;
+    //    lsetxattr(fpath, "user.proxy", &proxy, sizeof(int), 0);
+    //    log_msg("cfd_open, set proxy path=%s\n", path);
+	//			string s(fpath);
+	//			proxyFlag.insert(pair<string, int>(s, 0));
+//    }else if(proxy == 0){//Small file that stored in SSD
+//        log_msg("open non proxy file %s\n", path);
+//    }else if(proxy == 1){// File opened is in cloud, only proxy file here
+//        log_msg("LancerFS log: open proxy file %s\n", path);
+//        int dirty = 0;
+//        lsetxattr(fpath, "user.dirty", &dirty, sizeof(int), 0);
+//    }else{
+//        r = cloudfs_error("LFS error: wrong proxy file flag\n");
+//    }
     
     fi->fh = fd;
     return ret;
@@ -342,12 +414,12 @@ int LancerFS::cloudfs_read(const char *path, char *buf, size_t size,
     int ret = 0;
     log_msg("\ncfs_superfiles.insert(s);read(path=\"%s\", buf=0x%08x, size=%d, \
             offset=%lld, fi=0x%08x)\n", path, buf, size, offset, fi);
-   
-		if(strcmp(path, SNAPSHOT_PATH) == 0){
-      ret = 0;
-      return ret;
+    
+    if(strcmp(path, SNAPSHOT_PATH) == 0){
+        ret = 0;
+        return ret;
     }
- 
+    
     char fpath[MAX_PATH_LEN];
     cloudfs_get_fullpath(path, fpath);
     int s = dup->get_file_size(fpath);
@@ -391,11 +463,11 @@ int LancerFS::cloudfs_write(const char *path, const char *buf, size_t size,
     if(get_proxy(fpath)){
         log_msg("dirty file %s\n", fpath);
         int dirty = 1;
-        r = lsetxattr(fpath, "user.dirty", &dirty, sizeof(int), 0);
-        if(r < 0){
-            r = cloudfs_error("LancerFS eror: set dirty bit on failt\n");
-            return r;
-        }
+        //r = lsetxattr(fpath, "user.dirty", &dirty, sizeof(int), 0);
+//        if(r < 0){
+//            r = cloudfs_error("LancerFS eror: set dirty bit on failt\n");
+//            return r;
+//        }
     }
     return ret;
 }
@@ -409,54 +481,46 @@ int LancerFS::cloudfs_release(const char *path, struct fuse_file_info *fi){
     if(!get_proxy(fullpath)){
         //this is a local file
         log_msg("LancerFS log: release local file\n");
-        struct stat buf;
-        lstat(fullpath, &buf);
         if(buf.st_size < state_.threshold){//small file, keep in SSD
             log_msg("LancerFS log: close local file\n");
-            ret = close(fi->fh);
         }else{
             struct stat stat_buf;
             lstat(fullpath, &stat_buf);
-            //cloud_push_file(fullpath, &stat_buf);
+            
             dup->deduplicate(fullpath);
-             
-						struct timespec tv[2];
-        		save_utime(fullpath, tv);
-						unlink(fullpath);
-            cloudfs_generate_proxy(fullpath, &stat_buf);
-						set_utime(fullpath, tv);	
-						
-						string s(fullpath);
-						map<string, int>::iterator it = proxyFlag.find(s);
-						if(it != proxyFlag.end()){
-							it->second = 1;
-						}				
+            
+            struct timespec tv[2];
+            save_utime(fullpath, tv);
+    
+            truncate(fullpath, 0);
+            write_size_proxy(fullpath, stat_buf.st_size);
+            
+            //cloudfs_generate_proxy(fullpath, &stat_buf);
+            
+            set_utime(fullpath, tv);
         }
     }else{// a proxy file
         log_msg("LancerFS log: handle proxy file\n");
-       
-				struct timespec tv[2];
-    		save_utime(fullpath, tv);
+
+//        struct stat buf;
+//        lstat(fullpath, &buf);
         
-				set<string>::iterator iter;
-        string s(fullpath);
-        iter = superfiles.find(s);
-        if(iter != superfiles.end()){
-            superfiles.erase(iter);
-        }
+//        struct timespec tv[2];
+//        save_utime(fullpath, tv);
         
-        if(get_dirty(fullpath)){//dirty file, flush to Cloud
-            dup->clean(fullpath);
-        }
+//        set<string>::iterator iter;
+//        string s(fullpath);
+//        iter = superfiles.find(s);
+//        if(iter != superfiles.end()){
+//            superfiles.erase(iter);
+//        }
         
-        struct stat buf;
-        cloudfs_save_attribute(fullpath, &buf);
-        unlink(fullpath);
-        cloudfs_generate_proxy(fullpath, &buf);
-        set_dirty(fullpath, 0);
-					
-    		set_utime(fullpath, tv);	 
+        //truncate(fullpath, 0);
+        //write_size_proxy(fullpath, buf.st_size);
+//        set_utime(fullpath, tv);
     }
+    
+    ret = close(fi->fh);
     return ret;
 }
 
@@ -534,25 +598,21 @@ int LancerFS::cloudfs_unlink(const char *path)
     
     log_msg("cfs_unlink(path=\"%s\")\n",
             path);
-		if(strcmp(path, ".snapshot") == 0){
-			retstat = -1;
-			return retstat;
-		}
+    if(strcmp(path, ".snapshot") == 0){
+        retstat = -1;
+        return retstat;
+    }
 
     cloudfs_get_fullpath(path, fpath);
     
     if(get_proxy(fpath)){
         dup->remove(fpath);
     }
+    delete_proxy(fpath);
     retstat = unlink(fpath);
     if (retstat < 0)
         retstat = cloudfs_error("unlink fail");
-		string s(fpath);
-    map<string, int>::iterator it = proxyFlag.find(s);
-    if(it != proxyFlag.end()){
-    		proxyFlag.erase(it);
-		}
-		 
+    
     return retstat;
 }
 
@@ -627,10 +687,10 @@ int LancerFS::cloudfs_getattr(const char *path, struct stat *statbuf){
     if(get_proxy(fpath)){
         ret = lstat(fpath, statbuf);
         log_msg("\ncfs_getattr_proxy(path=\"%s\"\n", fpath);
-        lgetxattr(fpath, "user.st_size", &(statbuf->st_size), sizeof(off_t));
+        //lgetxattr(fpath, "user.st_size", &(statbuf->st_size), sizeof(off_t));
         //TODO::how to handle time
         //lgetxattr(fpath, "user.st_mtime", &(statbuf->st_mtime), sizeof(time_t));
-        
+        stat_buf->st_size = get_size_proxy(fpath);
         if(ret != 0){
             ret = cloudfs_error("getattr lstat\n");
         }
