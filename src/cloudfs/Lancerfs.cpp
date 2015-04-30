@@ -13,6 +13,7 @@ extern "C"
 #endif
 
 #define UNUSED __attribute__((unused))
+#define SNAPSHOT_PATH "/.snapshot"
 
 LancerFS::LancerFS(struct cloudfs_state *state){
     state_.init(state);
@@ -39,7 +40,7 @@ LancerFS::LancerFS(struct cloudfs_state *state){
 */
 void LancerFS::init_snapshot(){
   char fpath[MAX_PATH_LEN];
-	cloudfs_get_fullpath("/.snapshot", fpath);
+	cloudfs_get_fullpath(SNAPSHOT_PATH, fpath);
 
 	//FILE *fp = fopen(fpath, "ab+");	
 	//fclose(fp);	
@@ -288,6 +289,13 @@ int LancerFS::cloudfs_mknod(const char *path, mode_t mode, dev_t dev){
 int LancerFS::cloudfs_open(const char *path, struct fuse_file_info *fi){
     int ret = 0;
     int fd;
+
+		if(strcmp(path, SNAPSHOT_PATH) == 0){
+			fd = open(path, O_RDONLY);
+			fi->fh = fd;
+			return ret;
+		} 
+
     char fpath[MAX_PATH_LEN];
     
     log_msg("\ncfd_open(path\"%s\", fi=0x%08x)\n", path, fi);
@@ -327,7 +335,7 @@ int LancerFS::cloudfs_read(const char *path, char *buf, size_t size,
     log_msg("\ncfs_superfiles.insert(s);read(path=\"%s\", buf=0x%08x, size=%d, \
             offset=%lld, fi=0x%08x)\n", path, buf, size, offset, fi);
    
-		if(strcmp(path, ".snapshot") == 0){
+		if(strcmp(path, SNAPSHOT_PATH) == 0){
       ret = 0;
       return ret;
     }
@@ -351,12 +359,13 @@ int LancerFS::cloudfs_write(const char *path, const char *buf, size_t size,
     int ret = 0;
     log_msg("\ncfs_write(path=\"%s\", buf=0x%08x, size=%d, offset=%lld, \
             fi=0x%08x)\n", path, buf, size, offset, fi);
-    if(strcmp(path, ".snapshot") == 0){
+	
+    if(strcmp(path, SNAPSHOT_PATH) == 0){
       ret = 0;
       return ret;
-    }   
- 
-    ret = pwrite(fi->fh, buf, size, offset);
+    }
+    
+		ret = pwrite(fi->fh, buf, size, offset);
     if(ret < 0){
         ret = cloudfs_error("pwrite fail\n");
         
@@ -634,11 +643,11 @@ int LancerFS::cloudfs_mkdir(const char *path, mode_t mode){
     return ret;
 }
 
-int LancerFS::cloudfs_ioctl(const char *fd, int cmd, void *arg ,
+int LancerFS::cloudfs_ioctl(const char *fd, int cmd, void *arg,
 													struct fuse_file_info *info, unsigned int flags, void *data)
 {
 	if(cmd == CLOUDFS_SNAPSHOT){
-		snapshotMgr->snapshot();
+		*(TIMESTAMP *)data = snapshotMgr->snapshot();
 	}else if(cmd == CLOUDFS_RESTORE){
 		TIMESTAMP t = *(TIMESTAMP *)data;
 		snapshotMgr->restore(t);

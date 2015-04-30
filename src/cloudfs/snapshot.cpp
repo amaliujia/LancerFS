@@ -19,7 +19,7 @@ TIMESTAMP *SnapshotManager::list(){
 	return NULL;
 }
 
-void SnapshotManager::snapshot(){
+TIMESTAMP SnapshotManager::snapshot(){
 	struct timeval tv;
 	gettimeofday(&tv, NULL);
 	TIMESTAMP t = (TIMESTAMP)tv.tv_sec;			
@@ -33,10 +33,13 @@ void SnapshotManager::snapshot(){
   char cloudpath[MAX_PATH_LEN];
 	sprintf(cloudpath, "%lu", t);
 	
-	push_to_cloud(cloudpath, tarFilename);	
+	push_to_cloud(cloudpath, tarFilename);
+	unlink(tarFilename);	
+	return t;
 }
 
 void SnapshotManager::restore(TIMESTAMP t){
+		
 	return;
 }
 

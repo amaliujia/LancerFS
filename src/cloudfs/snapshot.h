@@ -55,7 +55,7 @@ public:
 	SnapshotManager();
 	~SnapshotManager();
 
-	void snapshot();
+	TIMESTAMP snapshot();
 	void restore(TIMESTAMP  t);
 	TIMESTAMP *list();
 	TIMESTAMP deletes(TIMESTAMP t); 		
