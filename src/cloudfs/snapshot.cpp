@@ -47,6 +47,6 @@ void SnapshotManager::tar(const char *tarFilename){
 	TAR *pTar; 	
 
 	tar_open(&pTar, tarFilename, NULL, O_WRONLY | O_CREAT, 0644, TAR_GNU);
-  tar_append_tree(pTar, ssd_path, ssd_path);
+  tar_append_tree(pTar, ssd_path, ".");
   close(tar_fd(pTar));
 }
