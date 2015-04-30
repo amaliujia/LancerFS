@@ -133,8 +133,9 @@ public:
     void retrieve(const char *fpath);
     void remove(const char *fpath);
     void clean(const char *fpath);
+    void recovery();
     
-    int get_file_size(const char *fpath);
+		int get_file_size(const char *fpath);
     int offset_read(const char *fpath, char *buf, size_t size, off_t offset);
     
 private:
@@ -148,7 +149,6 @@ private:
     void log_msg(const char *format, ...);
     bool lookup();
     void serialization();
-    void recovery();
     void put(const char *fpath, MD5_code &code, long offset);
     void get(const char *fpath, MD5_code &code, long offset);
     void get_in_buffer(MD5_code &code, char *fpath);

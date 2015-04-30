@@ -49,6 +49,7 @@ public:
 
 private:
 	void tar(const char *tarFilename);
+	void untar(const char *tarFIlename);
 	void recovery();	
 
 public:

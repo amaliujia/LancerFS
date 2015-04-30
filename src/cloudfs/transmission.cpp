@@ -20,4 +20,14 @@ void push_to_cloud(const char *cloudpath, const char *filename){
 		struct stat stat_buf;
 		lstat(filename, &stat_buf);	
 		cloud_put_object("snapshot", cloudpath, stat_buf.st_size, p_buffer); 
+		fclose(inf);
+}
+
+void get_from_cloud(const char *cloudpath, const char *filename){
+	outf = fopen(filename, "wb");
+	if(outf == NULL){
+		return;
+	}
+	 cloud_get_object("bkt", cloudpath, g_buffer);
+	fclose(outf);	
 }

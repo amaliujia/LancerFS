@@ -13,11 +13,17 @@ extern "C"
 #endif
 
 #define UNUSED __attribute__((unused))
+#define SSD_DATA_PATH "data/"
 #define SNAPSHOT_PATH "/.snapshot"
 
 LancerFS::LancerFS(struct cloudfs_state *state){
     state_.init(state);
-    
+   
+		//create data directory into ssd path
+		char fpath[MAX_PATH_LEN];
+		sprintf(fpath, "%sdata", state_.ssd_path);
+		mkdir(fpath, S_IRWXU | S_IRWXG | S_IRWXO);			
+ 
     logpath = "/tmp/cloudfs.log";
     //init log
     logfd = fopen(logpath, "w");
@@ -122,7 +128,7 @@ void LancerFS::cloud_slave_filename(char *path){
 void LancerFS::cloudfs_get_fullpath(const char *path, char *fullpath){
     sprintf(fullpath, "%s", state_.ssd_path);
     path++;
-    sprintf(fullpath, "%s%s", fullpath, path);
+    sprintf(fullpath, "%s%s%s", fullpath, SSD_DATA_PATH, path);
 }
 
 void LancerFS::log_msg(const char *format, ...){
@@ -651,6 +657,8 @@ int LancerFS::cloudfs_ioctl(const char *fd, int cmd, void *arg,
 	}else if(cmd == CLOUDFS_RESTORE){
 		TIMESTAMP t = *(TIMESTAMP *)data;
 		snapshotMgr->restore(t);
+		// duduplication layer should recover
+		dup->recovery();	
 	}else if(cmd == CLOUDFS_DELETE){
 		TIMESTAMP t = *(TIMESTAMP *)data;
 		snapshotMgr->deletes(t);
