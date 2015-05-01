@@ -627,7 +627,7 @@ int LancerFS::cloudfs_truncate(const char *path, off_t newsize)
     char fpath[PATH_MAX];
     
     //log_msg("\ncloudfs_truncate(path=\"%s\", newsize=%lld)\n",
-            path, newsize);
+     //       path, newsize);
     cloudfs_get_fullpath(path, fpath);
     
     retstat = truncate(fpath, newsize);
@@ -673,7 +673,7 @@ int LancerFS::cloudfs_getattr(const char *path, struct stat *statbuf){
     cloudfs_get_fullpath(path, fpath);
     
     //log_msg("\ncloudfs_getattr(path=\"%s\")\n",
-            path);
+            //path);
     
     if(dup->contain(fpath)){
         ret = lstat(fpath, statbuf);
@@ -729,7 +729,7 @@ int LancerFS::cloudfs_mkdir(const char *path, mode_t mode){
     cloudfs_get_fullpath(path, fpath);
     
     //log_msg("\ncfd_mkdir(path=\"%s\", mode=0%3o)\n",
-            path, mode);
+          //  path, mode);
     
     ret = mkdir(fpath, mode);
     if(ret < 0){
