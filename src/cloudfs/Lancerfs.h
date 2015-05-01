@@ -113,7 +113,7 @@ private:
     void write_size_proxy(const char *fullpath, int size);
     int get_size_proxy(const char *fullpath);
     void delete_proxy(const char *fullpath);
-		void get_proxy_path(const char *fullpath, char *hubfile);
+    void get_proxy_path(const char *fullpath, char *hubfile);
 
     //Snapshot
     void init_snapshot();

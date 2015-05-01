@@ -78,28 +78,34 @@ void LancerFS::cloudfs_generate_proxy(const char *fullpath, struct stat *buf){
 }
 
 void LancerFS::write_size_proxy(const char *fullpath, int size){
-//    int fd = creat(s.c_str(), S_IRWXU | S_IRWXG | S_IRWXO);
-//    if(fd < 0){
-//        log_msg("LancerFS error: fail to create proxy hub file %s",
-//                fullpath);
-//        return -1;
-//    }
+    //get hubfile name
+    char hubfile[MAX_PATH_LEN];
+    get_proxy(fullpath, hubfile);
     
-    set_proxy(fullpath, 1);
+    int fd = creat(hubfile, S_IRWXU | S_IRWXG | S_IRWXO);
+    if(fd < 0){
+        log_msg("LancerFS error: fail to create proxy hub file %s",
+                fullpath);
+        return -1;
+    }
     
-    FILE *fp = fopen(fullpath, "w");
+    FILE *fp = fopen(hubfile, "w");
     fprintf(fp, "%d\n", size);
     fclose(fp);
 }
 
 int LancerFS::get_size_proxy(const char *fullpath){
-    FILE *fp = fopen(fullpath, "w");
+    //get hubfile name
+    char hubfile[MAX_PATH_LEN];
+    get_proxy(fullpath, hubfile);
+    
+    FILE *fp = fopen(fhubfile, "r");
     int size = 0;
     int ret = fscanf(fp, "%d", &size);
     if(ret != 1){
 			log_msg("LancerFS error: read wrong proxy file szie, argument wrong");
 		}
-		return size;
+    return size;
 }
 
 void LancerFS::delete_proxy(const char *fullpath){
