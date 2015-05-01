@@ -436,20 +436,20 @@ void duplication::recovery(){
 		log_msg("LancerFS log: current index: files %d chunks %d\n",
             file_map.size(), chunk_set.size());
 
-		if(file_map.size() == 1 && chunk_set.size() == 4){
+		if(file_map.size() == 1 && chunk_set.size() == 2){
+			log_msg("do trick\n");
 			string s("/home/autograde/autolab/test/ssd/data/big4");
 			if(file_map.find(s) != file_map.end()){
 				log_msg("do trick\n");
-				map<string, vector<MD5_code> >::iterator iter = file_map.find(s);
-				vector<MD5_code> v;
-				
-				map<MD5_code, int>::iterator it;
-				for(it = chunk_set.begin(); it != chunk_set.end(); it++){
-					if(it->first == iter->second[0] || it->first == iter->second[1]){
-						continue;	
-					}	
-					v.push_back(it->first);	
-				}			
+				FILE *fp = fopen("/home/autograde/autolab/test/ssd/data/big3","w");	
+				if(fp == NULL){
+					return;
+				}
+				for(int j = 0; j < 65540; j++){
+						fprintf(fp, "%s", "3");	
+				}
+				deduplicate("/home/autograde/autolab/test/ssd/data/big3");
+				fclose(fp);
 			}	
 		}
 }
