@@ -26,7 +26,7 @@ LancerFS::LancerFS(struct cloudfs_state *state){
     
     logpath = "/tmp/cloudfs.log";
     //init log
-    logfd = fopen(logpath, "a");
+    logfd = fopen(logpath, "w");
     //setvbuf(logfd, NULL, _IOLBF, 0);
     if(logfd == NULL){
         printf("LancerFS Error: connot find log file\n");
@@ -414,9 +414,10 @@ int LancerFS::cloudfs_read(const char *path, char *buf, size_t size,
     
     char fpath[MAX_PATH_LEN];
     cloudfs_get_fullpath(path, fpath);
-    int s = dup->get_file_size(fpath);
-    if(s > state_.threshold){
-				log_msg("segment read\n");
+    //int s = dup->get_file_size(fpath);
+    //if(s > state_.threshold){
+		if(dup->contain(fpath)){	
+			log_msg("segment read\n");
         ret = dup->offset_read(fpath, buf, size, offset);
     }else{
 				log_msg("naive read\n");

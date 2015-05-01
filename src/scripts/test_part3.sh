@@ -46,7 +46,9 @@ function execute_part3_tests()
    rm -rf $CACHEDIR 
    reinit_env
    cp big4 $TESTDIR
+	 cp big3 $TESTDIR
    cp big4 $TEMPDIR
+	 cp big3 $TEMPDIR
    # get rid of disk cache
    ./cloudfs_controller.sh x
    snapshot_num=$(./snapshot /home/student/mnt/fuse/.snapshot s)
@@ -61,8 +63,16 @@ function execute_part3_tests()
       print_result 1 
       exit
    fi
+   
+	 rm $TESTDIR/big3
+   printf '=%.0s' {1..100} > $TESTDIR/big3
+   if [ $? -ne 0 ]; then
+      print_result 1
+      exit
+   fi
    ./snapshot /home/student/mnt/fuse/.snapshot r $snapshot_num
-   diff $TEMPDIR/big4 $TESTDIR/big4 
+   diff $TEMPDIR/big4 $TESTDIR/big4
+	 diff $TEMPDIR/big3 $TESTDIR/big3 
    print_result $?
 
 
