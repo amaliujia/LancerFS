@@ -138,7 +138,7 @@ public:
     
 		int get_file_size(const char *fpath);
     int offset_read(const char *fpath, char *buf, size_t size, off_t offset);
-    
+   	void back_up(const char *fpath); 
 private:
     void cloud_push_file(const char *fpath, struct stat *stat_buf);
     void cloud_get_shadow(const char *fullpath, const char *cloudpath);
@@ -158,6 +158,7 @@ private:
     void hidden_chunk_fullpath(const char *path, char *fpath);
     void cloud_filename(char *path);
     void get_local(const char *fpath, MD5_code &code, long offset);
+		void fault_tolerance(const char *fpath);
 };
 
 #endif //DUPLICATION_HPP

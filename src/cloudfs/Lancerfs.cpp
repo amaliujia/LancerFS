@@ -483,7 +483,7 @@ int LancerFS::cloudfs_release(const char *path, struct fuse_file_info *fi){
 						dup->deduplicate(fullpath);
             truncate(fullpath, 0);
             write_size_proxy(fullpath, stat_buf.st_size);
-            
+           	dup->back_up(fullpath); 
             //cloudfs_generate_proxy(fullpath, &stat_buf);
             set_utime(fullpath, tv);
             log_msg("LancerFS log: handle file whose size is over threshold\n");

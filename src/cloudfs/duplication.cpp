@@ -187,8 +187,8 @@ int duplication::offset_read(const char *fpath, char *buf,
     if(iter == file_map.end()){
         log_msg("LancerFS error: find something we believe it is    \
                 large but actually it is not\n");
-        return ret;
-    }
+    	fault_tolerance(fpath);
+		}
     
     int bufoff = 0;
     vector<MD5_code> v = iter->second;
@@ -346,15 +346,96 @@ void duplication::clean(const char *fpath){
     }
 }
 
+void get_proxy_path(const char *fullpath, char *hubfile){
+    string s(fullpath);
+    int i = s.size() - 1;
+    while (i >= 0) {
+        if(s[i] == '/'){
+            i++;
+            break;
+        }
+        i--;
+    }
+    s.insert(i, 1, '.');
+    i++;
+    s.insert(i, 1, '+');
+    strcpy(hubfile, s.c_str());
+}
+
+void duplication::fault_tolerance(const char *fpath){
+		log_msg("duplication::fault_tolerance(fpath=%s)\n", fpath);
+    char hub[PATH_LEN];
+    get_proxy_path(fpath, hub);	
+		
+		FILE *fp = fopen(hub, "r");	
+		int size;
+		fscanf(fp, "%d", &size);
+		int md5_num;
+		fscanf(fp, "%d", &md5_num);
+		int ret;
+			vector<MD5_code> chunks;
+            for(int j = 0; j < md5_num; j++){
+                char md5[MD5_LEN] = {0};
+                int len = 0;
+                ret = fscanf(fp, "%s %d", md5, &len);
+                if(ret != 2){
+                    log_msg("wrong md5 and md5 size %s\n", fpath);
+                    continue;
+                }
+                MD5_code c;
+                c.set_code(md5, len);
+                chunks.push_back(c);
+            }
+		 string s(fpath);
+     file_map.insert(pair<string, vector<MD5_code> >(s, chunks));	
+
+}
+
+void duplication::back_up(const char *fpath){
+	  log_msg("duplication::back_up(fpath=%s)\n", fpath);
+		char hub[PATH_LEN];
+    get_proxy_path(fpath, hub);
+		
+    FILE *fp = fopen(hub, "r");
+		if(fp == NULL){
+			log_msg("error: back wrong file\n");
+			return;
+		}
+		int ret = 0;	
+		int size = 0;
+		ret = fscanf(fp, "%d", &size);
+		fclose(fp);
+		
+		fp = fopen(hub, "w");
+		fprintf(fp, "%d\n", size);
+
+		map<string, vector<MD5_code> >::iterator iter;
+		string s(fpath);
+		iter = file_map.find(s);					
+		if(iter == file_map.end()){
+			log_msg("error: back a file doesn't exist\n");
+			fclose(fp);
+			return;
+		}		
+   
+		fprintf(fp, "%d\n", iter->second.size()); 
+		for(size_t j = 0; j < iter->second.size(); j++){
+        fprintf(fp, "%s %d\n",iter->second[j].md5, iter->second[j].segment_len);
+    }
+				
+		fclose(fp);
+		
+}
+
 /*
     Serialize inmemory index into disk.
  */
 void duplication::serialization(){
     char fpath[PATH_LEN];
     ssd_fullpath(INDEX_FILE, fpath);
+		
     FILE *fp = fopen(fpath, "w");
     fprintf(fp, "%d\n", file_map.size());
-    
     map<string, vector<MD5_code> >::iterator iter;
     for(iter = file_map.begin(); iter != file_map.end(); iter++){
         fprintf(fp, "%s %d\n", iter->first.c_str(), iter->second.size());
