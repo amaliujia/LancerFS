@@ -26,7 +26,7 @@ LancerFS::LancerFS(struct cloudfs_state *state){
     
     logpath = "/tmp/cloudfs.log";
     //init log
-    logfd = fopen(logpath, "a");
+    logfd = fopen(logpath, "w");
     //setvbuf(logfd, NULL, _IOLBF, 0);
     if(logfd == NULL){
         printf("LancerFS Error: connot find log file\n");
@@ -593,10 +593,10 @@ int LancerFS::cloudfs_unlink(const char *path)
 
     cloudfs_get_fullpath(path, fpath);
     
-    if(get_proxy(fpath)){
+    if(dup->contain(fpath)){
         dup->remove(fpath);
+				delete_proxy(fpath);
     }
-    delete_proxy(fpath);
     retstat = unlink(fpath);
     if (retstat < 0)
         retstat = cloudfs_error("unlink fail");
