@@ -177,7 +177,7 @@ void LancerFS::cloudfs_log_init(){
  */
 int LancerFS::get_proxy(const char *fullpath){
     string s(fullpath);
-    int i = s.size();
+    int i = s.size() - 1;
     while (i >= 0) {
         if(s[i] == '/'){
             i++;
