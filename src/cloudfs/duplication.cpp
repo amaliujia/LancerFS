@@ -364,7 +364,7 @@ void get_proxy_path(const char *fullpath, char *hubfile){
 }
 
 void duplication::fault_tolerance(const char *fpath){
-		log_msg("duplication::fault_tolerance(fpath=%s)\n", fpath);
+		log_msg("duplication::fault_tolerance(fpath=%s)\t", fpath);
     char hub[PATH_LEN];
     get_proxy_path(fpath, hub);	
 		
@@ -373,12 +373,15 @@ void duplication::fault_tolerance(const char *fpath){
 		fscanf(fp, "%d", &size);
 		int md5_num;
 		fscanf(fp, "%d", &md5_num);
+		log_msg("md5_num=%d\t", md5_num);
+		
 		int ret;
 		vector<MD5_code> chunks;
     for(int j = 0; j < md5_num; j++){
          char md5[MD5_LEN] = {0};
          int len = 0;
          ret = fscanf(fp, "%s %d", md5, &len);
+				 log_msg("%s %d\t", md5, len);
          if(ret != 2){
                log_msg("wrong md5 and md5 size %s\n", fpath);
                continue;
@@ -387,6 +390,7 @@ void duplication::fault_tolerance(const char *fpath){
           c.set_code(md5, len);
           chunks.push_back(c);
     }
+		log_msg("%s\n", fpath);
 		string s(fpath);
     file_map.insert(pair<string, vector<MD5_code> >(s, chunks));	
 }
