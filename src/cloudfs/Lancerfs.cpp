@@ -83,7 +83,7 @@ void LancerFS::write_size_proxy(const char *fullpath, int size){
     get_proxy_path(fullpath, hubfile);
     
     int fd = creat(hubfile, S_IRWXU | S_IRWXG | S_IRWXO);
-   	log_msg("\nwrite_size_proxy(fullpath=%sfullpath, size=%d)\n", fullpath, size);
+   	log_msg("write_size_proxy(fullpath=%sfullpath, size=%d)\n", fullpath, size);
 		 if(fd < 0){
         log_msg("LancerFS error: fail to create proxy hub file %s",
                 fullpath);
@@ -99,19 +99,19 @@ int LancerFS::get_size_proxy(const char *fullpath){
     //get hubfile name
     char hubfile[MAX_PATH_LEN];
     get_proxy_path(fullpath, hubfile);
-   	log_msg("\nread_size_proxy(fullpath=%sfullpath, size=", fullpath); 
+   	log_msg("read_size_proxy(fullpath=%sfullpath, size=", fullpath);
     FILE *fp = fopen(hubfile, "r");
     int size = 0;
     int ret = fscanf(fp, "%d", &size);
     if(ret != 1){
 			log_msg("LancerFS error: read wrong proxy file szie, argument wrong");
 		}
-		log_msg("%d\n", size);
+    log_msg("%d\n", size);
     return size;
 }
 
 void LancerFS::delete_proxy(const char *fullpath){
-		log_msg("\ndelete_proxy(fullpath=%s)\n", fullpath);
+    log_msg("delete_proxy(fullpath=%s)\n", fullpath);
     char hubfile[MAX_PATH_LEN];
     get_proxy_path(fullpath, hubfile);
     unlink(hubfile);
@@ -301,7 +301,7 @@ int LancerFS::cloudfs_getxattr(const char *path, const char *name,
     int ret = 0;
     char fpath[MAX_PATH_LEN];
     
-    log_msg("\ncloudfs_getxattr(path = \"%s\", name = \"%s\", value = 0x%08x, \
+    //log_msg("\ncloudfs_getxattr(path = \"%s\", name = \"%s\", value = 0x%08x, \
             size = %d)\n", path, name, value, size);
     cloudfs_get_fullpath(path, fpath);
     
@@ -318,7 +318,7 @@ int LancerFS::cloudfs_setxattr(const char *path, const char *name,
                                const char *value, size_t size, int flags){
     int ret = 0;
     char fpath[MAX_PATH_LEN];
-    log_msg("\ncloudfs_setxattr(path=\"%s\", name=\"%s\", value=\"%s\", \
+    //log_msg("cloudfs_setxattr(path=\"%s\", name=\"%s\", value=\"%s\", \
             size=%d, flags=0x%08x)\n", path, name, value, size, flags);
     cloudfs_get_fullpath(path, fpath);
     
@@ -335,7 +335,7 @@ int LancerFS::cloudfs_access(const char *path, int mask)
     int ret = 0;
     char fpath[MAX_PATH_LEN];
     
-    log_msg("\ncfs_access(path=\"%s\", mask=0%o)\n", path, mask);
+    log_msg("cfs_access(path=\"%s\", mask=0%o)\n", path, mask);
     cloudfs_get_fullpath(path, fpath);
     
     ret = access(fpath, mask);
@@ -349,7 +349,7 @@ int LancerFS::cloudfs_mknod(const char *path, mode_t mode, dev_t dev){
     int ret = 0;
     char fpath[MAX_PATH_LEN];
     
-    log_msg("\nmknod(path=\"%s\", mode=0%3o, dev=%lld)\n",
+    log_msg("mknod(path=\"%s\", mode=0%3o, dev=%lld)\n",
             path, mode, dev);
     cloudfs_get_fullpath(path, fpath);
     
@@ -387,7 +387,7 @@ int LancerFS::cloudfs_open(const char *path, struct fuse_file_info *fi){
     
     char fpath[MAX_PATH_LEN];
     
-    log_msg("\ncloudfs_open(path\"%s\", fi=0x%08x)\n", path, fi);
+    log_msg("cloudfs_open(path\"%s\", fi=0x%08x)\n", path, fi);
     cloudfs_get_fullpath(path, fpath);
     
     fd = open(fpath, fi->flags);
@@ -404,7 +404,7 @@ int LancerFS::cloudfs_read(const char *path, char *buf, size_t size,
                            off_t offset, struct fuse_file_info *fi)
 {
     int ret = 0;
-    log_msg("\nread(path=\"%s\", buf=0x%08x, size=%d, \
+    log_msg("read(path=\"%s\", buf=0x%08x, size=%d, \
             offset=%lld, fi=0x%08x)\n", path, buf, size, offset, fi);
     
     if(strcmp(path, SNAPSHOT_PATH) == 0){
@@ -432,7 +432,7 @@ int LancerFS::cloudfs_write(const char *path, const char *buf, size_t size,
                             off_t offset, struct fuse_file_info *fi)
 {
     int ret = 0;
-    log_msg("\ncfs_write(path=\"%s\", buf=0x%08x, size=%d, offset=%lld, \
+    log_msg("cfs_write(path=\"%s\", buf=0x%08x, size=%d, offset=%lld, \
             fi=0x%08x)\n", path, buf, size, offset, fi);
 	
     if(strcmp(path, SNAPSHOT_PATH) == 0){
@@ -586,7 +586,7 @@ int LancerFS::cloudfs_unlink(const char *path)
     int retstat = 0;
     char fpath[MAX_PATH_LEN];
     
-    log_msg("\ncloudfs_unlink(path=\"%s\")\n",
+    log_msg("cloudfs_unlink(path=\"%s\")\n",
             path);
     if(strcmp(path, ".snapshot") == 0){
         retstat = -1;
