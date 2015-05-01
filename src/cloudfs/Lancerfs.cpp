@@ -416,7 +416,7 @@ int LancerFS::cloudfs_read(const char *path, char *buf, size_t size,
     cloudfs_get_fullpath(path, fpath);
     //int s = dup->get_file_size(fpath);
     //if(s > state_.threshold){
-		if(dup->contain(fpath)){	
+    if(dup->contain(fpath)){
 			log_msg("segment read\n");
         ret = dup->offset_read(fpath, buf, size, offset);
     }else{
@@ -461,18 +461,18 @@ int LancerFS::cloudfs_write(const char *path, const char *buf, size_t size,
 int LancerFS::cloudfs_release(const char *path, struct fuse_file_info *fi){
     int ret = 0;
     if(strcmp(path, SNAPSHOT_PATH) == 0){
-				ret = close(fi->fh);
+        ret = close(fi->fh);
         return ret;
     }
-
-		char fullpath[MAX_PATH_LEN];
-		cloudfs_get_fullpath(path, fullpath);
-    log_msg("\ncloudfs_release(path=\"%s\")\n", path);
+    
+    char fullpath[MAX_PATH_LEN];
+    cloudfs_get_fullpath(path, fullpath);
+    log_msg("cloudfs_release(path=\"%s\")\t\t", path);
     if(!dup->contain(fullpath)){
         struct stat stat_buf;
         lstat(fullpath, &stat_buf);
-
-				//this is a local file
+        
+        //this is a local file
         if(stat_buf.st_size < state_.threshold){//small file, keep in SSD
             log_msg("LancerFS log: close small file\n");
         }else{
@@ -480,18 +480,18 @@ int LancerFS::cloudfs_release(const char *path, struct fuse_file_info *fi){
             
             struct timespec tv[2];
             save_utime(fullpath, tv);
-    
+            
             truncate(fullpath, 0);
             write_size_proxy(fullpath, stat_buf.st_size);
             
             //cloudfs_generate_proxy(fullpath, &stat_buf);
             
             set_utime(fullpath, tv);
-						log_msg("LancerFS log: handle file whose size is over threshold\n");
+            log_msg("LancerFS log: handle file whose size is over threshold\n");
         }
     }else{// a proxy file
-        log_msg("LancerFS log: this is a super big file in release: %s\n", path);
-
+        log_msg("LancerFS log: release big file: %s\n", path);
+        
 //        struct stat buf;
 //        lstat(fullpath, &buf);
         
@@ -522,7 +522,7 @@ int LancerFS::cloudfs_opendir(const char *path, struct fuse_file_info *fi)
     int ret = 0;
     char fpath[PATH_MAX];
     
-    log_msg("\ncfs_opendir(path=\"%s\", fi=0x%08x)\n", path, fi);
+    //log_msg("\ncfs_opendir(path=\"%s\", fi=0x%08x)\n", path, fi);
     cloudfs_get_fullpath(path, fpath);
     
     dp = opendir(fpath);
@@ -571,7 +571,7 @@ int LancerFS::cloudfs_chmod(const char *path, mode_t mode)
     int ret = 0;
     char fpath[MAX_PATH_LEN];
     
-    log_msg("\ncfs_chmod(fpath=\"%s\", mode=0%03o)\n", path, mode);
+    //log_msg("\ncfs_chmod(fpath=\"%s\", mode=0%03o)\n", path, mode);
     cloudfs_get_fullpath(path, fpath);
     
     ret = chmod(fpath, mode);
@@ -592,13 +592,13 @@ int LancerFS::cloudfs_unlink(const char *path)
         retstat = -1;
         return retstat;
     }
-
+    
     cloudfs_get_fullpath(path, fpath);
     
     if(dup->contain(fpath)){
-				log_msg("remove big file\n");
+        log_msg("remove big file\n");
         dup->remove(fpath);
-				delete_proxy(fpath);
+        delete_proxy(fpath);
     }
     retstat = unlink(fpath);
     if (retstat < 0)
@@ -611,7 +611,7 @@ int LancerFS::cloudfs_rmdir(const char *path){
     int retstat = 0;
     char fpath[MAX_PATH_LEN];
     
-    log_msg("\ncfs_rmdir(path=\"%s\")\n", path);
+    //log_msg("\ncfs_rmdir(path=\"%s\")\n", path);
     cloudfs_get_fullpath(path, fpath);
     
     retstat = rmdir(fpath);
@@ -626,7 +626,7 @@ int LancerFS::cloudfs_truncate(const char *path, off_t newsize)
     int retstat = 0;
     char fpath[PATH_MAX];
     
-    log_msg("\ncloudfs_truncate(path=\"%s\", newsize=%lld)\n",
+    //log_msg("\ncloudfs_truncate(path=\"%s\", newsize=%lld)\n",
             path, newsize);
     cloudfs_get_fullpath(path, fpath);
     
@@ -664,7 +664,7 @@ LancerFS::~LancerFS(){
     
     //memory management
     delete dup;
-		delete snapshotMgr;
+    delete snapshotMgr;
 }
 
 int LancerFS::cloudfs_getattr(const char *path, struct stat *statbuf){
@@ -672,18 +672,18 @@ int LancerFS::cloudfs_getattr(const char *path, struct stat *statbuf){
     char fpath[MAX_PATH_LEN];
     cloudfs_get_fullpath(path, fpath);
     
-    log_msg("\ncloudfs_getattr(path=\"%s\")\n",
+    //log_msg("\ncloudfs_getattr(path=\"%s\")\n",
             path);
     
     if(dup->contain(fpath)){
         ret = lstat(fpath, statbuf);
-        log_msg("cfs_getattr_bigfile(path=\"%s\"\n", fpath);
+        //log_msg("cfs_getattr_bigfile(path=\"%s\"\n", fpath);
         statbuf->st_size = get_size_proxy(fpath);
         if(ret != 0){
             ret = cloudfs_error("getattr lstat\n");
         }
     }else{
-        log_msg("cfs_getattr_smallfile(path=\"%s\"\n", fpath); 
+        //log_msg("cfs_getattr_smallfile(path=\"%s\"\n", fpath);
         ret = lstat(fpath, statbuf);	
         if(ret != 0){
             ret = cloudfs_error("getattr lstat\n");
@@ -700,7 +700,7 @@ int LancerFS::cloudfs_readdir(const char *path, void *buf,
     DIR *dp;
     struct dirent *de;
     
-    log_msg("\ncfs_readdir(path=\"%s\", buf=0x%08x, filler=0x%08x,  \
+    //log_msg("\ncfs_readdir(path=\"%s\", buf=0x%08x, filler=0x%08x,  \
             offset=%lld, fi=0x%08x)\n", path, buf, filler, offset, fi);	
     dp = (DIR *)(uintptr_t) fi->fh;
     
@@ -728,7 +728,7 @@ int LancerFS::cloudfs_mkdir(const char *path, mode_t mode){
     char fpath[MAX_PATH_LEN];
     cloudfs_get_fullpath(path, fpath);
     
-    log_msg("\ncfd_mkdir(path=\"%s\", mode=0%3o)\n",
+    //log_msg("\ncfd_mkdir(path=\"%s\", mode=0%3o)\n",
             path, mode);
     
     ret = mkdir(fpath, mode);
@@ -739,7 +739,7 @@ int LancerFS::cloudfs_mkdir(const char *path, mode_t mode){
 }
 
 int LancerFS::cloudfs_ioctl(const char *fd, int cmd, void *arg,
-													struct fuse_file_info *info, unsigned int flags, void *data)
+                    struct fuse_file_info *info, unsigned int flags, void *data)
 {
 	if(cmd == CLOUDFS_SNAPSHOT){
 		log_msg("\nsnapshot make %lu\n", *(TIMESTAMP *)data);
@@ -753,6 +753,7 @@ int LancerFS::cloudfs_ioctl(const char *fd, int cmd, void *arg,
 		dup->recovery();	
 	}else if(cmd == CLOUDFS_DELETE){
 		TIMESTAMP t = *(TIMESTAMP *)data;
+        log_msg("\nsnapshot delete %lu\n", t);
 		snapshotMgr->deletes(t);
 	}else if(cmd == CLOUDFS_SNAPSHOT_LIST){
 		snapshotMgr->list();
