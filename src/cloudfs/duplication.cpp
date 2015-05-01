@@ -549,7 +549,6 @@ void duplication::get(const char *fpath, MD5_code &code, long offset){
 
 
 void duplication::get_in_buffer(MD5_code &code, char *fpath){
-    
     outfile = fopen(fpath, "wb");
     if(outfile == NULL){
         log_msg("LancerFS error: cloud pull %s\n", fpath);

@@ -48,7 +48,7 @@ public:
   char ssd_path[MAX_PATH_LEN];
   char fuse_path[MAX_PATH_LEN];	
 	FILE *logfd;
-
+	FILE *snapfd;
 	vector<TIMESTAMP> records;
 
 private:
@@ -61,7 +61,7 @@ private:
 	void log_msg(const char *format, ...);
 
 public:
-	SnapshotManager();
+	SnapshotManager(const char *s);
 	~SnapshotManager();
 
 	TIMESTAMP snapshot();

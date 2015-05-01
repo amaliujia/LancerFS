@@ -55,8 +55,8 @@ void LancerFS::init_snapshot(){
         cloudfs_error("LancerFS error: fail to create snapshot file");
     }
     close(fd);
-    snapshotMgr = new SnapshotManager();
-    strcpy(snapshotMgr->ssd_path, state_.ssd_path);
+    snapshotMgr = new SnapshotManager(state_.ssd_path);
+    //strcpy(snapshotMgr->ssd_path, state_.ssd_path);
     strcpy(snapshotMgr->fuse_path, state_.fuse_path);
 		snapshotMgr->logfd = logfd;
 }

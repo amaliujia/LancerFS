@@ -1,7 +1,10 @@
 #include "snapshot.h"
+
+#define INDEX_CHUNK "/.index.snapshot"
 #define SSD_DATA_PATH "data"
 
-SnapshotManager::SnapshotManager(){
+SnapshotManager::SnapshotManager(const char *s){
+	 strcpy(ssd_path, s);
 }
 
 SnapshotManager::~SnapshotManager(){
@@ -35,8 +38,30 @@ TIMESTAMP SnapshotManager::snapshot(){
 	sprintf(cloudpath, "%lu", t);
 	
 	push_to_cloud(cloudpath, tarFilename);
-	unlink(tarFilename);	
+	unlink(tarFilename);
+
+	//save snapshot	record into index
+	records.push_back(t);
+
+	//write to disk
+	serialization();
+			
 	return t;
+}
+
+void SnapshotManager::serialization(){
+	char fpath[PATH_LEN];
+	sprintf(fpath, "%s%s", ssd_path, SSD_DATA_PATH);
+	sprintf(fpath, "%s%s", fpath,	INDEX_CHUNK); 		
+	FILE *fp = fopen(fpath, "w");
+
+	fprintf(fp, "", );
+	for(int i = 0; i < records.size(); i++){
+		fprintf(fp, "%lu\n", records[i]);
+	}
+
+	fclose(fp);		
+	push_to_cloud("record", fpath);
 }
 
 static int tree_delete(const char *fpath, const struct stat *sb,
@@ -55,6 +80,14 @@ static int tree_delete(const char *fpath, const struct stat *sb,
     return (0);
 }
 
+void SnapshotManager::recover_index(){
+  char fpath[PATH_LEN];
+  sprintf(fpath, "%s%s", ssd_path, SSD_DATA_PATH);
+  sprintf(fpath, "%s%s", fpath, INDEX_CHUNK);
+  FILE *fp = fopen(fpath, "r");
+
+			
+}
 
 void SnapshotManager::restore(TIMESTAMP t){
 	log_msg("SnapshotManager::restore %lu", t);
@@ -73,7 +106,9 @@ void SnapshotManager::restore(TIMESTAMP t){
 	get_from_cloud("snapshot", cloudpath, tarFilename);
 
 	untar(tarFilename);
-	//unlink(tarFilename);			
+	//unlink(tarFilename);		
+
+				
 	return;
 }
 
