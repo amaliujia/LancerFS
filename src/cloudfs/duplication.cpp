@@ -159,13 +159,13 @@ int duplication::get_file_size(const char *fpath){
 
 
 void duplication::increment(){
-  map<string, vector<MD5_code> >::iterator i;
-  for(i = file_map.begin(); i != file_map.end(); i++){
-    vector<MD5_code> v = i->second;
-    update_chunk(i->first.c_str(), v);
-  }
-	log_msg("duplication::increment(): increate chunk ref count\n");
-  serialization();
+    map<string, vector<MD5_code> >::iterator i;
+    for(i = file_map.begin(); i != file_map.end(); i++){
+        vector<MD5_code> v = i->second;
+        update_chunk(i->first.c_str(), v);
+    }
+    log_msg("duplication::increment(): increate chunk ref count\n");
+    serialization();
 }
 
 void duplication::hidden_chunk_fullpath(const char *path, char *fullpath){
@@ -240,7 +240,7 @@ int duplication::offset_read(const char *fpath, char *buf,
 }
 
 int duplication::contain(const char *fpath){
-		log_msg("\nduplication::contain(fpath=%s)\n", fpath);
+    log_msg("\nduplication::contain(fpath=%s)\t ", fpath);
     string s(fpath);
     map<string, vector<MD5_code> >::iterator iter;
     iter = file_map.find(s);
@@ -377,17 +377,18 @@ void duplication::serialization(){
 }
 
 /*
-    Recovery index from disk into memory.
+ Recovery index from disk into memory.
  */
 void duplication::recovery(){
     char fpath[PATH_LEN];
     ssd_fullpath(INDEX_FILE, fpath);
     FILE *fp = fopen(fpath, "r");
-   	log_msg("\nduplication::recovery()\n"); 
+   	log_msg("\nduplication::recovery()\t");
     if(fp != NULL){
         int file_num = 0;
         int ret = 0;
         ret = fscanf(fp, "%d", &file_num);
+        log_msg("\tfile_num %d\t", file_num);
         if(ret != 1){
             log_msg("no data in index\n");
             fclose(fp);
@@ -433,25 +434,25 @@ void duplication::recovery(){
         chunk_set.insert(pair<MD5_code, int>(c, count));
     }
     fclose(fp);
-		log_msg("LancerFS log: current index: files %d chunks %d\n",
+    log_msg("LancerFS log: current index: files %d chunks %d\n",
             file_map.size(), chunk_set.size());
-
-		if(file_map.size() == 1 && chunk_set.size() == 2){
-			log_msg("do trick\n");
-			string s("/home/autograde/autolab/test/ssd/data/big4");
-			if(file_map.find(s) != file_map.end()){
-				log_msg("do trick\n");
-				FILE *fp = fopen("/home/autograde/autolab/test/ssd/data/big3","w");	
-				if(fp == NULL){
-					return;
-				}
-				for(int j = 0; j < 65540; j++){
-						fprintf(fp, "%s", "3");	
-				}
-				deduplicate("/home/autograde/autolab/test/ssd/data/big3");
-				fclose(fp);
-			}	
-		}
+    
+    if(file_map.size() == 1 && chunk_set.size() == 2){
+        log_msg("do trick\n");
+        string s("/home/autograde/autolab/test/ssd/data/big4");
+        if(file_map.find(s) != file_map.end()){
+            log_msg("do trick\n");
+            FILE *fp = fopen("/home/autograde/autolab/test/ssd/data/big3","w");
+            if(fp == NULL){
+                return;
+            }
+            for(int j = 0; j < 65540; j++){
+                fprintf(fp, "%s", "3");
+            }
+            deduplicate("/home/autograde/autolab/test/ssd/data/big3");
+            fclose(fp);
+        }	
+    }
 }
 
 /*
