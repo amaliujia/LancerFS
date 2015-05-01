@@ -80,7 +80,7 @@ void LancerFS::cloudfs_generate_proxy(const char *fullpath, struct stat *buf){
 void LancerFS::write_size_proxy(const char *fullpath, int size){
     //get hubfile name
     char hubfile[MAX_PATH_LEN];
-    get_proxy(fullpath, hubfile);
+    get_proxy_path(fullpath, hubfile);
     
     int fd = creat(hubfile, S_IRWXU | S_IRWXG | S_IRWXO);
     if(fd < 0){
@@ -97,7 +97,7 @@ void LancerFS::write_size_proxy(const char *fullpath, int size){
 int LancerFS::get_size_proxy(const char *fullpath){
     //get hubfile name
     char hubfile[MAX_PATH_LEN];
-    get_proxy(fullpath, hubfile);
+    get_proxy_path(fullpath, hubfile);
     
     FILE *fp = fopen(fhubfile, "r");
     int size = 0;
