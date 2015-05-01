@@ -132,8 +132,9 @@ public:
     void retrieve(const char *fpath);
     void remove(const char *fpath);
     void clean(const char *fpath);
-		void increment();	    
-		void recovery();
+    void increment();
+    void recovery();
+    int contain(const char *fpath);
     
 		int get_file_size(const char *fpath);
     int offset_read(const char *fpath, char *buf, size_t size, off_t offset);

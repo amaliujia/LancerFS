@@ -243,8 +243,18 @@ int duplication::offset_read(const char *fpath, char *buf,
     return ret;
 }
 
+int duplication::contain(const char *fpath){
+    string s(fpath);
+    map<string, vector<MD5_code> >::iterator iter;
+    iter = file_map.find(s);
+    if(iter == file_map.end()){
+        return 0;
+    }
+    return 1;
+}
+
 /*
-    Rabin fingerprinting on file and split file into chunks. Deduplication, 
+    Rabin fingerprinting on file and split file into chunks. Deduplication,
     Index, push new chunk to cloud, and save index into disk when necessary.
  */
 void duplication::deduplicate(const char *path){

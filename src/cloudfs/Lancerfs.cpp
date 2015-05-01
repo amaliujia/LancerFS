@@ -654,12 +654,9 @@ int LancerFS::cloudfs_getattr(const char *path, struct stat *statbuf){
     log_msg("\ncfs_getattr(path=\"%s\", statbuf=0x%08x)\n",
             path, statbuf);
     
-    if(get_proxy(fpath)){
+    if(dup->contain(fpath)){
         ret = lstat(fpath, statbuf);
         log_msg("\ncfs_getattr_proxy(path=\"%s\"\n", fpath);
-        //lgetxattr(fpath, "user.st_size", &(statbuf->st_size), sizeof(off_t));
-        //TODO::how to handle time
-        //lgetxattr(fpath, "user.st_mtime", &(statbuf->st_mtime), sizeof(time_t));
         statbuf->st_size = get_size_proxy(fpath);
         if(ret != 0){
             ret = cloudfs_error("getattr lstat\n");
