@@ -26,7 +26,7 @@ LancerFS::LancerFS(struct cloudfs_state *state){
     
     logpath = "/tmp/cloudfs.log";
     //init log
-    logfd = fopen(logpath, "w");
+    logfd = fopen(logpath, "a+");
     //setvbuf(logfd, NULL, _IOLBF, 0);
     if(logfd == NULL){
         printf("LancerFS Error: connot find log file\n");
