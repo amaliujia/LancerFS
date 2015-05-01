@@ -130,7 +130,7 @@ void SnapshotManager::recover_index(TIMESTAMP t){
 }
 
 void SnapshotManager::restore(TIMESTAMP t){
-	log_msg("SnapshotManager::restore %lu", t);
+	log_msg("\nSnapshotManager::restore %lu\n", t);
 	char root[MAX_PATH_LEN];	
 	sprintf(root, "%s%s", ssd_path, SSD_DATA_PATH);	
 	nftw(root, tree_delete, 20, FTW_DEPTH);	

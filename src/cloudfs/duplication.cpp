@@ -168,7 +168,7 @@ void duplication::increment(){
     vector<MD5_code> v = i->second;
     update_chunk(i->first.c_str(), v);
   }
-
+	log_msg("duplication::increment(): increate chunk ref count\n");
   serialization();
 }
 
@@ -244,12 +244,15 @@ int duplication::offset_read(const char *fpath, char *buf,
 }
 
 int duplication::contain(const char *fpath){
+		log_msg("\nduplication::contain(fpath=%s)\n", fpath);
     string s(fpath);
     map<string, vector<MD5_code> >::iterator iter;
     iter = file_map.find(s);
     if(iter == file_map.end()){
+				log_msg("not contain\n");
         return 0;
     }
+		log_msg("contain\n");
     return 1;
 }
 
@@ -384,7 +387,7 @@ void duplication::recovery(){
     char fpath[PATH_LEN];
     ssd_fullpath(INDEX_FILE, fpath);
     FILE *fp = fopen(fpath, "r");
-    
+   	log_msg("\nduplication::recovery()\n"); 
     if(fp != NULL){
         int file_num = 0;
         int ret = 0;
@@ -434,6 +437,8 @@ void duplication::recovery(){
         chunk_set.insert(pair<MD5_code, int>(c, count));
     }
     fclose(fp);
+		log_msg("LancerFS log: current index: files %d chunks %d\n",
+            file_map.size(), chunk_set.size());
 }
 
 /*
@@ -441,7 +446,7 @@ void duplication::recovery(){
 */
 void duplication::remove(const char *fpath){
     if(state_.no_dedup){
-        log_msg("remove(path=%s\n", fpath);
+        log_msg("\nduplication::remove(path=%s\n", fpath);
         string s(fpath);
         map<string, vector<MD5_code> >::iterator iter;
         if((iter = file_map.find(s)) == file_map.end()){
@@ -481,7 +486,7 @@ void duplication::remove(const char *fpath){
  */
 void duplication::retrieve(const char *fpath){
     if(state_.no_dedup){
-        log_msg("retrieve(path=%s\n", fpath);
+        log_msg("\nduplication::retrieve(path=%s)\n", fpath);
         string s(fpath);
         map<string, vector<MD5_code> >::iterator iter;
         if((iter = file_map.find(s)) == file_map.end()){
@@ -506,7 +511,7 @@ void duplication::retrieve(const char *fpath){
         }
         
     }else{
-        log_msg("LancerFS log: open proxy file %s\n", fpath);
+        log_msg("\nduplication::retrieve(fpath=%s): open proxy file\n", fpath);
         char cloudpath[MAX_PATH_LEN];
         memset(cloudpath, 0, MAX_PATH_LEN);
         strcpy(cloudpath, fpath);
@@ -514,8 +519,8 @@ void duplication::retrieve(const char *fpath){
         
         cloud_get_shadow(fpath, cloudpath);
         
-        int dirty = 0;
-        lsetxattr(fpath, "user.dirty", &dirty, sizeof(int), 0);
+        //int dirty = 0;
+        //lsetxattr(fpath, "user.dirty", &dirty, sizeof(int), 0);
     }
 }
 

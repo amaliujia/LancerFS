@@ -56,7 +56,6 @@ void LancerFS::init_snapshot(){
     }
     close(fd);
     snapshotMgr = new SnapshotManager(state_.ssd_path);
-    //strcpy(snapshotMgr->ssd_path, state_.ssd_path);
     strcpy(snapshotMgr->fuse_path, state_.fuse_path);
 		snapshotMgr->logfd = logfd;
 }
@@ -84,7 +83,8 @@ void LancerFS::write_size_proxy(const char *fullpath, int size){
     get_proxy_path(fullpath, hubfile);
     
     int fd = creat(hubfile, S_IRWXU | S_IRWXG | S_IRWXO);
-    if(fd < 0){
+   	log_msg("\nwrite_size_proxy(fullpath=%sfullpath, size=%d)\n", fullpath, size);
+		 if(fd < 0){
         log_msg("LancerFS error: fail to create proxy hub file %s",
                 fullpath);
         return; 
@@ -99,17 +99,19 @@ int LancerFS::get_size_proxy(const char *fullpath){
     //get hubfile name
     char hubfile[MAX_PATH_LEN];
     get_proxy_path(fullpath, hubfile);
-    
+   	log_msg("\nread_size_proxy(fullpath=%sfullpath, size=", fullpath); 
     FILE *fp = fopen(hubfile, "r");
     int size = 0;
     int ret = fscanf(fp, "%d", &size);
     if(ret != 1){
 			log_msg("LancerFS error: read wrong proxy file szie, argument wrong");
 		}
+		log_msg("%d\n", size);
     return size;
 }
 
 void LancerFS::delete_proxy(const char *fullpath){
+		log_msg("\ndelete_proxy(fullpath=%s)\n", fullpath);
     char hubfile[MAX_PATH_LEN];
     get_proxy_path(fullpath, hubfile);
     unlink(hubfile);
@@ -219,7 +221,7 @@ void LancerFS::get_proxy_path(const char *fullpath, char *hubfile){
         i--;
     }
     s.insert(i, 1, '.');
-    strcpy (hubfile, s.c_str());
+    strcpy(hubfile, s.c_str());
 }
 
 /*
@@ -248,8 +250,6 @@ int LancerFS::set_proxy(const char *fullpath, int proxy){
         }
     }
     return 0;
-    
-    //return lsetxattr(fullpath, "user.proxy", &proxy, sizeof(int), 0);
 }
 
 /*
@@ -301,7 +301,7 @@ int LancerFS::cloudfs_getxattr(const char *path, const char *name,
     int ret = 0;
     char fpath[MAX_PATH_LEN];
     
-    log_msg("\ncfs_getxattr(path = \"%s\", name = \"%s\", value = 0x%08x, \
+    log_msg("\ncloudfs_getxattr(path = \"%s\", name = \"%s\", value = 0x%08x, \
             size = %d)\n", path, name, value, size);
     cloudfs_get_fullpath(path, fpath);
     
@@ -309,7 +309,7 @@ int LancerFS::cloudfs_getxattr(const char *path, const char *name,
     if (ret < 0){
         ret = cloudfs_error("cfs_getxattr lgetxattr");
     }else{
-        log_msg("    value = \"%s\"\n", value);
+        log_msg(" value = \"%s\"\n", value);
    	}
     return ret;
 }
@@ -318,7 +318,7 @@ int LancerFS::cloudfs_setxattr(const char *path, const char *name,
                                const char *value, size_t size, int flags){
     int ret = 0;
     char fpath[MAX_PATH_LEN];
-    log_msg("\ncfs_setxattr(path=\"%s\", name=\"%s\", value=\"%s\", \
+    log_msg("\ncloudfs_setxattr(path=\"%s\", name=\"%s\", value=\"%s\", \
             size=%d, flags=0x%08x)\n", path, name, value, size, flags);
     cloudfs_get_fullpath(path, fpath);
     
@@ -387,7 +387,7 @@ int LancerFS::cloudfs_open(const char *path, struct fuse_file_info *fi){
     
     char fpath[MAX_PATH_LEN];
     
-    log_msg("\ncfd_open(path\"%s\", fi=0x%08x)\n", path, fi);
+    log_msg("\ncloudfs_open(path\"%s\", fi=0x%08x)\n", path, fi);
     cloudfs_get_fullpath(path, fpath);
     
     fd = open(fpath, fi->flags);
@@ -404,7 +404,7 @@ int LancerFS::cloudfs_read(const char *path, char *buf, size_t size,
                            off_t offset, struct fuse_file_info *fi)
 {
     int ret = 0;
-    log_msg("\ncfs_superfiles.insert(s);read(path=\"%s\", buf=0x%08x, size=%d, \
+    log_msg("\nread(path=\"%s\", buf=0x%08x, size=%d, \
             offset=%lld, fi=0x%08x)\n", path, buf, size, offset, fi);
     
     if(strcmp(path, SNAPSHOT_PATH) == 0){
@@ -416,8 +416,10 @@ int LancerFS::cloudfs_read(const char *path, char *buf, size_t size,
     cloudfs_get_fullpath(path, fpath);
     int s = dup->get_file_size(fpath);
     if(s > state_.threshold){
+				log_msg("segment read\n");
         ret = dup->offset_read(fpath, buf, size, offset);
     }else{
+				log_msg("naive read\n");
         ret = pread(fi->fh, buf, size, offset);
         if(ret < 0)
             ret = cloudfs_error("cfs_read read");
@@ -446,13 +448,12 @@ int LancerFS::cloudfs_write(const char *path, const char *buf, size_t size,
 		set_utime(fpath, tv);
     if(ret < 0){
         ret = cloudfs_error("pwrite fail\n");
-        
         return ret;
     }
  
     if(get_proxy(fpath)){
         log_msg("dirty file %s\n", fpath);
-    }
+   	}
     return ret;
 }
 
@@ -465,15 +466,14 @@ int LancerFS::cloudfs_release(const char *path, struct fuse_file_info *fi){
 
 		char fullpath[MAX_PATH_LEN];
 		cloudfs_get_fullpath(path, fullpath);
-    log_msg("\ncfs_release(path=\"%s\", fi=0x%08x)\n", path, fi);
-    if(!get_proxy(fullpath)){
+    log_msg("\ncloudfs_release(path=\"%s\")\n", path);
+    if(!dup->contain(fullpath)){
         struct stat stat_buf;
         lstat(fullpath, &stat_buf);
 
 				//this is a local file
-        log_msg("LancerFS log: release local file\n");
         if(stat_buf.st_size < state_.threshold){//small file, keep in SSD
-            log_msg("LancerFS log: close local file\n");
+            log_msg("LancerFS log: close small file\n");
         }else{
             dup->deduplicate(fullpath);
             
@@ -486,9 +486,10 @@ int LancerFS::cloudfs_release(const char *path, struct fuse_file_info *fi){
             //cloudfs_generate_proxy(fullpath, &stat_buf);
             
             set_utime(fullpath, tv);
+						log_msg("LancerFS log: handle file whose size is over threshold\n");
         }
     }else{// a proxy file
-        log_msg("LancerFS log: handle proxy file\n");
+        log_msg("LancerFS log: this is a super big file in release: %s\n", path);
 
 //        struct stat buf;
 //        lstat(fullpath, &buf);
@@ -538,7 +539,7 @@ int LancerFS::cloudfs_utimens(const char *path, const struct timespec tv[2]){
     
     log_msg("Lancer log: cfs_utimens(path=%s)\n", fullpath);
     ret = utimensat(0, fullpath, tv, 0);
-    lsetxattr(fullpath, "user.st_mtime", &tv[1], sizeof(time_t), 0);
+    //lsetxattr(fullpath, "user.st_mtime", &tv[1], sizeof(time_t), 0);
     if(ret < 0){
         ret = cloudfs_error("utimes fail\n");
     }
@@ -584,7 +585,7 @@ int LancerFS::cloudfs_unlink(const char *path)
     int retstat = 0;
     char fpath[MAX_PATH_LEN];
     
-    log_msg("cfs_unlink(path=\"%s\")\n",
+    log_msg("\ncloudfs_unlink(path=\"%s\")\n",
             path);
     if(strcmp(path, ".snapshot") == 0){
         retstat = -1;
@@ -594,6 +595,7 @@ int LancerFS::cloudfs_unlink(const char *path)
     cloudfs_get_fullpath(path, fpath);
     
     if(dup->contain(fpath)){
+				log_msg("remove big file\n");
         dup->remove(fpath);
 				delete_proxy(fpath);
     }
@@ -608,7 +610,7 @@ int LancerFS::cloudfs_rmdir(const char *path){
     int retstat = 0;
     char fpath[MAX_PATH_LEN];
     
-    log_msg("cfs_rmdir(path=\"%s\")\n", path);
+    log_msg("\ncfs_rmdir(path=\"%s\")\n", path);
     cloudfs_get_fullpath(path, fpath);
     
     retstat = rmdir(fpath);
@@ -669,18 +671,18 @@ int LancerFS::cloudfs_getattr(const char *path, struct stat *statbuf){
     char fpath[MAX_PATH_LEN];
     cloudfs_get_fullpath(path, fpath);
     
-    log_msg("\ncfs_getattr(path=\"%s\", statbuf=0x%08x)\n",
-            path, statbuf);
+    log_msg("\ncloudfs_getattr(path=\"%s\")\n",
+            path);
     
     if(dup->contain(fpath)){
         ret = lstat(fpath, statbuf);
-        log_msg("\ncfs_getattr_proxy(path=\"%s\"\n", fpath);
+        log_msg("cfs_getattr_bigfile(path=\"%s\"\n", fpath);
         statbuf->st_size = get_size_proxy(fpath);
         if(ret != 0){
             ret = cloudfs_error("getattr lstat\n");
         }
     }else{
-        log_msg("\ncfs_getattr_local(path=\"%s\"\n", fpath); 
+        log_msg("cfs_getattr_smallfile(path=\"%s\"\n", fpath); 
         ret = lstat(fpath, statbuf);	
         if(ret != 0){
             ret = cloudfs_error("getattr lstat\n");
