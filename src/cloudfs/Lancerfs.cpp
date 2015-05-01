@@ -26,7 +26,7 @@ LancerFS::LancerFS(struct cloudfs_state *state){
     
     logpath = "/tmp/cloudfs.log";
     //init log
-    logfd = fopen(logpath, "w");
+    logfd = fopen(logpath, "a");
     //setvbuf(logfd, NULL, _IOLBF, 0);
     if(logfd == NULL){
         printf("LancerFS Error: connot find log file\n");
@@ -741,12 +741,12 @@ int LancerFS::cloudfs_ioctl(const char *fd, int cmd, void *arg,
 													struct fuse_file_info *info, unsigned int flags, void *data)
 {
 	if(cmd == CLOUDFS_SNAPSHOT){
+		log_msg("\nsnapshot make %lu\n", *(TIMESTAMP *)data);
 		dup->increment();
 		*(TIMESTAMP *)data = snapshotMgr->snapshot();
-		log_msg("snapshot make %lu", *(TIMESTAMP *)data);
 	}else if(cmd == CLOUDFS_RESTORE){
 		TIMESTAMP t = *(TIMESTAMP *)data;
-		log_msg("snapshot restore %lu", t);
+		log_msg("\nsnapshot restore %lu\n", t);
 		snapshotMgr->restore(t);
 		// duduplication layer should recover
 		dup->recovery();	
