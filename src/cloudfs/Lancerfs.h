@@ -25,7 +25,6 @@
 #include <string>
 
 #include "Fuse.h"
-//#include "log.h"
 #include "duplication.h"
 #include "snapshot.h"
 
@@ -40,7 +39,6 @@ private:
     duplication *dup;
    	SnapshotManager *snapshotMgr; 
     set<string> superfiles;
-    //map<string, int> proxyFlag;
 			    
 public:
     fuse_struct state_;
@@ -49,7 +47,6 @@ public:
     LancerFS();
     LancerFS(struct cloudfs_state *state);
     ~LancerFS();
-    static LancerFS *instance();
     
 public:
     // FS API
@@ -98,7 +95,6 @@ private:
     void cloud_push_shadow(const char *fullpath, const char *shadowpath,
                            struct stat *stat_buf);
     void cloud_filename(char *path);
-    void cloud_slave_filename(char *path);
     
     //FS Kernel
     void cloudfs_generate_proxy(const char *fullpath, struct stat *buf);
@@ -117,11 +113,9 @@ private:
 
     //Snapshot
     void init_snapshot();
-		void save_utime(const char *fpath, struct timespec times[2]);
-		int set_utime(const char *fpath, struct timespec times[2]);
-		 		
-		//attribute
-		//void update_attribute(const char *fpath);
+    void save_utime(const char *fpath, struct timespec times[2]);
+    int set_utime(const char *fpath, struct timespec times[2]);
+
 };
 
 #endif

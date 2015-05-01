@@ -48,9 +48,9 @@ void duplication::cloud_push_file(const char *fpath, struct stat *stat_buf){
 }
 
 /*
-    transfor local file name into cloud file name, through changine '/' into 
-    '+'
-. */
+ transfor local file name into cloud file name, through changine '/' into
+ '+'
+ . */
 void duplication::cloud_filename(char *path){
     while(*path != '\0'){
         if(*path == '/'){
@@ -61,7 +61,7 @@ void duplication::cloud_filename(char *path){
 }
 
 /*
-    Push content of file into cloud.
+ Push content of file into cloud.
  */
 void duplication::cloud_push_shadow(const char *fullpath){
     struct stat stat_buf;
@@ -85,7 +85,7 @@ void duplication::cloud_push_shadow(const char *fullpath){
 }
 
 /*
-    help function. Get filename in FS.
+ help function. Get filename in FS.
  */
 void duplication::ssd_fullpath(const char *path, char *fpath){
     sprintf(fpath, "%s", state_.ssd_path);
@@ -142,7 +142,7 @@ void duplication::init_rabin_structrue(){
 }
 
 /*
-    Compute full size of file from chunk list.
+ Compute full size of file from chunk list.
  */
 int duplication::get_file_size(const char *fpath){
     string s(fpath);
@@ -158,6 +158,9 @@ int duplication::get_file_size(const char *fpath){
 }
 
 
+/*
+    Increase chunks reference count when make snapshot
+ */
 void duplication::increment(){
     map<string, vector<MD5_code> >::iterator i;
     for(i = file_map.begin(); i != file_map.end(); i++){
@@ -168,6 +171,10 @@ void duplication::increment(){
     serialization();
 }
 
+/*
+    Get hidden chunk file. Hidden chunk is chunk cached locally, in order to
+    reduce cloud access.
+ */
 void duplication::hidden_chunk_fullpath(const char *path, char *fullpath){
     sprintf(fullpath, "%s", state_.ssd_path);
     sprintf(fullpath, "%s%s.",fullpath, SSD_DATA_PATH);
@@ -175,8 +182,8 @@ void duplication::hidden_chunk_fullpath(const char *path, char *fullpath){
 }
 
 /*
-    Segment level read. Read chunk base on fullpath of file, offset of file,
-    and size of buffer.
+ Segment level read. Read chunk base on fullpath of file, offset of file,
+ and size of buffer.
  */
 int duplication::offset_read(const char *fpath, char *buf,
                              size_t size, off_t offset){
@@ -187,10 +194,10 @@ int duplication::offset_read(const char *fpath, char *buf,
     if(iter == file_map.end()){
         log_msg("LancerFS error: find something we believe it is    \
                 large but actually it is not\n");
-    	fault_tolerance(fpath);
-		}
+        fault_tolerance(fpath);
+    }
     
-		iter = file_map.find(s);
+    iter = file_map.find(s);
     int bufoff = 0;
     vector<MD5_code> v = iter->second;
     off_t end = offset + size - 1;
@@ -240,22 +247,91 @@ int duplication::offset_read(const char *fpath, char *buf,
     return ret;
 }
 
+/*
+ Segment level write. write chunk base on fullpath of file, offset of file,
+ and size of buffer.
+ */
+int duplication::offset_write(const char *fpath, char *buf,
+                              size_t size, off_t offset){
+    int ret = 0;
+    string s(fpath);
+    map<string, vector<MD5_code> >::iterator iter;
+    iter = file_map.find(s);
+    if(iter == file_map.end()){
+        log_msg("LancerFS error: find something we believe it is    \
+                large but actually it is not\n");
+        fault_tolerance(fpath);
+    }
+    
+    iter = file_map.find(s);
+    int bufoff = 0;
+    vector<MD5_code> v = iter->second;
+    off_t end = offset + size - 1;
+    off_t start = offset;
+    int fileoff = 0;
+    
+    for(size_t i = 0; i < v.size(); i++){
+        if(fileoff > end){
+            break;
+        }
+        int len = v[i].segment_len;
+        if((fileoff + len - 1) < start){
+            fileoff += len;
+            continue;
+        }
+        
+        //see if chunk has been cached
+        set<string>::iterator iter1;
+        char tpath[MAX_PATH_LEN];
+        memset(tpath, 0, MAX_PATH_LEN);
+        hidden_chunk_fullpath(v[i].md5, tpath);
+        if((iter1 = cache_chunk.find(v[i].md5)) ==  cache_chunk.end()){
+            get_in_buffer(v[i], tpath);
+            cache_chunk.insert(v[i].md5);
+        }
+        
+        int fd = open(tpath, O_RDONLY);
+        if(fd < 0){
+            log_msg("LancerFS error: read fail\n");
+            return -1;
+        }
+        if((fileoff < start) && ((fileoff + len) > end)){
+            ret = pwrite(fd, buf+bufoff, size, start - fileoff);
+        }else if((fileoff < start) && ((fileoff + len) >= start)){
+            ret = pwrite(fd, buf + bufoff, len - start + fileoff,
+                         start - fileoff);
+        }else if((fileoff <= end) && ((fileoff + len) > end)){
+            ret = pwrite(fd, buf + bufoff,	end - fileoff + 1, 0);
+        }else{
+            ret = pwrite(fd, buf + bufoff, len, 0);
+        }
+        fileoff += len;
+        bufoff += ret;
+        close(fd);
+    }
+    ret = bufoff;
+    return ret;
+}
+
+/*
+    If cloud has given file. Return 0 is not, 1 is yes.
+ */
 int duplication::contain(const char *fpath){
     log_msg("\nduplication::contain(fpath=%s)\t ", fpath);
     string s(fpath);
     map<string, vector<MD5_code> >::iterator iter;
     iter = file_map.find(s);
     if(iter == file_map.end()){
-				log_msg("not contain\n");
+        log_msg("not contain\n");
         return 0;
     }
-		log_msg("contain\n");
+    log_msg("contain\n");
     return 1;
 }
 
 /*
-    Rabin fingerprinting on file and split file into chunks. Deduplication,
-    Index, push new chunk to cloud, and save index into disk when necessary.
+ Rabin fingerprinting on file and split file into chunks. Deduplication,
+ Index, push new chunk to cloud, and save index into disk when necessary.
  */
 void duplication::deduplicate(const char *path){
     if(state_.no_dedup){
@@ -287,15 +363,15 @@ void duplication::deduplicate(const char *path){
 }
 
 /*
-    Maintain index about chunk. Update reference count of index, save new chunk
-    into cloud.
+ Maintain index about chunk. Update reference count of index, save new chunk
+ into cloud.
  */
 void duplication::update_chunk(const char *fpath, vector<MD5_code> &code_list){
     map<MD5_code, int>::iterator iter;
     long offset = 0;
     for(unsigned int i = 0; i < code_list.size(); i++){
         MD5_code c = code_list[i];
-
+        
         if((iter = chunk_set.find(c)) != chunk_set.end()){
             iter->second += 1;
         }else{
@@ -308,8 +384,8 @@ void duplication::update_chunk(const char *fpath, vector<MD5_code> &code_list){
 }
 
 /*
-    Cloud relaated function, designed to push one single chunk into chunk, 
-    when given chunk size, md5 code, and offset of original file.
+ Cloud relaated function, designed to push one single chunk into chunk,
+ when given chunk size, md5 code, and offset of original file.
  */
 void duplication::put(const char *fpath, MD5_code &code, long offset){
     infile = fopen(fpath, "rb");
@@ -335,7 +411,7 @@ duplication::~duplication(){
 
 
 /*
-    When unlink a file, both remove this file and metadata of this file.
+ When unlink a file, both remove this file and metadata of this file.
  */
 void duplication::clean(const char *fpath){
     if(state_.no_dedup){
@@ -347,6 +423,9 @@ void duplication::clean(const char *fpath){
     }
 }
 
+/*
+    Get proxy file path.
+ */
 void get_proxy_path(const char *fullpath, char *hubfile){
     string s(fullpath);
     int i = s.size() - 1;
@@ -363,72 +442,79 @@ void get_proxy_path(const char *fullpath, char *hubfile){
     strcpy(hubfile, s.c_str());
 }
 
+/*
+    Try to rebuild data structure which mapping file to chunks when detect 
+    in-memory index corrupt.
+ */
 void duplication::fault_tolerance(const char *fpath){
-		log_msg("duplication::fault_tolerance(fpath=%s)\t", fpath);
+    log_msg("duplication::fault_tolerance(fpath=%s)\t", fpath);
     char hub[PATH_LEN];
-    get_proxy_path(fpath, hub);	
-		
-		FILE *fp = fopen(hub, "r");	
-		int size;
-		fscanf(fp, "%d", &size);
-		int md5_num;
-		fscanf(fp, "%d", &md5_num);
-		log_msg("md5_num=%d\t", md5_num);
-		
-		int ret;
-		vector<MD5_code> chunks;
+    get_proxy_path(fpath, hub);
+    
+    FILE *fp = fopen(hub, "r");
+    int size;
+    fscanf(fp, "%d", &size);
+    int md5_num;
+    fscanf(fp, "%d", &md5_num);
+    log_msg("md5_num=%d\t", md5_num);
+    
+    int ret;
+    vector<MD5_code> chunks;
     for(int j = 0; j < md5_num; j++){
-         char md5[MD5_LEN] = {0};
-         int len = 0;
-         ret = fscanf(fp, "%s %d", md5, &len);
-				 log_msg("%s %d\t", md5, len);
-         if(ret != 2){
-               log_msg("wrong md5 and md5 size %s\n", fpath);
-               continue;
-          }
-          MD5_code c;
-          c.set_code(md5, len);
-          chunks.push_back(c);
+        char md5[MD5_LEN] = {0};
+        int len = 0;
+        ret = fscanf(fp, "%s %d", md5, &len);
+        log_msg("%s %d\t", md5, len);
+        if(ret != 2){
+            log_msg("wrong md5 and md5 size %s\n", fpath);
+            continue;
+        }
+        MD5_code c;
+        c.set_code(md5, len);
+        chunks.push_back(c);
     }
-		log_msg("%s\n", fpath);
-		string s(fpath);
-    file_map.insert(pair<string, vector<MD5_code> >(s, chunks));	
+    log_msg("%s\n", fpath);
+    string s(fpath);
+    file_map.insert(pair<string, vector<MD5_code> >(s, chunks));
 }
 
+/*
+    Save file metadata into proxy file.
+ */
 void duplication::back_up(const char *fpath){
-	  log_msg("duplication::back_up(fpath=%s)\n", fpath);
-		char hub[PATH_LEN];
+    log_msg("duplication::back_up(fpath=%s)\n", fpath);
+    char hub[PATH_LEN];
     get_proxy_path(fpath, hub);
-		
+    
     FILE *fp = fopen(hub, "r");
-		if(fp == NULL){
-			log_msg("error: back wrong file\n");
-			return;
-		}
-		int ret = 0;	
-		int size = 0;
-		ret = fscanf(fp, "%d", &size);
-		fclose(fp);
-		
-		fp = fopen(hub, "w");
-		fprintf(fp, "%d\n", size);
-
-		map<string, vector<MD5_code> >::iterator iter;
-		string s(fpath);
-		iter = file_map.find(s);					
-		if(iter == file_map.end()){
-			log_msg("error: back a file doesn't exist\n");
-			fclose(fp);
-			return;
-		}		
-   
-		fprintf(fp, "%d\n", iter->second.size()); 
-		for(size_t j = 0; j < iter->second.size(); j++){
+    if(fp == NULL){
+        log_msg("error: back wrong file\n");
+        return;
+    }
+    int ret = 0;
+    int size = 0;
+    ret = fscanf(fp, "%d", &size);
+    fclose(fp);
+    
+    fp = fopen(hub, "w");
+    fprintf(fp, "%d\n", size);
+    
+    map<string, vector<MD5_code> >::iterator iter;
+    string s(fpath);
+    iter = file_map.find(s);
+    if(iter == file_map.end()){
+        log_msg("error: back a file doesn't exist\n");
+        fclose(fp);
+        return;
+    }
+    
+    fprintf(fp, "%d\n", iter->second.size());
+    for(size_t j = 0; j < iter->second.size(); j++){
         fprintf(fp, "%s %d\n",iter->second[j].md5, iter->second[j].segment_len);
     }
 				
-		fclose(fp);
-		
+    fclose(fp);
+    
 }
 
 /*
@@ -437,7 +523,7 @@ void duplication::back_up(const char *fpath){
 void duplication::serialization(){
     char fpath[PATH_LEN];
     ssd_fullpath(INDEX_FILE, fpath);
-		
+    
     FILE *fp = fopen(fpath, "w");
     fprintf(fp, "%d\n", file_map.size());
     map<string, vector<MD5_code> >::iterator iter;
@@ -462,7 +548,7 @@ void duplication::serialization(){
 }
 
 /*
- Recovery index from disk into memory.
+    Recovery index from disk into memory.
  */
 void duplication::recovery(){
     char fpath[PATH_LEN];
@@ -521,28 +607,11 @@ void duplication::recovery(){
     fclose(fp);
     log_msg("LancerFS log: current index: files %d chunks %d\n",
             file_map.size(), chunk_set.size());
-		/*if(file_map.size() == 1 && (chunk_set.size() == 2 || chunk_set.size() == 4)){
-			log_msg("do trick\n");
-			string s("/home/autograde/autolab/test/ssd/data/big4");
-			if(file_map.find(s) != file_map.end()){
-				log_msg("do trick\n");
-				FILE *fp = fopen("/home/autograde/autolab/test/ssd/data/big3","a+");
-				if(fp == NULL){
-					return;
-				}
-				for(int j = 0; j < 65543; j++){
-						fprintf(fp, "%s", "3");
-				}
-				fflush(fp); 
-				deduplicate("/home/autograde/autolab/test/ssd/data/big3");
-				fclose(fp);
-			}	
-		}*/
 }
 
 /*
-    Remove chunk from both index and cloud.
-*/
+ Remove chunk from both index and cloud.
+ */
 void duplication::remove(const char *fpath){
     if(state_.no_dedup){
         log_msg("\nduplication::remove(path=%s\n", fpath);
@@ -581,7 +650,7 @@ void duplication::remove(const char *fpath){
 }
 
 /*
-    Retrieve data of file from cloud.
+ Retrieve data of file from cloud.
  */
 void duplication::retrieve(const char *fpath){
     if(state_.no_dedup){
@@ -595,17 +664,11 @@ void duplication::retrieve(const char *fpath){
         }
         
         vector<MD5_code> chunks = file_map[s];
-        //vector<string> cache_chunks;
         long offset = 0;
         
         for(unsigned int i = 0; i < chunks.size(); i++){
             MD5_code c = chunks[i];
-            //if(cache_chunks.find(c.md5) != cache_chunks.end()){
-            //read from local
-            
-            //}else{
             get(fpath, c, offset);
-            //}
             offset += c.segment_len;
         }
         
@@ -617,21 +680,12 @@ void duplication::retrieve(const char *fpath){
         cloud_filename(cloudpath);
         
         cloud_get_shadow(fpath, cloudpath);
-        
-        //int dirty = 0;
-        //lsetxattr(fpath, "user.dirty", &dirty, sizeof(int), 0);
     }
 }
 
-void duplication::get_local(const char *fpath UNUSED, MD5_code &code UNUSED,
-                            long offset UNUSED)
-{
-    
-}
-
 /*
-    Get a chunk of a file from cloud, given chunk metadata, offset of file,
-    and filename.
+ Get a chunk of a file from cloud, given chunk metadata, offset of file,
+ and filename.
  */
 void duplication::get(const char *fpath, MD5_code &code, long offset){
     outfile = fopen(fpath, "ab");
@@ -664,7 +718,7 @@ void duplication::get_in_buffer(MD5_code &code, char *fpath){
 
 
 /*
-    Fingerprinting on a file.
+ Fingerprinting on a file.
  */
 void duplication::fingerprint(const char *path, vector<MD5_code> &code_list){
     int	fd = open(path, O_RDONLY);
@@ -672,7 +726,7 @@ void duplication::fingerprint(const char *path, vector<MD5_code> &code_list){
     MD5_CTX ctx;
     unsigned char md5[MD5_DIGEST_LENGTH];
     int new_segment = 0;
-    int len, segment_len = 0, b UNUSED; 
+    int len, segment_len = 0, b UNUSED;
     char buf[1024];
     int bytes;
     

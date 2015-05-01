@@ -11,16 +11,17 @@ SnapshotManager::~SnapshotManager(){
 	
 }
 
-void SnapshotManager::recovery(){
-	return;
-}
-
 TIMESTAMP SnapshotManager::deletes(TIMESTAMP t){
-	return 0;
+    for(size i = 0; i < records.size(); i++){
+        if(records[i] == t){
+            records.erase(records.begin() + i);
+        }
+    }
 }
 
 TIMESTAMP *SnapshotManager::list(){
-	return NULL;
+    TIMESTAMP *t = &records[0];
+    return t;
 }
 
 TIMESTAMP SnapshotManager::snapshot(){
@@ -49,6 +50,9 @@ TIMESTAMP SnapshotManager::snapshot(){
 	return t;
 }
 
+/*
+    Save snapshot historical records into disk.
+ */
 void SnapshotManager::serialization(){
 	char fpath[MAX_PATH_LEN];
 	sprintf(fpath, "%s%s", ssd_path, SSD_DATA_PATH);
@@ -64,6 +68,9 @@ void SnapshotManager::serialization(){
 	push_to_cloud("record", fpath);
 }
 
+/*
+    Function provided when recursively delete a directory.
+ */
 static int tree_delete(const char *fpath, const struct stat *sb,
                         int tflag, struct FTW *ftwbuf)
 {
@@ -80,10 +87,15 @@ static int tree_delete(const char *fpath, const struct stat *sb,
     return (0);
 }
 
+/*
+    Recovery snapshot historical records.
+ */
 void SnapshotManager::recover_index(TIMESTAMP t){
     char fpath[MAX_PATH_LEN];
     sprintf(fpath, "%s%s", ssd_path, SSD_DATA_PATH);
     sprintf(fpath, "%s%s", fpath, INDEX_CHUNK);
+    
+    //load log into disk.
     FILE *fp = fopen(fpath, "r");
     records.clear();
     if(fp == NULL){
@@ -146,7 +158,6 @@ void SnapshotManager::restore(TIMESTAMP t){
     get_from_cloud("snapshot", cloudpath, tarFilename);
     
     untar(tarFilename);
-    //unlink(tarFilename);
     
     char fpath[MAX_PATH_LEN];
     sprintf(fpath, "%s%s", ssd_path, SSD_DATA_PATH);
@@ -165,6 +176,9 @@ void SnapshotManager::log_msg(const char *format, ...){
     fflush(logfd);
 }
 
+/*
+    Helper function. Used to tar fuse namespace.
+ */
 void SnapshotManager::tar(const char *tarFilename){
     TAR *pTar;
     
@@ -176,6 +190,9 @@ void SnapshotManager::tar(const char *tarFilename){
     close(tar_fd(pTar));
 }
 
+/*
+    Helper function. Used to untar into fuse namespace.
+ */
 void SnapshotManager::untar(const char *tarFilename){
     TAR *pTar;
     

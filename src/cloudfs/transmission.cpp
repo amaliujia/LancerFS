@@ -12,26 +12,27 @@ int p_buffer(char *buffer, int bufferLength) {
 }
 
 void delete_object(const char *bucket, const char *cloudpath){
-	cloud_delete_object(bucket, cloudpath);
+    cloud_delete_object(bucket, cloudpath);
 }
 
 void push_to_cloud(const char *cloudpath, const char *filename){
-		inf = fopen(filename, "rb");	  
-		if(inf == NULL){
-        //log_msg("LancerFS error: cloud push %s failed\n", fpath);
+    inf = fopen(filename, "rb");
+    if(inf == NULL){
         return;
     }
-		struct stat stat_buf;
-		lstat(filename, &stat_buf);	
-		cloud_put_object("snapshot", cloudpath, stat_buf.st_size, p_buffer); 
-		fclose(inf);
+    struct stat stat_buf;
+    lstat(filename, &stat_buf);
+    cloud_put_object("snapshot", cloudpath, stat_buf.st_size, p_buffer);
+    fclose(inf);
 }
 
-void get_from_cloud(const char *bucket, const char *cloudpath, const char *filename){
-	outf = fopen(filename, "wb");
-	if(outf == NULL){
-		return;
-	}
-	cloud_get_object(bucket, cloudpath, g_buffer);
-	fclose(outf);	
+void get_from_cloud(const char *bucket, const char *cloudpath,
+                    const char *filename)
+{
+    outf = fopen(filename, "wb");
+    if(outf == NULL){
+        return;
+    }
+    cloud_get_object(bucket, cloudpath, g_buffer);
+    fclose(outf);	
 }

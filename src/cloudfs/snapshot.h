@@ -54,7 +54,6 @@ public:
 private:
 	void tar(const char *tarFilename);
 	void untar(const char *tarFIlename);
-	void recovery();	
 	void serialization();
 	void recover_index(TIMESTAMP t);
 	void log_msg(const char *format, ...);

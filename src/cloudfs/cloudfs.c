@@ -128,7 +128,9 @@ int cloudfs_truncate(const char *path, off_t newsize){
 }
 
 int cloudfs_ioctl(const char *fd, int cmd, void *arg, 
-									struct fuse_file_info *info, unsigned int flags, void *data){
+                struct fuse_file_info *info,
+                unsigned int flags, void *data)
+{
 	return wioctl(fd, cmd, arg, info, flags, data);
 }
 

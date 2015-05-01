@@ -45,10 +45,10 @@ using namespace std;
 
 class duplication{
     
-/*
-This is a private class to wrap info of chunk, including md5 code and
-segment length
-*/
+    /*
+     This is a private class to wrap info of chunk, including md5 code and
+     segment length
+     */
 private:
     class MD5_code{
     public:
@@ -56,8 +56,8 @@ private:
         int segment_len;
         
         /*
-            set md5 code and len into class. This function can be used either
-            initialize function or update function
+         set md5 code and len into class. This function can be used either
+         initialize function or update function
          */
         void set_unsigned_code(unsigned char *code, int len){
             memset(md5, 0, MD5_LEN);
@@ -77,7 +77,7 @@ private:
         }
         
         /*
-            override operater < and ==. in order to use stl map.
+         override operater < and ==. in order to use stl map.
          */
         bool operator<(const MD5_code& other) const{
             for(int i = 0; i < MD5_LEN; i++){
@@ -136,9 +136,11 @@ public:
     void recovery();
     int contain(const char *fpath);
     
-		int get_file_size(const char *fpath);
+    int get_file_size(const char *fpath);
     int offset_read(const char *fpath, char *buf, size_t size, off_t offset);
-   	void back_up(const char *fpath); 
+    int offset_write(const char *fpath, char *buf, size_t size, off_t offset);
+   	void back_up(const char *fpath);
+    
 private:
     void cloud_push_file(const char *fpath, struct stat *stat_buf);
     void cloud_get_shadow(const char *fullpath, const char *cloudpath);
@@ -148,17 +150,14 @@ private:
     void update_chunk(const char *fpath, vector<MD5_code> &code_list);
     void delete_chunk(const char *fpath, vector<MD5_code> &code_list);
     void log_msg(const char *format, ...);
-    bool lookup();
     void serialization();
     void put(const char *fpath, MD5_code &code, long offset);
     void get(const char *fpath, MD5_code &code, long offset);
     void get_in_buffer(MD5_code &code, char *fpath);
-    void del(MD5_code &code);
     void ssd_fullpath(const char *path, char *fpath);
     void hidden_chunk_fullpath(const char *path, char *fpath);
     void cloud_filename(char *path);
-    void get_local(const char *fpath, MD5_code &code, long offset);
-		void fault_tolerance(const char *fpath);
+    void fault_tolerance(const char *fpath);
 };
 
 #endif //DUPLICATION_HPP
