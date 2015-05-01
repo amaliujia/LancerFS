@@ -436,22 +436,23 @@ void duplication::recovery(){
     fclose(fp);
     log_msg("LancerFS log: current index: files %d chunks %d\n",
             file_map.size(), chunk_set.size());
-		if(file_map.size() == 1 && (chunk_set.size() == 2 || chunk_set.size() == 4)){
+		/*if(file_map.size() == 1 && (chunk_set.size() == 2 || chunk_set.size() == 4)){
 			log_msg("do trick\n");
 			string s("/home/autograde/autolab/test/ssd/data/big4");
 			if(file_map.find(s) != file_map.end()){
 				log_msg("do trick\n");
-				FILE *fp = fopen("/home/autograde/autolab/test/ssd/data/big3","w");	
+				FILE *fp = fopen("/home/autograde/autolab/test/ssd/data/big3","a+");
 				if(fp == NULL){
 					return;
 				}
 				for(int j = 0; j < 65543; j++){
-						fprintf(fp, "%s", "3");	
+						fprintf(fp, "%s", "3");
 				}
+				fflush(fp); 
 				deduplicate("/home/autograde/autolab/test/ssd/data/big3");
 				fclose(fp);
 			}	
-		}
+		}*/
 }
 
 /*
