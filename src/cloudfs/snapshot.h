@@ -36,6 +36,8 @@ extern "C"
 #include <stdarg.h>
 #include <sys/time.h>
 #include <libtar.h>
+#include <ftw.h>
+
 #include "Fuse.h"
 #include "transmission.h"
 
@@ -51,6 +53,8 @@ private:
 	void tar(const char *tarFilename);
 	void untar(const char *tarFIlename);
 	void recovery();	
+	//int tree_delete(const char *fpath, const struct stat *sb,
+   //                     int tflag, struct FTW *ftwbuf);
 
 public:
 	SnapshotManager();

@@ -1,4 +1,5 @@
 #include "snapshot.h"
+#define SSD_DATA_PATH "data"
 
 SnapshotManager::SnapshotManager(){
 }
@@ -38,7 +39,28 @@ TIMESTAMP SnapshotManager::snapshot(){
 	return t;
 }
 
+static int tree_delete(const char *fpath, const struct stat *sb,
+                        int tflag, struct FTW *ftwbuf)
+{
+    switch (tflag) {
+        case FTW_D:
+        case FTW_DNR:
+        case FTW_DP:
+            rmdir (fpath);
+            break;
+        default:
+            unlink (fpath);
+            break;
+    }
+    return (0);
+}
+
+
 void SnapshotManager::restore(TIMESTAMP t){
+	char root[MAX_PATH_LEN];	
+	sprintf(root, "%s%s", ssd_path, SSD_DATA_PATH);	
+	nftw(root, tree_delete, 20, FTW_DEPTH);	
+
   char cloudpath[MAX_PATH_LEN];
   sprintf(cloudpath, "%lu", t);
  
@@ -49,7 +71,7 @@ void SnapshotManager::restore(TIMESTAMP t){
 	get_from_cloud("snapshot", cloudpath, tarFilename);
 
 	untar(tarFilename);
-	unlink(tarFilename);			
+	//unlink(tarFilename);			
 	return;
 }
 

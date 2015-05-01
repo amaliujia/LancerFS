@@ -86,7 +86,7 @@ void LancerFS::write_size_proxy(const char *fullpath, int size){
     if(fd < 0){
         log_msg("LancerFS error: fail to create proxy hub file %s",
                 fullpath);
-        return -1;
+        return; 
     }
     
     FILE *fp = fopen(hubfile, "w");
@@ -99,7 +99,7 @@ int LancerFS::get_size_proxy(const char *fullpath){
     char hubfile[MAX_PATH_LEN];
     get_proxy_path(fullpath, hubfile);
     
-    FILE *fp = fopen(fhubfile, "r");
+    FILE *fp = fopen(hubfile, "r");
     int size = 0;
     int ret = fscanf(fp, "%d", &size);
     if(ret != 1){
