@@ -78,13 +78,14 @@ void LancerFS::cloudfs_generate_proxy(const char *fullpath, struct stat *buf){
 }
 
 void LancerFS::write_size_proxy(const char *fullpath, int size){
-    int fd = creat(s.c_str(), S_IRWXU | S_IRWXG | S_IRWXO);
-    if(fd < 0){
-        log_msg("LancerFS error: fail to create proxy hub file %s",
-                fullpath);
-        return -1;
-    }
+//    int fd = creat(s.c_str(), S_IRWXU | S_IRWXG | S_IRWXO);
+//    if(fd < 0){
+//        log_msg("LancerFS error: fail to create proxy hub file %s",
+//                fullpath);
+//        return -1;
+//    }
     
+    set_proxy(fullpath, 1);
     
     FILE *fp = fopen(fullpath, "w");
     fprintf(fp, "%d\n", size);
