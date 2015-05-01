@@ -190,6 +190,7 @@ int duplication::offset_read(const char *fpath, char *buf,
     	fault_tolerance(fpath);
 		}
     
+		iter = file_map.find(s);
     int bufoff = 0;
     vector<MD5_code> v = iter->second;
     off_t end = offset + size - 1;
@@ -373,22 +374,21 @@ void duplication::fault_tolerance(const char *fpath){
 		int md5_num;
 		fscanf(fp, "%d", &md5_num);
 		int ret;
-			vector<MD5_code> chunks;
-            for(int j = 0; j < md5_num; j++){
-                char md5[MD5_LEN] = {0};
-                int len = 0;
-                ret = fscanf(fp, "%s %d", md5, &len);
-                if(ret != 2){
-                    log_msg("wrong md5 and md5 size %s\n", fpath);
-                    continue;
-                }
-                MD5_code c;
-                c.set_code(md5, len);
-                chunks.push_back(c);
-            }
-		 string s(fpath);
-     file_map.insert(pair<string, vector<MD5_code> >(s, chunks));	
-
+		vector<MD5_code> chunks;
+    for(int j = 0; j < md5_num; j++){
+         char md5[MD5_LEN] = {0};
+         int len = 0;
+         ret = fscanf(fp, "%s %d", md5, &len);
+         if(ret != 2){
+               log_msg("wrong md5 and md5 size %s\n", fpath);
+               continue;
+          }
+          MD5_code c;
+          c.set_code(md5, len);
+          chunks.push_back(c);
+    }
+		string s(fpath);
+    file_map.insert(pair<string, vector<MD5_code> >(s, chunks));	
 }
 
 void duplication::back_up(const char *fpath){
