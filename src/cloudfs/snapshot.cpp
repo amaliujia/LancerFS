@@ -57,11 +57,13 @@ static int tree_delete(const char *fpath, const struct stat *sb,
 
 
 void SnapshotManager::restore(TIMESTAMP t){
+	log_msg("SnapshotManager::restore %lu", t);
 	char root[MAX_PATH_LEN];	
 	sprintf(root, "%s%s", ssd_path, SSD_DATA_PATH);	
 	nftw(root, tree_delete, 20, FTW_DEPTH);	
-
-  char cloudpath[MAX_PATH_LEN];
+	mkdir(root, S_IRWXU | S_IRWXG | S_IRWXO);
+  
+	char cloudpath[MAX_PATH_LEN];
   sprintf(cloudpath, "%lu", t);
  
 	char tarFilename[MAX_PATH_LEN];
@@ -75,6 +77,13 @@ void SnapshotManager::restore(TIMESTAMP t){
 	return;
 }
 
+void SnapshotManager::log_msg(const char *format, ...){
+    va_list ap;
+    va_start(ap, format);
+    vfprintf(logfd, format, ap);
+    fflush(logfd);
+}
+
 void SnapshotManager::tar(const char *tarFilename){
 	TAR *pTar; 	
 
@@ -82,15 +91,18 @@ void SnapshotManager::tar(const char *tarFilename){
   sprintf(fpath, "%sdata", ssd_path);
 
 	tar_open(&pTar, tarFilename, NULL, O_WRONLY | O_CREAT, 0644, TAR_GNU);
-  tar_append_tree(pTar, ssd_path, ".");
+  tar_append_tree(pTar, fpath, ".");
   close(tar_fd(pTar));
 }
 
 void SnapshotManager::untar(const char *tarFilename){
 	TAR *pTar;
 
+  char fpath[MAX_PATH_LEN];
+  sprintf(fpath, "%sdata", ssd_path);
+
 	tar_open(&pTar, tarFilename, NULL, O_RDONLY, 0, TAR_GNU);
-	tar_extract_all(pTar, ssd_path);	
+	tar_extract_all(pTar, fpath);	
 	tar_close(pTar);	
 }
 

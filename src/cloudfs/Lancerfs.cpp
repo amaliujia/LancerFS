@@ -26,7 +26,7 @@ LancerFS::LancerFS(struct cloudfs_state *state){
     
     logpath = "/tmp/cloudfs.log";
     //init log
-    logfd = fopen(logpath, "w");
+    logfd = fopen(logpath, "a");
     //setvbuf(logfd, NULL, _IOLBF, 0);
     if(logfd == NULL){
         printf("LancerFS Error: connot find log file\n");
@@ -58,6 +58,7 @@ void LancerFS::init_snapshot(){
     snapshotMgr = new SnapshotManager();
     strcpy(snapshotMgr->ssd_path, state_.ssd_path);
     strcpy(snapshotMgr->fuse_path, state_.fuse_path);
+		snapshotMgr->logfd = logfd;
 }
 
 /*
@@ -448,7 +449,6 @@ int LancerFS::cloudfs_write(const char *path, const char *buf, size_t size,
         
         return ret;
     }
-   
  
     int r = 0;
     if(get_proxy(fpath)){
@@ -459,10 +459,14 @@ int LancerFS::cloudfs_write(const char *path, const char *buf, size_t size,
 
 int LancerFS::cloudfs_release(const char *path, struct fuse_file_info *fi){
     int ret = 0;
-    char fullpath[MAX_PATH_LEN];
-    cloudfs_get_fullpath(path, fullpath);
+    if(strcmp(path, SNAPSHOT_PATH) == 0){
+				ret = close(fi->fh);
+        return ret;
+    }
+
+		char fullpath[MAX_PATH_LEN];
+		cloudfs_get_fullpath(path, fullpath);
     log_msg("\ncfs_release(path=\"%s\", fi=0x%08x)\n", path, fi);
-    
     if(!get_proxy(fullpath)){
         struct stat stat_buf;
         lstat(fullpath, &stat_buf);
@@ -738,8 +742,10 @@ int LancerFS::cloudfs_ioctl(const char *fd, int cmd, void *arg,
 	if(cmd == CLOUDFS_SNAPSHOT){
 		dup->increment();
 		*(TIMESTAMP *)data = snapshotMgr->snapshot();
+		log_msg("snapshot make %lu", *(TIMESTAMP *)data);
 	}else if(cmd == CLOUDFS_RESTORE){
 		TIMESTAMP t = *(TIMESTAMP *)data;
+		log_msg("snapshot restore %lu", t);
 		snapshotMgr->restore(t);
 		// duduplication layer should recover
 		dup->recovery();	

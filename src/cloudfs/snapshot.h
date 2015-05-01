@@ -47,6 +47,8 @@ class SnapshotManager{
 public:
   char ssd_path[MAX_PATH_LEN];
   char fuse_path[MAX_PATH_LEN];	
+	FILE *logfd;
+
 	vector<TIMESTAMP> records;
 
 private:
@@ -55,6 +57,8 @@ private:
 	void recovery();	
 	//int tree_delete(const char *fpath, const struct stat *sb,
    //                     int tflag, struct FTW *ftwbuf);
+
+	void log_msg(const char *format, ...);
 
 public:
 	SnapshotManager();

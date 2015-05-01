@@ -28,6 +28,6 @@ void get_from_cloud(const char *bucket, const char *cloudpath, const char *filen
 	if(outf == NULL){
 		return;
 	}
-	 cloud_get_object(bucket, cloudpath, g_buffer);
+	cloud_get_object(bucket, cloudpath, g_buffer);
 	fclose(outf);	
 }
