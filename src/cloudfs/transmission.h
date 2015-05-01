@@ -29,4 +29,6 @@ extern "C"
 
 void push_to_cloud(const char *cloudpath, const char *filename);
 void get_from_cloud(const char *bucket, const char *cloudpath, const char *filename);
+void delete_object(const char *bucket, const char *cloudpath); 
+
 #endif

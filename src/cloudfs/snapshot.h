@@ -55,9 +55,8 @@ private:
 	void tar(const char *tarFilename);
 	void untar(const char *tarFIlename);
 	void recovery();	
-	//int tree_delete(const char *fpath, const struct stat *sb,
-   //                     int tflag, struct FTW *ftwbuf);
-
+	void serialization();
+	void recover_index(TIMESTAMP t);
 	void log_msg(const char *format, ...);
 
 public:

@@ -450,7 +450,6 @@ int LancerFS::cloudfs_write(const char *path, const char *buf, size_t size,
         return ret;
     }
  
-    int r = 0;
     if(get_proxy(fpath)){
         log_msg("dirty file %s\n", fpath);
     }

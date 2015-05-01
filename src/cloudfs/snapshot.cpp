@@ -50,13 +50,13 @@ TIMESTAMP SnapshotManager::snapshot(){
 }
 
 void SnapshotManager::serialization(){
-	char fpath[PATH_LEN];
+	char fpath[MAX_PATH_LEN];
 	sprintf(fpath, "%s%s", ssd_path, SSD_DATA_PATH);
 	sprintf(fpath, "%s%s", fpath,	INDEX_CHUNK); 		
 	FILE *fp = fopen(fpath, "w");
 
-	fprintf(fp, "", );
-	for(int i = 0; i < records.size(); i++){
+	fprintf(fp, "%d\n", records.size());
+	for(size_t i = 0; i < records.size(); i++){
 		fprintf(fp, "%lu\n", records[i]);
 	}
 
@@ -80,13 +80,53 @@ static int tree_delete(const char *fpath, const struct stat *sb,
     return (0);
 }
 
-void SnapshotManager::recover_index(){
-  char fpath[PATH_LEN];
+void SnapshotManager::recover_index(TIMESTAMP t){
+  char fpath[MAX_PATH_LEN];
   sprintf(fpath, "%s%s", ssd_path, SSD_DATA_PATH);
   sprintf(fpath, "%s%s", fpath, INDEX_CHUNK);
   FILE *fp = fopen(fpath, "r");
+	records.clear();
+	if(fp == NULL){
+		return;
+	}				
+	int ret;
+	int size;
+	ret = fscanf(fp, "%d", &size);
+	if(ret != 1){
+		fclose(fp);
+		return;
+	}
 
-			
+	int i;
+	for(i = 0; i < size; i++){
+		TIMESTAMP ts;	
+		ret = fscanf(fp, "%lu", &ts);
+		if(ret != 1){
+	    fclose(fp);
+ 		  return;
+		}
+		records.push_back(ts);
+		if(ts == t){
+			break;	
+		} 
+	}
+
+	char cloudpath[MAX_PATH_LEN];		
+	
+	for(i = i + 1; i < size; i++){
+    TIMESTAMP ts;
+    ret = fscanf(fp, "%lu", &ts);
+    if(ret != 1){
+      fclose(fp);
+      return;
+    }
+	
+		//delete snapshot
+		sprintf(cloudpath, "%lu", ts);	
+		delete_object("snapshot", cloudpath);
+	}
+
+	serialization();
 }
 
 void SnapshotManager::restore(TIMESTAMP t){
@@ -108,6 +148,12 @@ void SnapshotManager::restore(TIMESTAMP t){
 	untar(tarFilename);
 	//unlink(tarFilename);		
 
+	char fpath[MAX_PATH_LEN];
+  sprintf(fpath, "%s%s", ssd_path, SSD_DATA_PATH);
+  sprintf(fpath, "%s%s", fpath, INDEX_CHUNK);
+	get_from_cloud("snapshot", "record", fpath);	
+	
+	recover_index(t);
 				
 	return;
 }

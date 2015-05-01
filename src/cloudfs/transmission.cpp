@@ -11,6 +11,10 @@ int p_buffer(char *buffer, int bufferLength) {
     return fread(buffer, 1, bufferLength, inf);
 }
 
+void delete_object(const char *bucket, const char *cloudpath){
+	cloud_delete_object(bucket, cloudpath);
+}
+
 void push_to_cloud(const char *cloudpath, const char *filename){
 		inf = fopen(filename, "rb");	  
 		if(inf == NULL){
