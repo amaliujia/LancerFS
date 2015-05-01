@@ -230,14 +230,6 @@ int LancerFS::set_proxy(const char *fullpath, int proxy){
                     fullpath);
             return -1;
         }
-        
-        //write size to proxy hub.
-//        FILE *fp = fopen(s.c_str(), "w");
-//        struct stat buf;
-//        lstat(fullpath, &buf);
-//        fprintf(fp, "%d\n", buf->st_size);
-//        fclose(fp);
-        
     }
     return 0;
     
@@ -370,13 +362,13 @@ int LancerFS::cloudfs_mknod(const char *path, mode_t mode, dev_t dev){
 int LancerFS::cloudfs_open(const char *path, struct fuse_file_info *fi){
     int ret = 0;
     int fd;
-
-		if(strcmp(path, SNAPSHOT_PATH) == 0){
-			fd = open(path, O_RDONLY);
-			fi->fh = fd;
-			return ret;
-		} 
-
+    
+    if(strcmp(path, SNAPSHOT_PATH) == 0){
+        fd = open(path, O_RDONLY);
+        fi->fh = fd;
+        return ret;
+    }
+    
     char fpath[MAX_PATH_LEN];
     
     log_msg("\ncfd_open(path\"%s\", fi=0x%08x)\n", path, fi);
@@ -387,25 +379,6 @@ int LancerFS::cloudfs_open(const char *path, struct fuse_file_info *fi){
         ret = cloudfs_error("open fail\n");
         return ret;
     }
-    //if has proxy flag, otherwise it is a new file
-    //int proxy;
-    //int r = 0;
-    //r = lgetxattr(fpath, "user.proxy", &proxy, sizeof(int));
-    //if(r < 0){// this is a new file, set proxy as 0
-    //    proxy = 0;
-    //    lsetxattr(fpath, "user.proxy", &proxy, sizeof(int), 0);
-    //    log_msg("cfd_open, set proxy path=%s\n", path);
-	//			string s(fpath);
-	//			proxyFlag.insert(pair<string, int>(s, 0));
-//    }else if(proxy == 0){//Small file that stored in SSD
-//        log_msg("open non proxy file %s\n", path);
-//    }else if(proxy == 1){// File opened is in cloud, only proxy file here
-//        log_msg("LancerFS log: open proxy file %s\n", path);
-//        int dirty = 0;
-//        lsetxattr(fpath, "user.dirty", &dirty, sizeof(int), 0);
-//    }else{
-//        r = cloudfs_error("LFS error: wrong proxy file flag\n");
-//    }
     
     fi->fh = fd;
     return ret;
