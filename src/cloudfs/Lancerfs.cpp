@@ -454,13 +454,9 @@ int LancerFS::cloudfs_write(const char *path, const char *buf, size_t size,
     
    	struct timespec tv[2];
     save_utime(fpath, tv);
-    if(get_proxy(fpath)){
-        log_msg("segment write\n");
-        ret = dup->offset_write(fpath, buf, size, offset);
-    }else{
-        ret = pwrite(fi->fh, buf, size, offset);
-    }
-    if(ret < 0){
+		ret = pwrite(fi->fh, buf, size, offset);
+    
+		if(ret < 0){
         ret = cloudfs_error("pwrite fail\n");
         return ret;
     }
@@ -508,8 +504,10 @@ int LancerFS::cloudfs_release(const char *path, struct fuse_file_info *fi){
         
         struct timespec tv[2];
         save_utime(fullpath, tv);
-        
-        dup->clean(fullpath);
+       
+				if(get_dirty(fullpath)){ 
+        	dup->clean(fullpath);
+				}
         
         set<string>::iterator iter;
         string s(fullpath);
