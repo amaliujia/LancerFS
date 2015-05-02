@@ -138,7 +138,7 @@ public:
     
     int get_file_size(const char *fpath);
     int offset_read(const char *fpath, char *buf, size_t size, off_t offset);
-    int offset_write(const char *fpath, char *buf, size_t size, off_t offset);
+    int offset_write(const char *fpath, const char *buf, size_t size, off_t offset);
    	void back_up(const char *fpath);
     
 private:

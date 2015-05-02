@@ -12,7 +12,7 @@ SnapshotManager::~SnapshotManager(){
 }
 
 TIMESTAMP SnapshotManager::deletes(TIMESTAMP t){
-    for(size i = 0; i < records.size(); i++){
+    for(size_t i = 0; i < records.size(); i++){
         if(records[i] == t){
             records.erase(records.begin() + i);
         }

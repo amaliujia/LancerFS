@@ -251,7 +251,7 @@ int duplication::offset_read(const char *fpath, char *buf,
  Segment level write. write chunk base on fullpath of file, offset of file,
  and size of buffer.
  */
-int duplication::offset_write(const char *fpath, char *buf,
+int duplication::offset_write(const char *fpath, const char *buf,
                               size_t size, off_t offset){
     int ret = 0;
     string s(fpath);

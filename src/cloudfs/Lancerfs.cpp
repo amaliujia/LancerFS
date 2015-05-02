@@ -509,7 +509,7 @@ int LancerFS::cloudfs_release(const char *path, struct fuse_file_info *fi){
         struct timespec tv[2];
         save_utime(fullpath, tv);
         
-        dup->clean(fpath);
+        dup->clean(fullpath);
         
         set<string>::iterator iter;
         string s(fullpath);
