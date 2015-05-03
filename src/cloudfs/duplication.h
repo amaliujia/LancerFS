@@ -56,7 +56,7 @@ private:
         int segment_len;
         
         /*
-         set md5 code and len into class. This function can be used either
+         Set md5 code and len into class. This function can be used either
          initialize function or update function
          */
         void set_unsigned_code(unsigned char *code, int len){
@@ -77,7 +77,7 @@ private:
         }
         
         /*
-         override operater < and ==. in order to use stl map.
+         override operater < and ==, in order to use stl map.
          */
         bool operator<(const MD5_code& other) const{
             for(int i = 0; i < MD5_LEN; i++){
@@ -120,6 +120,7 @@ private:
     // mapping from MD5 code to reference count
     map<MD5_code, int> chunk_set;
     
+    // metadata of chunks locally
     set<string> cache_chunk;
     
 public:

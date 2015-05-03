@@ -391,6 +391,7 @@ int LancerFS::cloudfs_open(const char *path, struct fuse_file_info *fi){
     int ret = 0;
     int fd;
     
+    // open .snapshot in O_RDONLY mode.
     if(strcmp(path, SNAPSHOT_PATH) == 0){
         fd = open(path, O_RDONLY);
         fi->fh = fd;
@@ -419,6 +420,7 @@ int LancerFS::cloudfs_read(const char *path, char *buf, size_t size,
     log_msg("read(path=\"%s\", buf=0x%08x, size=%d, \
             offset=%lld, fi=0x%08x)\n", path, buf, size, offset, fi);
     
+    //not allowed read .snapshot
     if(strcmp(path, SNAPSHOT_PATH) == 0){
         ret = 0;
         return ret;
@@ -426,7 +428,7 @@ int LancerFS::cloudfs_read(const char *path, char *buf, size_t size,
     
     char fpath[MAX_PATH_LEN];
     cloudfs_get_fullpath(path, fpath);
-    if(get_proxy(fpath)){
+    if(get_proxy(fpath)){ //if file saved in cloud
         log_msg("segment read\n");
         ret = dup->offset_read(fpath, buf, size, offset);
     }else{
@@ -557,6 +559,9 @@ int LancerFS::cloudfs_utimens(const char *path, const struct timespec tv[2]){
     return ret;
 }
 
+/*
+    Save mtime of file.
+ */
 void LancerFS::save_utime(const char *fpath, struct timespec times[2]){
     struct stat buf;
     lstat(fpath, &buf);
@@ -570,6 +575,9 @@ void LancerFS::save_utime(const char *fpath, struct timespec times[2]){
     return;
 }
 
+/*
+    Set mtime of file.
+ */
 int LancerFS::set_utime(const char *fpath, struct timespec times[2]){
     int ret = 0;
     ret = utimensat(0, fpath, times, 0);
@@ -604,7 +612,7 @@ int LancerFS::cloudfs_unlink(const char *path)
     }
     
     cloudfs_get_fullpath(path, fpath);
-    if(dup->contain(fpath)){
+    if(dup->contain(fpath)){//delete metadata of cloud file.
         log_msg("remove big file\n");
         delete_proxy(fpath);
         dup->remove(fpath);
@@ -685,7 +693,7 @@ int LancerFS::cloudfs_getattr(const char *path, struct stat *statbuf){
             path);
     
     
-    if(get_proxy(fpath)){
+    if(get_proxy(fpath)){//show extend attributes.
         ret = lstat(fpath, statbuf);
         statbuf->st_size = get_size_proxy(fpath);
         if(ret != 0){
@@ -720,6 +728,7 @@ int LancerFS::cloudfs_readdir(const char *path, void *buf,
     }
     
     do{
+        //do not show lost+found.
         if(strcmp(de->d_name, "lost+found") == 0){
             continue;
         }

@@ -159,7 +159,7 @@ int duplication::get_file_size(const char *fpath){
 
 
 /*
-    Increase chunks reference count when make snapshot
+    Increase chunks reference count when make snapshot.
  */
 void duplication::increment(){
     map<string, vector<MD5_code> >::iterator i;
@@ -184,6 +184,12 @@ void duplication::hidden_chunk_fullpath(const char *path, char *fullpath){
 /*
  Segment level read. Read chunk base on fullpath of file, offset of file,
  and size of buffer.
+ 
+ case 1: chunk is smaller than segment, read whole chunk.
+ case 2: chunk is on the left of this segment, skip this chunk
+        and continue.
+ case 3: chunk is on the right of this segment, stop.
+ other: read part of chunk.
  */
 int duplication::offset_read(const char *fpath, char *buf,
                              size_t size, off_t offset){
@@ -250,6 +256,12 @@ int duplication::offset_read(const char *fpath, char *buf,
 /*
  Segment level write. write chunk base on fullpath of file, offset of file,
  and size of buffer.
+ 
+ case 1: chunk is smaller than segment, write whole chunk.
+ case 2: chunk is on the left of this segment, skip this chunk
+ and continue.
+ case 3: chunk is on the right of this segment, stop.
+ other: write part of chunk.
  */
 int duplication::offset_write(const char *fpath, const char *buf,
                               size_t size, off_t offset){
@@ -479,7 +491,7 @@ void duplication::fault_tolerance(const char *fpath){
 }
 
 /*
-    Save file metadata into proxy file.
+    Save file metadata into proxy file, in case of corrput primary metadata.
  */
 void duplication::back_up(const char *fpath){
     log_msg("duplication::back_up(fpath=%s)\n", fpath);
@@ -524,6 +536,7 @@ void duplication::serialization(){
     char fpath[PATH_LEN];
     ssd_fullpath(INDEX_FILE, fpath);
     
+    // write mapping between files and chunks.
     FILE *fp = fopen(fpath, "w");
     fprintf(fp, "%d\n", file_map.size());
     map<string, vector<MD5_code> >::iterator iter;
@@ -536,6 +549,7 @@ void duplication::serialization(){
     }
     fclose(fp);
     
+    // write mapping between chunks and reference chunks.
     ssd_fullpath(INDEX_CHUNK, fpath);
     fp = fopen(fpath, "w");
     map<MD5_code, int>::iterator iter2;
@@ -556,6 +570,8 @@ void duplication::recovery(){
     ssd_fullpath(INDEX_FILE, fpath);
     FILE *fp = fopen(fpath, "r");
    	log_msg("\nduplication::recovery()\t");
+    
+
     if(fp != NULL){
         int file_num = 0;
         int ret = 0;
@@ -566,6 +582,7 @@ void duplication::recovery(){
             fclose(fp);
             return;
         }
+        // Load mapping between file to chunks into memory.
         for(int i = 0; i < file_num; i++){
             char filepath[PATH_LEN];
             int md5_num = 0;
@@ -623,6 +640,7 @@ void duplication::remove(const char *fpath){
             return;
         }
         
+        //maintain chunk reference chunk
         vector<MD5_code> chunks = file_map[s];
         map<MD5_code, int>::iterator chunk_iter;
         for(unsigned int i = 0; i < chunks.size(); i++){
@@ -685,8 +703,8 @@ void duplication::retrieve(const char *fpath){
 }
 
 /*
- Get a chunk of a file from cloud, given chunk metadata, offset of file,
- and filename.
+    Get a chunk of a file from cloud, given chunk metadata, offset of file,
+    and filename.
  */
 void duplication::get(const char *fpath, MD5_code &code, long offset){
     outfile = fopen(fpath, "ab");
@@ -719,7 +737,7 @@ void duplication::get_in_buffer(MD5_code &code, char *fpath){
 
 
 /*
- Fingerprinting on a file.
+    Fingerprinting on a file.
  */
 void duplication::fingerprint(const char *path, vector<MD5_code> &code_list){
     int	fd = open(path, O_RDONLY);

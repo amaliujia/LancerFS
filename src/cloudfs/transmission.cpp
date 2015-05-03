@@ -3,6 +3,7 @@
 static  FILE *outf;
 static  FILE *inf;
 
+
 int g_buffer(const char *buffer, int bufferLength) {
     return fwrite(buffer, 1, bufferLength, outf);
 }
@@ -11,9 +12,13 @@ int p_buffer(char *buffer, int bufferLength) {
     return fread(buffer, 1, bufferLength, inf);
 }
 
+/*
+    Wrapper of cloud_delete_object.
+ */
 void delete_object(const char *bucket, const char *cloudpath){
     cloud_delete_object(bucket, cloudpath);
 }
+
 
 void push_to_cloud(const char *cloudpath, const char *filename){
     inf = fopen(filename, "rb");
