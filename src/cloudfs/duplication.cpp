@@ -530,7 +530,8 @@ void duplication::serialization(){
     for(iter = file_map.begin(); iter != file_map.end(); iter++){
         fprintf(fp, "%s %d\n", iter->first.c_str(), iter->second.size());
         for(size_t j = 0; j < iter->second.size(); j++){
-            fprintf(fp, "%s %d\n",iter->second[j].md5, iter->second[j].segment_len);
+            fprintf(fp, "%s %d\n",iter->second[j].md5,
+                    iter->second[j].segment_len);
         }
     }
     fclose(fp);

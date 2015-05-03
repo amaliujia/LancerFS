@@ -84,7 +84,8 @@ void LancerFS::write_size_proxy(const char *fullpath, int size){
     char hubfile[MAX_PATH_LEN];
     get_proxy_path(fullpath, hubfile);
     
-   	log_msg("write_size_proxy(fullpath=%sfullpath, size=%d)\n", fullpath, size);
+   	log_msg("write_size_proxy(fullpath=%sfullpath, size=%d)\n",
+            fullpath, size);
     
     FILE *fp = fopen(hubfile, "w");
     fprintf(fp, "%d\n", size);
@@ -454,9 +455,9 @@ int LancerFS::cloudfs_write(const char *path, const char *buf, size_t size,
     
    	struct timespec tv[2];
     save_utime(fpath, tv);
-		ret = pwrite(fi->fh, buf, size, offset);
+    ret = pwrite(fi->fh, buf, size, offset);
     
-		if(ret < 0){
+    if(ret < 0){
         ret = cloudfs_error("pwrite fail\n");
         return ret;
     }
@@ -504,10 +505,10 @@ int LancerFS::cloudfs_release(const char *path, struct fuse_file_info *fi){
         
         struct timespec tv[2];
         save_utime(fullpath, tv);
-       
-				if(get_dirty(fullpath)){ 
-        	dup->clean(fullpath);
-				}
+        
+        if(get_dirty(fullpath)){
+            dup->clean(fullpath);
+        }
         
         set<string>::iterator iter;
         string s(fullpath);
@@ -747,7 +748,9 @@ int LancerFS::cloudfs_mkdir(const char *path, mode_t mode){
 }
 
 int LancerFS::cloudfs_ioctl(const char *fd, int cmd, void *arg,
-                            struct fuse_file_info *info, unsigned int flags, void *data)
+                            struct fuse_file_info *info,
+                            unsigned int flags,
+                            void *data)
 {
     if(cmd == CLOUDFS_SNAPSHOT){
         log_msg("\nsnapshot make %lu\n", *(TIMESTAMP *)data);
