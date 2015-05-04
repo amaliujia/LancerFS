@@ -18,7 +18,7 @@ void fsLock::get(){
 }
 
 bool fsLock::try_get(){
-    pthread_mutex_trylock(&_lock);
+    return pthread_mutex_trylock(&_lock);
 }
 
 void fsLock::release(){

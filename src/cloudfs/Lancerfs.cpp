@@ -12,7 +12,6 @@ extern "C"
 }
 #endif
 
-#define UNUSED __attribute__((unused))
 #define SSD_DATA_PATH "data/"
 #define SNAPSHOT_PATH "/.snapshot"
 
@@ -756,9 +755,9 @@ int LancerFS::cloudfs_mkdir(const char *path, mode_t mode){
     return ret;
 }
 
-int LancerFS::cloudfs_ioctl(const char *fd, int cmd, void *arg,
-                            struct fuse_file_info *info,
-                            unsigned int flags,
+int LancerFS::cloudfs_ioctl(UNUSED const char *fd, int cmd, UNUSED void *arg,
+                            UNUSED struct fuse_file_info *info,
+                            UNUSED unsigned int flags,
                             void *data)
 {
     if(cmd == CLOUDFS_SNAPSHOT){

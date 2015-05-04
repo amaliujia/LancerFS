@@ -2,7 +2,6 @@
 #define INDEX_CHUNK "/.index.chunk"
 
 #include "duplication.h"
-#define UNUSED __attribute__((unused))
 #define SSD_DATA_PATH "data/"
 
 static  FILE *outfile;
@@ -509,9 +508,9 @@ void duplication::back_up(const char *fpath){
         log_msg("error: back wrong file\n");
         return;
     }
-    int ret = 0;
+    
     int size = 0;
-    ret = fscanf(fp, "%d", &size);
+    fscanf(fp, "%d", &size);
     fclose(fp);
     
     fp = fopen(hub, "w");

@@ -15,8 +15,10 @@ TIMESTAMP SnapshotManager::deletes(TIMESTAMP t){
     for(size_t i = 0; i < records.size(); i++){
         if(records[i] == t){
             records.erase(records.begin() + i);
+            return t;
         }
     }
+    return 0;
 }
 
 TIMESTAMP *SnapshotManager::list(){
@@ -71,8 +73,8 @@ void SnapshotManager::serialization(){
 /*
     Function provided when recursively delete a directory.
  */
-static int tree_delete(const char *fpath, const struct stat *sb,
-                        int tflag, struct FTW *ftwbuf)
+static int tree_delete(const char *fpath, const struct stat *sb UNUSED,
+                        int tflag, struct FTW *ftwbuf UNUSED)
 {
     switch (tflag) {
         case FTW_D:

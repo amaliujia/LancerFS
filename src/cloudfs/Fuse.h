@@ -29,6 +29,8 @@
 #define MAX_PATH_LEN 4096
 #define MAX_HOSTNAME_LEN 1024
 
+#define UNUSED __attribute__((unused))
+
 typedef unsigned long TIMESTAMP;
 
 /*

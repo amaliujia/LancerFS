@@ -62,7 +62,7 @@ void cache_controller::garbage_collect(){
         iter_read != chunk_read_cache.end();
         iter_read++)
     {
-        if(iter->second == 0){
+        if(iter_read->second == 0){
             chunk_read_cache.erase(iter_read);
         }
     }
