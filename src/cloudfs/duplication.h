@@ -3,6 +3,7 @@
 
 
 #include "Fuse.h"
+#include "cache_controller.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -100,6 +101,9 @@ private:
     
     // metadata of chunks locally
     set<string> cache_chunk;
+    
+    //cache layer
+    cache_controller *cache_ctl;
     
 public:
     duplication(FILE *fd, char *ssd_path);

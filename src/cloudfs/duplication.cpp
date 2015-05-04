@@ -117,8 +117,10 @@ duplication::duplication(FILE *fd, fuse_struct *state){
     init_rabin_structrue();
     
     //recover index
-    if(state_.no_dedup)
+    if(state_.no_dedup){
         recovery();
+        cache_ctl = new cache_controller();
+    }
     
     out_buffer = NULL;
     outfile = NULL;
@@ -419,6 +421,10 @@ void duplication::put(const char *fpath, MD5_code &code, long offset){
 
 duplication::~duplication(){
     rabin_free(&rp);
+    
+    if(state_.no_dedup){
+        delete cache_ctl;
+    }
 }
 
 

@@ -10,24 +10,65 @@ cache_controller::cache_controller(){
 }
 
 cache_controller::~cache_controller(){
-    
+    garbage_collect();
 }
 
 int cache_controller::lookup(const char *chunk_name){
     set<string>::iterator iter;
     string s(chunk_name);
+    _mutex.get();
     iter = chunk_cache.find(s);
-    return iter != chunk_cache.end() ? 1 : 0;
+    int result = (iter != chunk_cache.end() ? 1 : 0);
+    _mutex.release();
+    return result;
 }
 
 void cache_controller::cache_read(const char *chunk_name){
     map<string, int>::iterator iter_read;
     string s(chunk_name);
+    _mutex_read.get();
     if((iter_read = chunk_read_cache.find(s)) != chunk_read_cache.end()){
         int ref = iter_read->second;
         chunk_read_cache[s] = ref + 1;
     }else{
         chunk_read_cache.insert(pair<string, int>(s, 1));
     }
+    _mutex_read.release();
 }
+
+void cache_controller::release_read(const char *chunk_name){
+    map<string, int>::iterator iter_read;
+    string s(chunk_name);
+    _mutex_read.get();
+    if((iter_read = chunk_read_cache.find(s)) != chunk_read_cache.end()){
+        int ref = iter_read->second;
+        if(ref > 1)
+            chunk_read_cache[s] = ref - 1;
+        else
+            chunk_read_cache.erase(iter_read);
+    }else{// error here, need log
+        //TODO: log error
+    }
+    _mutex_read.release();
+}
+
+void cache_controller::garbage_collect(){
+    map<string, int>::iterator iter_read;
+    
+    _mutex_read.get();
+    
+    //critical secton
+    for(iter_read = chunk_read_cache.begin();
+        iter_read != chunk_read_cache.end();
+        iter_read++)
+    {
+        if(iter->second == 0){
+            chunk_read_cache.erase(iter_read);
+        }
+    }
+    _mutex_read.release();
+}
+
+
+
 

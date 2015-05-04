@@ -18,6 +18,8 @@ private:
     map<string, vector<string> > chunk_write_cache;
     
     fsLock _mutex;
+    fsLock _mutex_read;
+    fsLock _mutex_write;
     
 public:
     cache_controller();
@@ -28,6 +30,7 @@ public:
     void cache_write(const char *filename, const char *chunk_name);
     void release_read(const char *chunk_name);
     void release_write(const char *filename, const char *chunk_name);
+    void garbage_collect();
     
     int size();
     int size_read_cache();
