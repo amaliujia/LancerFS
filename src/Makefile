@@ -107,6 +107,22 @@ all: cloudfs
 # --------------------------------------------------------------------------
 # Compile target patterns
 
+$(BUILD)/obj/lock.o:cloudfs/lock.cpp
+	$(QUIET_ECHO) $@: Compiling object
+	@ mkdir -p $(dir $(BUILD)/dep/$<)
+	@g++ $(CPPFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
+        -o $(BUILD)/dep/$(<:%.c=%.d) -c $<
+	mkdir -p $(dir $@)
+	$(VERBOSE_SHOW) g++ $(CPPFLAGS) -o $@ -c $<
+
+$(BUILD)/obj/cache_controller.o:cloudfs/cache_controller.cpp
+	$(QUIET_ECHO) $@: Compiling object
+	@ mkdir -p $(dir $(BUILD)/dep/$<)
+	@g++ $(CPPFLAGS) -M -MG -MQ $@ -DCOMPILINGDEPENDENCIES \
+        -o $(BUILD)/dep/$(<:%.c=%.d) -c $<
+	mkdir -p $(dir $@)
+	$(VERBOSE_SHOW) g++ $(CPPFLAGS) -o $@ -c $<
+
 $(BUILD)/obj/log.o:cloudfs/log.cpp
 	$(QUIET_ECHO) $@: Compiling object
 	@ mkdir -p $(dir $(BUILD)/dep/$<)
@@ -195,6 +211,8 @@ $(BUILD)/obj/%.o: dedup-lib/%.c
 cloudfs: $(BUILD)/bin/cloudfs
 
 CLOUDFS_OBJS = $(BUILD)/obj/cloudapi.o \
+				$(BUILD)/obj/lock.o	\
+				$(BUILD)/obj/cache_controller.o	\
 				$(BUILD)/obj/transmission.o	\
 				$(BUILD)/obj/snapshot.o	\
 				$(BUILD)/obj/duplication.o	\

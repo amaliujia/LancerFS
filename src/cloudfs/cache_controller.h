@@ -15,7 +15,7 @@ class cache_controller{
 private:
     set<string> chunk_cache;
     map<string, int> chunk_read_cache;
-    map<string, vector<string>> chunk_write_cache;
+    map<string, vector<string> > chunk_write_cache;
     
     fsLock _mutex;
     

@@ -31,4 +31,3 @@ void cache_controller::cache_read(const char *chunk_name){
     }
 }
 
-void 
