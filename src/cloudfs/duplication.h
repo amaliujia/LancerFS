@@ -113,10 +113,10 @@ public:
     
     void deduplicate(const char *path);
     void retrieve(const char *fpath);
-    void remove(const char *fpath);
     void clean(const char *fpath);
     void increment();
     void recovery();
+    void clean_cache();
     int contain(const char *fpath);
     
     int get_file_size(const char *fpath);
@@ -125,6 +125,7 @@ public:
    	void back_up(const char *fpath);
     
 private:
+    void remove(const char *fpath);
     void cloud_push_file(const char *fpath, struct stat *stat_buf);
     void cloud_get_shadow(const char *fullpath, const char *cloudpath);
     void cloud_push_shadow(const char *fpath);

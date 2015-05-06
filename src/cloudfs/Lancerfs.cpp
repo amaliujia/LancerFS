@@ -517,8 +517,11 @@ int LancerFS::cloudfs_release(const char *path, struct fuse_file_info *fi){
         struct timespec tv[2];
         save_utime(fullpath, tv);
         
+        //TODO: release ownership of cache.
         if(get_dirty(fullpath)){
             dup->clean(fullpath);
+        }else{
+            dup->clean_cache();
         }
         
         set<string>::iterator iter;

@@ -222,13 +222,12 @@ int duplication::offset_read(const char *fpath, char *buf,
         }
         
         //see if chunk has been cached
-        set<string>::iterator iter1;
         char tpath[MAX_PATH_LEN];
-        memset(tpath, 0, MAX_PATH_LEN);
         hidden_chunk_fullpath(v[i].md5, tpath);
-        if((iter1 = cache_chunk.find(v[i].md5)) ==  cache_chunk.end()){
+        
+        if(!cache_ctl->lookup(tpath)){
             get_in_buffer(v[i], tpath);
-            cache_chunk.insert(v[i].md5);
+            cache_ctl->cache_read(tpah);
         }
         
         int fd = open(tpath, O_RDONLY);
@@ -249,6 +248,7 @@ int duplication::offset_read(const char *fpath, char *buf,
         fileoff += len;
         bufoff += ret;
         close(fd);
+        
     }
     ret = bufoff;
     return ret;
@@ -433,11 +433,19 @@ duplication::~duplication(){
 void duplication::clean(const char *fpath){
     if(state_.no_dedup){
         log_msg("clean(path=%s\n", fpath);
+        cache_ctl->garbage_collect();
         remove(fpath);
         deduplicate(fpath);
     }else{
         cloud_push_shadow(fpath);
     }
+}
+
+/*
+    When release a file, clean caches of it.
+ */
+void duplication::clean_cache(){
+   cache_ctl->garbage_collect();
 }
 
 /*
