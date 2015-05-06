@@ -1,4 +1,5 @@
 #include "Lancerfs.h"
+#include "transmission.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -389,8 +390,7 @@ int LancerFS::cloudfs_mknod(const char *path, mode_t mode, dev_t dev){
 int LancerFS::cloudfs_open(const char *path, struct fuse_file_info *fi){
     int ret = 0;
     int fd;
-    
-    // open .snapshot in O_RDONLY mode.
+     // open .snapshot in O_RDONLY mode.
     if(strcmp(path, SNAPSHOT_PATH) == 0){
         fd = open(path, O_RDONLY);
         fi->fh = fd;
@@ -409,6 +409,16 @@ int LancerFS::cloudfs_open(const char *path, struct fuse_file_info *fi){
     }
     
     fi->fh = fd;
+
+		if(state_.no_dedup && get_proxy(fpath)){
+			log_msg("cloudfs download file from cloud %s\n", fpath);
+		  char cloudpath[MAX_PATH_LEN];
+  		memset(cloudpath, 0, MAX_PATH_LEN);
+  		strcpy(cloudpath, fpath);	
+			cloud_filename(cloudpath);
+			get_from_cloud("bkt", cloudpath, fpath);	
+		}
+
     return ret;
 }
 
@@ -427,7 +437,7 @@ int LancerFS::cloudfs_read(const char *path, char *buf, size_t size,
     
     char fpath[MAX_PATH_LEN];
     cloudfs_get_fullpath(path, fpath);
-    if(get_proxy(fpath)){ //if file saved in cloud
+    if(get_proxy(fpath) && !state_.no_dedup){ //if file saved in cloud
         log_msg("segment read\n");
         ret = dup->offset_read(fpath, buf, size, offset);
     }else{
