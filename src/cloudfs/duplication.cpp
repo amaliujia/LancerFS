@@ -227,7 +227,7 @@ int duplication::offset_read(const char *fpath, char *buf,
         
         if(!cache_ctl->lookup(tpath)){
             get_in_buffer(v[i], tpath);
-            cache_ctl->cache_read(tpah);
+            cache_ctl->cache_read(tpath);
         }
         
         int fd = open(tpath, O_RDONLY);

@@ -1,1 +1,1 @@
-./snapshot /home/student/mnt/fuse/.snapshot r 1430422764 
+./snapshot /home/student/mnt/fuse/.snapshot r 1430944856 

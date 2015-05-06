@@ -123,9 +123,9 @@ public:
     int offset_read(const char *fpath, char *buf, size_t size, off_t offset);
     int offset_write(const char *fpath, const char *buf, size_t size, off_t offset);
    	void back_up(const char *fpath);
-    
-private:
     void remove(const char *fpath);
+
+private:
     void cloud_push_file(const char *fpath, struct stat *stat_buf);
     void cloud_get_shadow(const char *fullpath, const char *cloudpath);
     void cloud_push_shadow(const char *fpath);

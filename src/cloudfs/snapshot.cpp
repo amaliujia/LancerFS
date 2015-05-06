@@ -15,7 +15,12 @@ TIMESTAMP SnapshotManager::deletes(TIMESTAMP t){
     for(size_t i = 0; i < records.size(); i++){
         if(records[i] == t){
             records.erase(records.begin() + i);
-            return t;
+    				char cloudpath[MAX_PATH_LEN];
+
+        		//delete snapshot
+        		sprintf(cloudpath, "%lu", t);
+        		delete_object("snapshot", cloudpath);
+          	return t;
         }
     }
     return 0;
