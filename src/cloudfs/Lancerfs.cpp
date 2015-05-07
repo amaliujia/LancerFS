@@ -41,8 +41,8 @@ LancerFS::LancerFS(struct cloudfs_state *state){
 }
 
 /*
-	init_snapshot - try to open .snapshot file. If this file does not exit, 
-    create it.
+	init_snapshot - try to open .snapshot file. If this file does not exit,
+ create it.
  */
 void LancerFS::init_snapshot(){
     char fpath[MAX_PATH_LEN];
@@ -59,9 +59,9 @@ void LancerFS::init_snapshot(){
 }
 
 /*
-    cloudfs_generate_proxy - When file is bigger than threshold, 
-    push file into cloud, use this function
-    generate proxy file to represent cloud file.
+ cloudfs_generate_proxy - When file is bigger than threshold,
+ push file into cloud, use this function
+ generate proxy file to represent cloud file.
  */
 void LancerFS::cloudfs_generate_proxy(const char *fullpath, struct stat *buf){
     int fd = creat(fullpath, buf->st_mode);
@@ -77,7 +77,7 @@ void LancerFS::cloudfs_generate_proxy(const char *fullpath, struct stat *buf){
 }
 
 /*
-    write_size_proxy- write true size of a proxy file into hidden file.
+ write_size_proxy- write true size of a proxy file into hidden file.
  */
 void LancerFS::write_size_proxy(const char *fullpath, int size){
     //get hubfile name
@@ -93,7 +93,7 @@ void LancerFS::write_size_proxy(const char *fullpath, int size){
 }
 
 /*
-    get_size_proxy- read true size of a proxy file into hidden file.
+ get_size_proxy- read true size of a proxy file into hidden file.
  */
 int LancerFS::get_size_proxy(const char *fullpath){
     //get hubfile name
@@ -111,7 +111,7 @@ int LancerFS::get_size_proxy(const char *fullpath){
 }
 
 /*
-    delete_proxy- delete hidden file of given proxy file.
+ delete_proxy- delete hidden file of given proxy file.
  */
 void LancerFS::delete_proxy(const char *fullpath){
     log_msg("delete_proxy(fullpath=%s)\n", fullpath);
@@ -121,8 +121,8 @@ void LancerFS::delete_proxy(const char *fullpath){
 }
 
 /*
-    cloudfs_save_attribute - Save file attributes into extended attribute of 
-    proxy file.
+ cloudfs_save_attribute - Save file attributes into extended attribute of
+ proxy file.
  */
 int LancerFS::cloudfs_save_attribute(const char *fullpath, struct stat *buf){
     int ret = 0;
@@ -148,7 +148,7 @@ int LancerFS::cloudfs_save_attribute(const char *fullpath, struct stat *buf){
 }
 
 /*
-    cloudfs_set_attribut- save extend attributes like size and mtime.
+ cloudfs_set_attribut- save extend attributes like size and mtime.
  */
 void LancerFS::cloudfs_set_attribute(const char *fullpath, struct stat *buf){
     lsetxattr(fullpath, "user.st_size", &(buf->st_size), sizeof(off_t), 0);
@@ -156,7 +156,7 @@ void LancerFS::cloudfs_set_attribute(const char *fullpath, struct stat *buf){
 }
 
 /*
-    cloud_filenam - Get cloud filename.
+ cloud_filenam - Get cloud filename.
  */
 void LancerFS::cloud_filename(char *path){
     while(*path != '\0'){
@@ -168,7 +168,7 @@ void LancerFS::cloud_filename(char *path){
 }
 
 /*
-    cloudfs_get_fullpath - get full path in linux namespace by given path.
+ cloudfs_get_fullpath - get full path in linux namespace by given path.
  */
 void LancerFS::cloudfs_get_fullpath(const char *path, char *fullpath){
     sprintf(fullpath, "%s", state_.ssd_path);
@@ -196,7 +196,7 @@ void LancerFS::cloudfs_log_init(){
 }
 
 /*
-    get_proxy - Get value of extend attribute: proxy.
+ get_proxy - Get value of extend attribute: proxy.
  */
 int LancerFS::get_proxy(const char *fullpath){
     string s(fullpath);
@@ -217,7 +217,7 @@ int LancerFS::get_proxy(const char *fullpath){
 }
 
 /*
-    get_proxy_path - get hidden file of a proxy file.
+ get_proxy_path - get hidden file of a proxy file.
  */
 void LancerFS::get_proxy_path(const char *fullpath, char *hubfile){
     string s(fullpath);
@@ -236,7 +236,7 @@ void LancerFS::get_proxy_path(const char *fullpath, char *hubfile){
 }
 
 /*
-    set_proxy - create hidden file of a proxy file.
+ set_proxy - create hidden file of a proxy file.
  */
 int LancerFS::set_proxy(const char *fullpath, int proxy){
     
@@ -265,7 +265,7 @@ int LancerFS::set_proxy(const char *fullpath, int proxy){
 }
 
 /*
-    get_dirty - Get value of extend attribute: dirty.
+ get_dirty - Get value of extend attribute: dirty.
  */
 int LancerFS::get_dirty(const char *fullpath){
     int dirty = 0;
@@ -274,7 +274,7 @@ int LancerFS::get_dirty(const char *fullpath){
 }
 
 /*
-    set_dirty - Get value of extend attribute: dirty.
+ set_dirty - Get value of extend attribute: dirty.
  */
 int LancerFS::set_dirty(const char *fullpath, int dirty){
     return lsetxattr(fullpath, "user.dirty", &dirty, sizeof(int), 0);
@@ -282,14 +282,14 @@ int LancerFS::set_dirty(const char *fullpath, int dirty){
 
 
 /*
-    set_slave - Set value of extend attribute: slave.
+ set_slave - Set value of extend attribute: slave.
  */
 int LancerFS::set_slave(const char *fullpath, int slave){
     return lsetxattr(fullpath, "user.slave", &slave, sizeof(int), 0);
 }
 
 /*
-    get_slave - Get value of extend attribute: slave.
+ get_slave - Get value of extend attribute: slave.
  */
 int LancerFS::get_slave(const char *fullpath){
     int slave;
@@ -572,7 +572,7 @@ int LancerFS::cloudfs_utimens(const char *path, const struct timespec tv[2]){
 }
 
 /*
-    Save mtime of file.
+ Save mtime of file.
  */
 void LancerFS::save_utime(const char *fpath, struct timespec times[2]){
     struct stat buf;
@@ -588,7 +588,7 @@ void LancerFS::save_utime(const char *fpath, struct timespec times[2]){
 }
 
 /*
-    Set mtime of file.
+ Set mtime of file.
  */
 int LancerFS::set_utime(const char *fpath, struct timespec times[2]){
     int ret = 0;
