@@ -16,9 +16,9 @@
 #include <sys/xattr.h>
 #include <stdarg.h>
 
-static FILE *logfd = NULL;
-static char *logpath = NULL;
-
+void log_init(const char *logpath);
 void log_msg(const char *format, ...);
+void log_destroy();
+
 
 #endif // LOG_HPP

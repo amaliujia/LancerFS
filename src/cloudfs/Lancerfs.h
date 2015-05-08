@@ -10,7 +10,7 @@ private:
     
     static LancerFS *_lancerFS;
     
-    FILE *logfd;
+    //FILE *logfd;
     char *logpath;
     
     duplication *dup;
@@ -61,10 +61,8 @@ private:
     void cloudfs_get_fullpath(const char *path, char *fullpath);
     
     //log
-    void log_msg(const char *format, ...);
     int cloudfs_error(char *error_str);
     void cloudfs_log_close();
-    void cloudfs_log_init();
     
     //cloud
     void cloud_get_shadow(const char *fullpath, const char *cloudpath);

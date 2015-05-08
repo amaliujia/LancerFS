@@ -26,8 +26,8 @@ LancerFS::LancerFS(struct cloudfs_state *state){
     
     logpath = "/tmp/cloudfs.log";
     //init log
-    logfd = fopen(logpath, "w");
-    setvbuf(logfd, NULL, _IOLBF, 0);
+    //logfd = fopen(logpath, "w");
+    log_init(logpath);
     if(logfd == NULL){
         printf("LancerFS Error: connot find log file\n");
     }
@@ -184,7 +184,8 @@ void LancerFS::log_msg(const char *format, ...){
 }
 
 void LancerFS::cloudfs_log_close(){
-    fclose(logfd);
+    //fclose(logfd);
+    log_destroy();
 }
 
 void LancerFS::cloudfs_log_init(){
@@ -674,22 +675,9 @@ int LancerFS::cloudfs_error(char *error_str)
     return retval;
 }
 
-LancerFS::LancerFS(){
-    logpath = "/tmp/cloudfs.log";
-    
-    //init log
-    logfd = fopen(logpath, "w");
-    setvbuf(logfd, NULL, _IOLBF, 0);
-    if(logfd == NULL){
-        printf("LancerFS Error: connot find log file\n");
-    }
-    log_msg("LancerFS log: filesystem start\n");
-    //init deduplication layer
-    dup = new duplication(logfd, state_.ssd_path);
-}
 
 LancerFS::~LancerFS(){
-    fclose(logfd);
+    cloudfs_log_close();
     
     //memory management
     delete dup;
