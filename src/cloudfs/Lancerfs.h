@@ -4,6 +4,7 @@
 #include "Fuse.h"
 #include "duplication.h"
 #include "snapshot.h"
+#include "log.h"
 
 class LancerFS{
 private:

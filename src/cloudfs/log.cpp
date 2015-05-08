@@ -17,5 +17,5 @@ void log_msg(const char *format, ...){
 }
 
 void log_destroy(){
-    flose(logfd);
+    fclose(logfd);
 }

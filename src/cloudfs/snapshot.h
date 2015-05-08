@@ -39,6 +39,7 @@ extern "C"
 #include <ftw.h>
 
 #include "Fuse.h"
+#include "log.h"
 #include "transmission.h"
 
 using namespace std;
@@ -47,7 +48,6 @@ class SnapshotManager{
 public:
   char ssd_path[MAX_PATH_LEN];
   char fuse_path[MAX_PATH_LEN];	
-	FILE *logfd;
 	FILE *snapfd;
 	vector<TIMESTAMP> records;
 
@@ -56,7 +56,6 @@ private:
 	void untar(const char *tarFIlename);
 	void serialization();
 	void recover_index(TIMESTAMP t);
-	void log_msg(const char *format, ...);
 
 public:
 	SnapshotManager(const char *s);

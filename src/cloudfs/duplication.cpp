@@ -92,9 +92,7 @@ void duplication::ssd_fullpath(const char *path, char *fpath){
     sprintf(fpath, "%s%s%s", fpath,SSD_DATA_PATH,  path);
 }
 
-duplication::duplication(FILE *fd, char *ssd_path UNUSED){
-    logfd = fd;
-    
+duplication::duplication(char *ssd_path UNUSED){
     //init rabin
     init_rabin_structrue();
     
@@ -103,16 +101,15 @@ duplication::duplication(FILE *fd, char *ssd_path UNUSED){
 }
 
 
-duplication::duplication(FILE *fd, fuse_struct *state){
+duplication::duplication(fuse_struct *state){
     state_.copy(state);
     window_size = state_.rabin_window_size;
     avg_seg_size = state_.avg_seg_size;
     min_seg_size = 0.5 * state_.avg_seg_size;
     max_seg_size = 2 * state_.avg_seg_size;
     state_.no_dedup = state_.no_dedup ^ 1;
-    logfd = fd;
     
-    //init rabin
+		//init rabin
     init_rabin_structrue();
     
     //recover index
@@ -124,13 +121,6 @@ duplication::duplication(FILE *fd, fuse_struct *state){
     out_buffer = NULL;
     outfile = NULL;
     infile = NULL;
-}
-
-void duplication::log_msg(const char *format, ...){
-    va_list ap;
-    va_start(ap, format);
-    vfprintf(logfd, format, ap);
-    fflush(logfd);
 }
 
 void duplication::init_rabin_structrue(){

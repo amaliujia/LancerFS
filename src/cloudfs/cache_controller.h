@@ -8,6 +8,7 @@
 
 #include "Fuse.h"
 #include "lock.h"
+#include "log.h"
 
 using namespace std;
 

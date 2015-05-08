@@ -24,19 +24,15 @@ LancerFS::LancerFS(struct cloudfs_state *state){
     sprintf(fpath, "%sdata", state_.ssd_path);
     mkdir(fpath, S_IRWXU | S_IRWXG | S_IRWXO);
     
-    logpath = "/tmp/cloudfs.log";
     //init log
-    //logfd = fopen(logpath, "w");
+    logpath = "/tmp/cloudfs.log";
     log_init(logpath);
-    if(logfd == NULL){
-        printf("LancerFS Error: connot find log file\n");
-    }
-    log_msg("LancerFS log: filesystem start\n");
+		log_msg("LancerFS log: filesystem start\n");
     
     //init deduplication layer
-    dup = new duplication(logfd, &state_);
+    dup = new duplication(&state_);
     
-    //init snapshot layer
+		//init snapshot layer
     init_snapshot();
 }
 
@@ -55,7 +51,6 @@ void LancerFS::init_snapshot(){
     close(fd);
     snapshotMgr = new SnapshotManager(state_.ssd_path);
     strcpy(snapshotMgr->fuse_path, state_.fuse_path);
-    snapshotMgr->logfd = logfd;
 }
 
 /*
@@ -176,24 +171,8 @@ void LancerFS::cloudfs_get_fullpath(const char *path, char *fullpath){
     sprintf(fullpath, "%s%s%s", fullpath, SSD_DATA_PATH, path);
 }
 
-void LancerFS::log_msg(const char *format, ...){
-    va_list ap;
-    va_start(ap, format);
-    vfprintf(logfd, format, ap);
-    fflush(logfd);
-}
-
 void LancerFS::cloudfs_log_close(){
-    //fclose(logfd);
     log_destroy();
-}
-
-void LancerFS::cloudfs_log_init(){
-    logfd = fopen(logpath, "w");
-    setvbuf(logfd, NULL, _IOLBF, 0);
-    if(logfd == NULL){
-        printf("LancerFS Error: connot find log file\n");
-    }
 }
 
 /*
@@ -756,11 +735,15 @@ int LancerFS::cloudfs_mkdir(const char *path, mode_t mode){
     return ret;
 }
 
-int LancerFS::cloudfs_ioctl(UNUSED const char *fd, int cmd, UNUSED void *arg,
+int LancerFS::cloudfs_ioctl(const char *fd, int cmd, UNUSED void *arg,
                             UNUSED struct fuse_file_info *info,
                             UNUSED unsigned int flags,
                             void *data)
 {
+		if(fd == NULL){
+			return -1;
+		}	
+
     if(cmd == CLOUDFS_SNAPSHOT){
         log_msg("\nsnapshot make %lu\n", *(TIMESTAMP *)data);
         dup->increment();

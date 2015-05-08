@@ -176,13 +176,6 @@ void SnapshotManager::restore(TIMESTAMP t){
     return;
 }
 
-void SnapshotManager::log_msg(const char *format, ...){
-    va_list ap;
-    va_start(ap, format);
-    vfprintf(logfd, format, ap);
-    fflush(logfd);
-}
-
 /*
     Helper function. Used to tar fuse namespace.
  */

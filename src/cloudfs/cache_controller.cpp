@@ -13,6 +13,14 @@ cache_controller::~cache_controller(){
     garbage_collect();
 }
 
+int cache_controller::size(){
+	return chunk_cache.size();
+}
+
+int cache_controller::size_read_cache(){
+	return chunk_read_cache.size(); 
+}
+
 int cache_controller::lookup(const char *chunk_name){
     set<string>::iterator iter;
     string s(chunk_name);
@@ -46,9 +54,10 @@ void cache_controller::release_read(const char *chunk_name){
             chunk_read_cache[s] = ref - 1;
         else
             chunk_read_cache.erase(iter_read);
-    }else{// error here, need log
-        //TODO: log error
-    }
+    }else{
+    	log_msg("LancerFS error: release a cached chunk %s, which \
+							doesn't exist\n", chunk_name);
+		}
     _mutex_read.release();
 }
 
@@ -68,7 +77,3 @@ void cache_controller::garbage_collect(){
     }
     _mutex_read.release();
 }
-
-
-
-

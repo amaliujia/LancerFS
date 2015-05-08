@@ -1,9 +1,9 @@
 #ifndef DUPLICATION_HPP
 #define DUPLICATION_HPP
 
-
 #include "Fuse.h"
 #include "cache_controller.h"
+#include "log.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -91,7 +91,6 @@ private:
     fuse_struct state_;
     
     rabinpoly_t *rp;
-    FILE *logfd;
     
     // mapping from filename to chunks list
     map<string, vector<MD5_code> > file_map;
@@ -106,8 +105,8 @@ private:
     cache_controller *cache_ctl;
     
 public:
-    duplication(FILE *fd, char *ssd_path);
-    duplication(FILE *fd, fuse_struct *state);
+    duplication(char *ssd_path);
+    duplication(fuse_struct *state);
     ~duplication();
     
     
@@ -133,7 +132,6 @@ private:
     void fingerprint(const char *path, vector<MD5_code> &code_list);
     void update_chunk(const char *fpath, vector<MD5_code> &code_list);
     void delete_chunk(const char *fpath, vector<MD5_code> &code_list);
-    void log_msg(const char *format, ...);
     void serialization();
     void put(const char *fpath, MD5_code &code, long offset);
     void get(const char *fpath, MD5_code &code, long offset);

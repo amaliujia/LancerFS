@@ -211,6 +211,7 @@ $(BUILD)/obj/%.o: dedup-lib/%.c
 cloudfs: $(BUILD)/bin/cloudfs
 
 CLOUDFS_OBJS = $(BUILD)/obj/cloudapi.o \
+				$(BUILD)/obj/log.o	\
 				$(BUILD)/obj/lock.o	\
 				$(BUILD)/obj/cache_controller.o	\
 				$(BUILD)/obj/transmission.o	\
