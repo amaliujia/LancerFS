@@ -1,8 +1,16 @@
 
+<<<<<<< HEAD
 src/.idea/.name
 
+=======
+>>>>>>> origin/master
 *.xml
 
 *.iml
 
+<<<<<<< HEAD
+=======
+src/.idea/.name
+
+>>>>>>> origin/master
 src/CMakeLists.txt
