@@ -1,1 +1,1 @@
-find . -name '*.cpp' | xargs wc -l 
+find . -name '*.*' | xargs wc -l 
