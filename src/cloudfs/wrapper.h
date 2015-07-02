@@ -18,19 +18,19 @@
 #define MAX_PATH_LEN 4096
 #define MAX_HOSTNAME_LEN 1024
 
-#ifdef __cplusplus 
-extern "C"{
+#ifdef __cplusplus
+extern "C" {
 #endif
 
 struct cloudfs_state {
-  char ssd_path[MAX_PATH_LEN];
-  char fuse_path[MAX_PATH_LEN];
-  char hostname[MAX_HOSTNAME_LEN];
-  int ssd_size;
-  int threshold;
-  int avg_seg_size;
-  int rabin_window_size;
-  char no_dedup;
+    char ssd_path[MAX_PATH_LEN];
+    char fuse_path[MAX_PATH_LEN];
+    char hostname[MAX_HOSTNAME_LEN];
+    int ssd_size;
+    int threshold;
+    int avg_seg_size;
+    int rabin_window_size;
+    char no_dedup;
 };
 
 //init Lancerfs
@@ -58,11 +58,11 @@ int wtruncate(const char *path, off_t newSize);
 int waccess(const char *path, int mask);
 void wdestroy(void *data);
 int wutimens(const char *path, const struct timespec tv[2]);
-int wioctl(const char *fd, int cmd, void *arg ,
-						struct fuse_file_info *info,
-                        unsigned int flags, void *data);
+int wioctl(const char *fd, int cmd, void *arg,
+           struct fuse_file_info *info,
+           unsigned int flags, void *data);
 
-#ifdef __cplusplus 
+#ifdef __cplusplus
 }
 #endif
 

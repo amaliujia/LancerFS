@@ -43,28 +43,35 @@ extern "C"
 #include "transmission.h"
 
 using namespace std;
- 
-class SnapshotManager{
+
+class SnapshotManager {
 public:
-  char ssd_path[MAX_PATH_LEN];
-  char fuse_path[MAX_PATH_LEN];	
-	FILE *snapfd;
-	vector<TIMESTAMP> records;
+    char ssd_path[MAX_PATH_LEN];
+    char fuse_path[MAX_PATH_LEN];
+    FILE *snapfd;
+    vector<TIMESTAMP> records;
 
 private:
-	void tar(const char *tarFilename);
-	void untar(const char *tarFIlename);
-	void serialization();
-	void recover_index(TIMESTAMP t);
+    void tar(const char *tarFilename);
+
+    void untar(const char *tarFIlename);
+
+    void serialization();
+
+    void recover_index(TIMESTAMP t);
 
 public:
-	SnapshotManager(const char *s);
-	~SnapshotManager();
+    SnapshotManager(const char *s);
 
-	TIMESTAMP snapshot();
-	void restore(TIMESTAMP  t);
-	TIMESTAMP *list();
-	TIMESTAMP deletes(TIMESTAMP t); 		
+    ~SnapshotManager();
+
+    TIMESTAMP snapshot();
+
+    void restore(TIMESTAMP t);
+
+    TIMESTAMP *list();
+
+    TIMESTAMP deletes(TIMESTAMP t);
 };
 
 
