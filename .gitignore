@@ -1,0 +1,8 @@
+
+*.xml
+
+*.iml
+
+src/.idea/.name
+
+src/CMakeLists.txt
