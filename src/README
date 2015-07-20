@@ -2,6 +2,22 @@
 ├── cloudfs                        The directory containing skeleton code for CloudFS
 │   ├── cloudfs.c                  The skeleton code of CloudFS FUSE implementation
 │   ├── cloudfs.h
+│   ├── wrapper.cpp                Wrapper for self-defined FUSE function. This wapper is used to build a bridge between C and C++
+│   ├── wrapper.h
+│   ├── Lancerfs.cpp               The skeleton code of CloudFS FUSE implementation in C++
+│   ├── Lancerfs.h  
+│   ├── duplication.cpp            The deduplication layer that detects duplication among files in filesystem and deduplicat 
+│   ├── duplication.h  
+│   ├── cache_controller.cpp       The cache layer that cache data into local filesystem and SSD, in order to reduce cloud cost and improve latency 
+│   ├── cache_controller.h  
+│   ├── snapshot.cpp               The snapshot layer that creates, deletes, restores, gabarge collects snapshots 
+│   ├── snapshot.h 
+│   ├── log.cpp                    The logger that provides unified logging interface to any component/layer in CloudFS
+│   ├── log.h 
+│   ├── transmission.cpp           The transportation layer that provides data sending/receiving
+│   ├── transmission.h 
+│   ├── lock.cpp                   The locker that provides primitives to protest shared data 
+│   ├── lock.h 
 │   └── main.c                     The main function for CloudFS that parses command line to extract options
 ├── cloud-lib                      The cloud api library           
 │   ├── cloudapi.c                 The wrapper functions of libs3
