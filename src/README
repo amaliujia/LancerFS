@@ -65,7 +65,7 @@
     ├── functions.sh                Common functions used for testing
     └── umount_disks.sh             A script that umounts SSD 
 
-1. How to run cloud-example.c ?
+1. Run cloud-example.c
 
    (a) Build example:
        Under src directory, run the command:
@@ -82,7 +82,7 @@
    (d) Run example:
        ./build/bin/cloud-example
        
-2. How to extract cloud cost from S3 server?
+2. Extract cloud cost from S3 server
    Assume your server binds to localhost:8888
    You can use:
    curl http://localhost:8888/admin/stat 
@@ -93,7 +93,7 @@
     MaxUsage: maximum usage of S3 server from the boot
 
    
-3. How to run rabin-example.c ?
+3. Run rabin-example.c 
 
    (a) Build example:
        Under src directory, run the command:
